@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page not found — MERN Prep</title>
+    <meta name="robots" content="noindex" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237048B6'/%3E%3Cpath d='M9 11l5 5-5 5' stroke='%23fff' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M17.5 21.5h6' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <!-- Styles are inlined on purpose: GitHub Pages serves this file at any
+         depth, where a relative assets/ path would not resolve. -->
+    <style>
+      :root {
+        --bg: #fbfbf9;
+        --panel: #f2f2ed;
+        --ink: #22262c;
+        --muted: #69707d;
+        --line: #e2e3dc;
+        --kw: #7048b6;
+        --kw-tint: #efe9f8;
+        --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+        --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+        --font-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+      }
+
+      :root[data-theme="night"] {
+        --bg: #16181d;
+        --panel: #1d2026;
+        --ink: #e7e5df;
+        --muted: #8c93a0;
+        --line: #2a2e36;
+        --kw: #b79ce8;
+        --kw-tint: #292336;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) {
+          --bg: #16181d;
+          --panel: #1d2026;
+          --ink: #e7e5df;
+          --muted: #8c93a0;
+          --line: #2a2e36;
+          --kw: #b79ce8;
+          --kw-tint: #292336;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-body);
+        line-height: 1.6;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        height: 52px;
+        padding: 0 clamp(14px, 3vw, 28px);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 0.98rem;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      .brand span {
+        color: var(--kw);
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        padding: clamp(2rem, 8vw, 5rem) clamp(14px, 5vw, 40px);
+      }
+
+      .box {
+        max-width: 34rem;
+      }
+
+      .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin: 0 0 1.1rem;
+      }
+
+      h1 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(1.9rem, 6vw, 2.9rem);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        margin: 0 0 1rem;
+      }
+
+      p.lede {
+        color: var(--muted);
+        font-size: 1.02rem;
+        margin: 0 0 2rem;
+        max-width: 46ch;
+      }
+
+      .go {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-family: var(--font-mono);
+        font-size: 0.84rem;
+        text-decoration: none;
+        color: var(--kw);
+        background: var(--kw-tint);
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 11px 16px;
+      }
+
+      .go:hover,
+      .go:focus-visible {
+        border-color: var(--kw);
+      }
+
+      .where {
+        margin: 2.4rem 0 0;
+        padding-top: 1.3rem;
+        border-top: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.6rem;
+        list-style: none;
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+      }
+
+      .where a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      .where a:hover,
+      .where a:focus-visible {
+        color: var(--ink);
+      }
+
+      :focus-visible {
+        outline: 2.5px solid var(--kw);
+        outline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html" data-root="index.html"
+        >MERN <span>Prep</span></a
+      >
+    </header>
+
+    <main>
+      <div class="box">
+        <p class="eyebrow">// 404</p>
+        <h1>That page isn't here.</h1>
+        <p class="lede">
+          The address may be mistyped, or the link out of date. Every guide,
+          track, and practice set is reachable from the hub.
+        </p>
+
+        <a class="go" href="index.html" data-root="index.html"
+          >Go to the hub &rarr;</a
+        >
+
+        <ul class="where">
+          <li>
+            <a href="index.html#guides" data-root="index.html#guides"
+              >Guides</a
+            >
+          </li>
+          <li>
+            <a href="index.html#learn" data-root="index.html#learn">Learn</a>
+          </li>
+          <li>
+            <a href="index.html#practice" data-root="index.html#practice"
+              >Practice</a
+            >
+          </li>
+        </ul>
+      </div>
+    </main>
+
+    <script>
+      // GitHub Pages serves this file at the requested URL, whatever its depth,
+      // so a relative href can point outside the site. Rebuild links from the
+      // site root: on a project site that's the first path segment.
+      (function () {
+        var parts = location.pathname.split("/").filter(Boolean);
+        var root =
+          /(^|\.)github\.io$/.test(location.hostname) && parts.length > 1
+            ? "/" + parts[0] + "/"
+            : "/";
+        var links = document.querySelectorAll("[data-root]");
+        for (var i = 0; i < links.length; i++) {
+          links[i].setAttribute("href", root + links[i].dataset.root);
+        }
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor state
+.vscode/
+.idea/
+*.swp
+*~
+
+# Not used by this project today, but keeps an accidental install out of git
+node_modules/
