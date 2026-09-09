@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MERN Stack Interview Preparation Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--guide" data-topic="mern">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>MERN Stack<br />Interview Preparation Guide</h1>
+      <p>Complete Q&amp;A Reference with Code Examples</p>
+      <p class="stack">MongoDB &bull; Express.js &bull; React &bull; Node.js</p>
+    </div>
+
+    <!-- ============ SECTION 1 ============ -->
+    <h1>1. JavaScript Fundamentals</h1>
+    <p><em>Asked in every MERN interview — master these first.</em></p>
+
+    <div class="q">Q: Difference between var, let, and const?</div>
+    <ul>
+      <li>
+        <strong>var</strong> — function-scoped, hoisted with
+        <code>undefined</code>, can be redeclared
+      </li>
+      <li>
+        <strong>let</strong> — block-scoped, hoisted but in "temporal dead
+        zone," can be reassigned
+      </li>
+      <li>
+        <strong>const</strong> — block-scoped, must be initialized, can't be
+        reassigned (object properties can still be mutated)
+      </li>
+    </ul>
+
+    <div class="q">Q: What is a closure?</div>
+    <p>
+      A function that retains access to its outer scope's variables even after
+      the outer function has returned.
+    </p>
+    <pre><code>function counter() {
+  let count = 0;
+  return () => ++count;
+}
+const increment = counter();
+increment(); // 1
+increment(); // 2 — count persists via closure</code></pre>
+
+    <div class="q">Q: Explain the event loop (output prediction).</div>
+    <pre><code>console.log('1');
+setTimeout(() => console.log('2'), 0);
+Promise.resolve().then(() => console.log('3'));
+console.log('4');
+// Output: 1, 4, 3, 2</code></pre>
+    <p>
+      Synchronous code runs first → <strong>microtasks</strong> (promises) →
+      <strong>macrotasks</strong> (setTimeout, setInterval).
+    </p>
+
+    <h2>Other must-know topics</h2>
+    <ul>
+      <li>
+        Hoisting, <code>this</code> keyword, arrow functions vs regular
+        functions
+      </li>
+      <li><code>call</code>, <code>apply</code>, <code>bind</code></li>
+      <li>
+        Promises vs async/await; <code>Promise.all</code> vs
+        <code>allSettled</code> vs <code>race</code>
+      </li>
+      <li>
+        Shallow vs deep copy (<code>structuredClone</code>, spread operator
+        limitations)
+      </li>
+      <li>Prototypal inheritance</li>
+      <li>
+        ES6+: destructuring, spread/rest, optional chaining, nullish coalescing
+      </li>
+    </ul>
+
+    <!-- ============ SECTION 2 ============ -->
+    <div class="section"></div>
+    <h1>2. Node.js</h1>
+
+    <div class="q">Q: What is Node.js and how does it handle concurrency?</div>
+    <p>
+      A JavaScript runtime built on Chrome's V8 engine. It is
+      <strong>single-threaded</strong> but handles concurrency via an
+      <strong>event-driven, non-blocking I/O model</strong> — I/O operations are
+      delegated to the libuv thread pool while the main thread keeps processing
+      events.
+    </p>
+
+    <div class="q">Q: process.nextTick() vs setImmediate()?</div>
+    <ul>
+      <li>
+        <code>process.nextTick()</code> — fires <strong>before</strong> the
+        event loop continues (before microtasks)
+      </li>
+      <li>
+        <code>setImmediate()</code> — fires in the
+        <strong>check phase</strong> of the event loop (after I/O)
+      </li>
+    </ul>
+
+    <div class="q">Q: What are streams?</div>
+    <p>
+      Objects for handling data piece-by-piece instead of loading everything
+      into memory. Four types: Readable, Writable, Duplex, Transform.
+    </p>
+    <pre><code>fs.createReadStream('big.txt').pipe(res); // memory-efficient file serving</code></pre>
+
+    <div class="q">Q: How do you scale a Node.js app?</div>
+    <ul>
+      <li>
+        <strong>Cluster module</strong> — fork worker processes per CPU core
+      </li>
+      <li><strong>Worker threads</strong> — for CPU-intensive tasks</li>
+      <li><strong>Load balancing</strong> — nginx, PM2</li>
+      <li>Horizontal scaling with stateless design</li>
+    </ul>
+
+    <h2>Other must-know topics</h2>
+    <ul>
+      <li>
+        CommonJS (<code>require</code>) vs ES Modules (<code>import</code>)
+      </li>
+      <li><code>package.json</code> vs <code>package-lock.json</code></li>
+      <li>Buffer, EventEmitter</li>
+      <li>Error handling: uncaught exceptions, unhandled rejections</li>
+      <li>Environment variables (<code>dotenv</code>)</li>
+    </ul>
+
+    <!-- ============ SECTION 3 ============ -->
+    <div class="section"></div>
+    <h1>3. Express.js</h1>
+
+    <div class="q">Q: What is middleware?</div>
+    <p>
+      Functions with access to <code>req</code>, <code>res</code>, and
+      <code>next</code> that execute in order during the request-response cycle.
+      Used for logging, auth, parsing, error handling.
+    </p>
+    <pre><code>app.use(express.json());                  // built-in
+app.use('/api', authMiddleware);          // custom, path-specific
+app.use((err, req, res, next) => {        // error handler (4 args!)
+  res.status(err.status || 500).json({ message: err.message });
+});</code></pre>
+
+    <div class="q">Q: Route params vs query params?</div>
+    <ul>
+      <li>
+        <code>req.params</code> → <code>/users/:id</code> →
+        <code>/users/42</code>
+      </li>
+      <li><code>req.query</code> → <code>/users?sort=name&amp;page=2</code></li>
+    </ul>
+
+    <div class="q">Q: JWT vs Sessions?</div>
+    <table>
+      <tr>
+        <th></th>
+        <th>JWT</th>
+        <th>Sessions</th>
+      </tr>
+      <tr>
+        <td>Storage</td>
+        <td>Client (stateless)</td>
+        <td>Server (stateful)</td>
+      </tr>
+      <tr>
+        <td>Scalability</td>
+        <td>Excellent</td>
+        <td>Needs shared store (Redis)</td>
+      </tr>
+      <tr>
+        <td>Revocation</td>
+        <td>Hard (until expiry)</td>
+        <td>Easy (delete session)</td>
+      </tr>
+      <tr>
+        <td>Best for</td>
+        <td>APIs, microservices</td>
+        <td>Traditional web apps</td>
+      </tr>
+    </table>
+
+    <div class="q">Q: Write a JWT auth middleware.</div>
+    <pre><code>const auth = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'No token' });
+  try {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};</code></pre>
+
+    <h2>Other must-know topics</h2>
+    <ul>
+      <li>CORS — what it is and how to configure it</li>
+      <li>
+        Security: <code>helmet</code>, rate limiting, input sanitization, NoSQL
+        injection prevention
+      </li>
+      <li>
+        REST design: proper verbs; status codes 200, 201, 204, 400, 401, 403,
+        404, 500
+      </li>
+      <li>File uploads with <code>multer</code></li>
+    </ul>
+
+    <!-- ============ SECTION 4 ============ -->
+    <div class="section"></div>
+    <h1>4. MongoDB</h1>
+
+    <div class="q">Q: SQL vs NoSQL — when to use MongoDB?</div>
+    <p>
+      MongoDB stores flexible, JSON-like <strong>documents</strong> (BSON) in
+      <strong>collections</strong>. Choose it for flexible schemas, rapid
+      iteration, horizontal scaling, hierarchical data. Choose SQL for complex
+      joins, strict schemas, multi-row transactions.
+    </p>
+
+    <div class="q">Q: Embedding vs Referencing?</div>
+    <ul>
+      <li>
+        <strong>Embed</strong> — data accessed together, "contains" relationship
+        (user + address)
+      </li>
+      <li>
+        <strong>Reference</strong> — data is large, shared, or updated
+        independently (posts + authors)
+      </li>
+    </ul>
+    <pre><code>// Referencing with Mongoose populate
+const postSchema = new mongoose.Schema({
+  title: String,
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+});
+Post.find().populate('author', 'name email');</code></pre>
+
+    <div class="q">Q: Explain the aggregation pipeline.</div>
+    <pre><code>db.orders.aggregate([
+  { $match: { status: 'delivered' } },            // filter
+  { $group: { _id: '$customerId',
+              total: { $sum: '$amount' } } },     // group
+  { $sort: { total: -1 } },                       // sort
+  { $limit: 5 }                                   // top 5 customers
+]);</code></pre>
+    <p>
+      Know: <code>$match</code>, <code>$group</code>, <code>$project</code>,
+      <code>$lookup</code> (joins), <code>$unwind</code>, <code>$sort</code>,
+      <code>$limit</code>.
+    </p>
+
+    <div class="q">Q: What are indexes?</div>
+    <p>
+      B-tree data structures that speed up queries at the cost of write
+      performance and storage. Types: single field, compound, text, unique.
+      Verify usage with <code>.explain()</code>.
+    </p>
+
+    <h2>Other must-know topics</h2>
+    <ul>
+      <li>Replication (high availability) vs Sharding (horizontal scaling)</li>
+      <li>Mongoose: schemas, models, pre/post hooks, virtuals, validation</li>
+      <li>Multi-document ACID transactions</li>
+      <li>
+        <code>findOneAndUpdate</code> options (<code>new: true</code>,
+        <code>upsert</code>)
+      </li>
+      <li>ObjectId structure (timestamp + random + counter)</li>
+    </ul>
+
+    <!-- ============ SECTION 5 ============ -->
+    <div class="section"></div>
+    <h1>5. React</h1>
+
+    <div class="q">Q: What is the Virtual DOM?</div>
+    <p>
+      An in-memory representation of the real DOM. On state changes, React
+      creates a new virtual tree, <strong>diffs</strong> it against the previous
+      one (reconciliation), and applies only minimal changes to the real DOM.
+    </p>
+
+    <div class="q">Q: Explain the key hooks.</div>
+    <pre><code>// useState — state in functional components
+const [count, setCount] = useState(0);
+setCount(prev => prev + 1); // functional update avoids stale state
+
+// useEffect — side effects + cleanup
+useEffect(() => {
+  const id = setInterval(tick, 1000);
+  return () => clearInterval(id);  // cleanup on unmount
+}, []); // empty deps = run once on mount
+
+// useRef — mutable value, no re-render on change
+const inputRef = useRef(null);</code></pre>
+
+    <div class="q">Q: useMemo vs useCallback?</div>
+    <ul>
+      <li>
+        <code>useMemo(() => compute(a, b), [a, b])</code> — memoizes a
+        <strong>computed value</strong>
+      </li>
+      <li>
+        <code>useCallback(fn, deps)</code> — memoizes the
+        <strong>function itself</strong> (pairs with <code>React.memo</code> to
+        prevent child re-renders)
+      </li>
+    </ul>
+
+    <div class="q">Q: Controlled vs uncontrolled components?</div>
+    <ul>
+      <li>
+        <strong>Controlled</strong> — form value driven by React state (<code
+          >value</code
+        >
+        + <code>onChange</code>)
+      </li>
+      <li>
+        <strong>Uncontrolled</strong> — DOM holds the value, accessed via refs
+      </li>
+    </ul>
+
+    <div class="q">Q: Why are keys important in lists?</div>
+    <p>
+      Keys help React identify which items changed, were added, or removed
+      during reconciliation. Using array index as key causes bugs when lists
+      reorder.
+    </p>
+
+    <div class="q">Q: Write a custom hook (useFetch).</div>
+    <pre><code>function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    fetch(url, { signal: controller.signal })
+      .then(res => res.json())
+      .then(setData)
+      .catch(err => err.name !== 'AbortError' && setError(err))
+      .finally(() => setLoading(false));
+    return () => controller.abort();
+  }, [url]);
+
+  return { data, loading, error };
+}</code></pre>
+
+    <h2>Other must-know topics</h2>
+    <ul>
+      <li>Rules of hooks (top level only, only in React functions)</li>
+      <li>Context API vs Redux — when to use each; Redux Toolkit basics</li>
+      <li>Prop drilling and solutions</li>
+      <li>
+        <code>React.memo</code>, lazy loading, <code>Suspense</code>, code
+        splitting
+      </li>
+      <li>Error boundaries</li>
+      <li>
+        React Router: <code>useNavigate</code>, <code>useParams</code>,
+        protected routes
+      </li>
+      <li>
+        React 18: concurrent rendering, automatic batching,
+        <code>useTransition</code>
+      </li>
+    </ul>
+
+    <!-- ============ SECTION 6 ============ -->
+    <div class="section"></div>
+    <h1>6. Full-Stack Integration</h1>
+
+    <div class="q">Q: Walk through the flow of a MERN request.</div>
+    <p>
+      User submits form → React handler calls API (fetch/axios) → Express route
+      receives request → middleware validates/authenticates → controller queries
+      MongoDB via Mongoose → response sent as JSON → React updates state → UI
+      re-renders.
+    </p>
+
+    <div class="q">Q: End-to-end authentication flow?</div>
+    <ol>
+      <li>User logs in → server validates → signs JWT → returns token</li>
+      <li>
+        Client stores token (httpOnly cookie preferred over localStorage for XSS
+        safety)
+      </li>
+      <li>
+        Client sends token in
+        <code>Authorization: Bearer &lt;token&gt;</code> header
+      </li>
+      <li>Server middleware verifies token on protected routes</li>
+      <li>Refresh token rotation for long sessions</li>
+    </ol>
+
+    <div class="q">Q: How do you handle CORS?</div>
+    <pre><code>app.use(cors({ origin: 'https://yourfrontend.com', credentials: true }));</code></pre>
+
+    <h2>Other topics</h2>
+    <ul>
+      <li>Environment configuration (dev vs prod)</li>
+      <li>
+        Deployment: frontend (Vercel/Netlify), backend (Render/Railway/AWS),
+        MongoDB Atlas
+      </li>
+      <li>WebSockets with Socket.io for real-time features</li>
+      <li>Pagination: offset vs cursor-based</li>
+    </ul>
+
+    <!-- ============ SECTION 7 ============ -->
+    <div class="section"></div>
+    <h1>7. Common Coding Challenges</h1>
+
+    <div class="q">Q: Implement debounce (asked constantly).</div>
+    <pre><code>function debounce(fn, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}</code></pre>
+
+    <h2>Typical live-coding tasks</h2>
+    <ul>
+      <li>Todo app with add/delete/toggle (React)</li>
+      <li>Fetch and display API data with loading/error states</li>
+      <li>CRUD REST API (Express + MongoDB)</li>
+      <li>Flatten a nested array / deep clone an object</li>
+      <li>Search filter with debounced input</li>
+      <li>Counter with useReducer</li>
+    </ul>
+
+    <!-- ============ SECTION 8 ============ -->
+    <div class="section"></div>
+    <h1>8. Preparation Strategy</h1>
+    <table>
+      <tr>
+        <th>Timeline</th>
+        <th>Focus</th>
+      </tr>
+      <tr>
+        <td>Week 1–2</td>
+        <td>JavaScript deep-dive + Node/Express</td>
+      </tr>
+      <tr>
+        <td>Week 3</td>
+        <td>MongoDB + build a REST API from scratch</td>
+      </tr>
+      <tr>
+        <td>Week 4</td>
+        <td>React hooks + state management + full CRUD app</td>
+      </tr>
+      <tr>
+        <td>Final days</td>
+        <td>System design basics, revise projects, mock interviews</td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>Interview tips:</strong>
+      <ul>
+        <li>
+          Be ready to explain your projects in depth — architecture, challenges,
+          tradeoffs
+        </li>
+        <li>Think out loud during coding rounds</li>
+        <li>Know one thing you'd improve about each technology</li>
+        <li>Prepare questions to ask the interviewer</li>
+      </ul>
+    </div>
+  </body>
+</html>

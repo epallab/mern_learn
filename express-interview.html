@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Express.js Interview Questions — Complete Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--guide" data-topic="express">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>Express.js<br />Interview Questions</h1>
+      <p>Complete Guide with Answers &amp; Code Examples</p>
+      <p style="margin-top: 10px">
+        Beginner &bull; Intermediate &bull; Advanced &bull; Coding Tasks
+      </p>
+      <div class="badge">30+ Questions Covered</div>
+    </div>
+
+    <!-- ============ BEGINNER ============ -->
+    <span class="level beginner">BEGINNER LEVEL</span>
+    <h1>1. Beginner Questions</h1>
+
+    <div class="q">
+      Q1: What is Express.js and why use it over plain Node.js?
+    </div>
+    <p>
+      A minimal, unopinionated web framework for Node.js. Plain Node's
+      <code>http</code> module requires manual URL parsing, routing, and body
+      handling — Express provides routing, middleware, request parsing, and a
+      cleaner API out of the box.
+    </p>
+
+    <div class="q">Q2: How do you create a basic Express server?</div>
+    <pre><code>const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => res.send('Hello World'));
+
+app.listen(3000, () => console.log('Server on port 3000'));</code></pre>
+
+    <div class="q">
+      Q3: What is middleware? <span class="star">★ Most asked</span>
+    </div>
+    <p>
+      Functions with access to <code>req</code>, <code>res</code>, and
+      <code>next</code> that execute during the request-response cycle. They can
+      modify request/response objects, end the cycle, or pass control via
+      <code>next()</code>.
+    </p>
+    <pre><code>app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next(); // without this, the request hangs!
+});</code></pre>
+
+    <div class="q">Q4: app.get() vs app.use()?</div>
+    <ul>
+      <li>
+        <code>app.get('/path')</code> — matches GET requests to the
+        <strong>exact</strong> path
+      </li>
+      <li>
+        <code>app.use('/path')</code> — matches <strong>all methods</strong> and
+        any path <strong>starting with</strong> /path
+      </li>
+    </ul>
+
+    <div class="q">Q5: Route params vs query params?</div>
+    <pre><code>// GET /users/42?sort=name&amp;page=2
+app.get('/users/:id', (req, res) => {
+  req.params.id;    // '42'
+  req.query.sort;   // 'name'
+  req.query.page;   // '2'
+});</code></pre>
+
+    <div class="q">Q6: What do express.json() and express.urlencoded() do?</div>
+    <ul>
+      <li>
+        <code>express.json()</code> — parses JSON request bodies into
+        <code>req.body</code>
+      </li>
+      <li>
+        <code>express.urlencoded({ extended: true })</code> — parses HTML form
+        data
+      </li>
+    </ul>
+    <p>Without them, <code>req.body</code> is <code>undefined</code>.</p>
+
+    <div class="q">Q7: How do you serve static files?</div>
+    <pre><code>app.use(express.static('public'));
+// Now /public/logo.png is served at /logo.png
+
+app.use('/assets', express.static('public')); // with URL prefix</code></pre>
+
+    <div class="q">Q8: res.send() vs res.json() vs res.end()?</div>
+    <ul>
+      <li><code>res.send()</code> — sends any type, auto-sets Content-Type</li>
+      <li>
+        <code>res.json()</code> — converts to JSON, sets
+        <code>application/json</code>
+      </li>
+      <li><code>res.end()</code> — ends response without data</li>
+    </ul>
+
+    <div class="q">Q9: Essential HTTP status codes?</div>
+    <table>
+      <tr>
+        <th>Code</th>
+        <th>Meaning</th>
+        <th>Use case</th>
+      </tr>
+      <tr>
+        <td>200</td>
+        <td>OK</td>
+        <td>Successful GET/PUT</td>
+      </tr>
+      <tr>
+        <td>201</td>
+        <td>Created</td>
+        <td>Successful POST</td>
+      </tr>
+      <tr>
+        <td>204</td>
+        <td>No Content</td>
+        <td>Successful DELETE</td>
+      </tr>
+      <tr>
+        <td>400</td>
+        <td>Bad Request</td>
+        <td>Validation failure</td>
+      </tr>
+      <tr>
+        <td>401</td>
+        <td>Unauthorized</td>
+        <td>Missing/invalid token</td>
+      </tr>
+      <tr>
+        <td>403</td>
+        <td>Forbidden</td>
+        <td>Valid token, no permission</td>
+      </tr>
+      <tr>
+        <td>404</td>
+        <td>Not Found</td>
+        <td>Resource doesn't exist</td>
+      </tr>
+      <tr>
+        <td>500</td>
+        <td>Server Error</td>
+        <td>Unhandled exception</td>
+      </tr>
+    </table>
+
+    <div class="q">Q10: How do you handle a 404 route?</div>
+    <pre><code>// Placed AFTER all other routes
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});</code></pre>
+
+    <!-- ============ INTERMEDIATE ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">INTERMEDIATE LEVEL</span>
+    <h1>2. Intermediate Questions</h1>
+
+    <div class="q">
+      Q11: Name the 5 types of middleware. <span class="star">★</span>
+    </div>
+    <pre><code>// 1. Application-level
+app.use(logger);
+
+// 2. Router-level
+router.use(authCheck);
+
+// 3. Error-handling (MUST have 4 params)
+app.use((err, req, res, next) => {
+  res.status(500).json({ error: err.message });
+});
+
+// 4. Built-in
+app.use(express.json());
+app.use(express.static('public'));
+
+// 5. Third-party
+app.use(cors());
+app.use(helmet());</code></pre>
+
+    <div class="q">Q12: How does error-handling middleware work?</div>
+    <p>
+      Identified by having <strong>exactly 4 parameters</strong>
+      <code>(err, req, res, next)</code>. Express skips to it whenever
+      <code>next(err)</code> is called or a synchronous error is thrown. It must
+      be registered <strong>after all routes</strong>.
+    </p>
+
+    <div class="q">Q13: What is express.Router()?</div>
+    <p>A mini, mountable route handler for organizing routes into modules.</p>
+    <pre><code>// routes/users.js
+const router = require('express').Router();
+router.get('/', getAllUsers);
+router.post('/', createUser);
+module.exports = router;
+
+// server.js
+app.use('/api/users', require('./routes/users'));</code></pre>
+
+    <div class="q">Q14: What are the variants of next()?</div>
+    <ul>
+      <li><code>next()</code> — pass to the next middleware</li>
+      <li><code>next(err)</code> — skip everything, jump to error handler</li>
+      <li>
+        <code>next('route')</code> — skip remaining handlers in the current
+        route
+      </li>
+      <li>
+        Not calling it (and not responding) — request
+        <strong>hangs forever</strong>
+      </li>
+    </ul>
+
+    <div class="q">Q15: How do you handle CORS?</div>
+    <pre><code>const cors = require('cors');
+
+app.use(cors({
+  origin: 'https://myapp.com',   // allowed origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true               // allow cookies
+}));</code></pre>
+    <p>
+      <strong>Why it exists:</strong> browsers block cross-origin requests by
+      default; the server must explicitly allow them via headers like
+      <code>Access-Control-Allow-Origin</code>.
+    </p>
+
+    <div class="q">Q16: How do you handle file uploads?</div>
+    <pre><code>const multer = require('multer');
+const upload = multer({
+  dest: 'uploads/',
+  limits: { fileSize: 5 * 1024 * 1024 }  // 5MB
+});
+
+app.post('/upload', upload.single('avatar'), (req, res) => {
+  res.json({ file: req.file });
+});</code></pre>
+
+    <div class="q">
+      Q17: Implement JWT authentication middleware. <span class="star">★</span>
+    </div>
+    <pre><code>const jwt = require('jsonwebtoken');
+
+const auth = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'No token' });
+
+  try {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
+// Usage
+app.get('/api/profile', auth, (req, res) => {
+  res.json({ user: req.user });
+});</code></pre>
+
+    <div class="q">Q18: How do you structure a production Express app?</div>
+    <pre><code>project/
+├── config/          # DB connection, env setup
+├── controllers/     # Request handlers (business logic)
+├── models/          # Mongoose schemas
+├── routes/          # Route definitions
+├── middleware/      # Auth, validation, error handlers
+├── utils/           # Helpers, custom errors
+├── app.js           # Express app setup
+└── server.js        # Entry point (listen, DB connect)</code></pre>
+    <p>
+      Separating <code>app.js</code> from <code>server.js</code> makes the app
+      testable without starting a server.
+    </p>
+
+    <div class="q">Q19: Does middleware order matter?</div>
+    <p>
+      <strong>Yes — critically.</strong> Middleware executes top-to-bottom.
+      Common bug: defining routes before <code>express.json()</code> means
+      <code>req.body</code> is undefined. Error handlers and 404 handlers must
+      come last.
+    </p>
+
+    <div class="q">Q20: Important req object properties?</div>
+    <table>
+      <tr>
+        <th>Property</th>
+        <th>Contains</th>
+      </tr>
+      <tr>
+        <td><code>req.params</code></td>
+        <td>Route parameters (/users/:id)</td>
+      </tr>
+      <tr>
+        <td><code>req.query</code></td>
+        <td>Query string (?page=2)</td>
+      </tr>
+      <tr>
+        <td><code>req.body</code></td>
+        <td>Parsed request body</td>
+      </tr>
+      <tr>
+        <td><code>req.headers</code></td>
+        <td>Request headers</td>
+      </tr>
+      <tr>
+        <td><code>req.cookies</code></td>
+        <td>Cookies (needs cookie-parser)</td>
+      </tr>
+      <tr>
+        <td><code>req.ip</code></td>
+        <td>Client IP address</td>
+      </tr>
+      <tr>
+        <td><code>req.method / req.path</code></td>
+        <td>HTTP method / URL path</td>
+      </tr>
+    </table>
+
+    <!-- ============ ADVANCED ============ -->
+    <div class="section"></div>
+    <span class="level advanced">ADVANCED LEVEL</span>
+    <h1>3. Advanced Questions</h1>
+
+    <div class="q">
+      Q21: How do you handle async errors in Express?
+      <span class="star">★ Tricky</span>
+    </div>
+    <p>
+      In Express 4, rejected promises in route handlers are
+      <strong>NOT caught</strong> automatically — the request hangs. Solutions:
+    </p>
+    <pre><code>// Option 1: try/catch in every handler (verbose)
+app.get('/users', async (req, res, next) => {
+  try {
+    res.json(await User.find());
+  } catch (err) { next(err); }
+});
+
+// Option 2: asyncHandler wrapper (clean) ✅
+const asyncHandler = (fn) => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
+
+app.get('/users', asyncHandler(async (req, res) => {
+  res.json(await User.find());
+}));
+
+// Option 3: Express 5 handles rejected promises natively</code></pre>
+
+    <div class="q">
+      Q22: Build a centralized error handler with custom errors.
+    </div>
+    <pre><code>// utils/AppError.js
+class AppError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+    this.isOperational = true;
+  }
+}
+
+// middleware/errorHandler.js
+const errorHandler = (err, req, res, next) => {
+  const status = err.statusCode || 500;
+  res.status(status).json({
+    status: 'error',
+    message: err.isOperational ? err.message : 'Something went wrong'
+  });
+};
+
+// Usage in a controller
+if (!user) return next(new AppError('User not found', 404));</code></pre>
+
+    <div class="q">Q23: Express security best practices?</div>
+    <ul>
+      <li><code>helmet()</code> — sets secure HTTP headers</li>
+      <li><code>express-rate-limit</code> — prevents brute-force attacks</li>
+      <li>
+        <code>express-mongo-sanitize</code> — blocks NoSQL injection (<code
+          >{"$gt": ""}</code
+        >)
+      </li>
+      <li>
+        Validate input with <code>joi</code> / <code>express-validator</code>
+      </li>
+      <li>Limit body size: <code>express.json({ limit: '10kb' })</code></li>
+      <li>Use HTTPS, httpOnly cookies, and CSRF protection</li>
+      <li>
+        Hide <code>X-Powered-By</code>: <code>app.disable('x-powered-by')</code>
+      </li>
+    </ul>
+
+    <div class="q">Q24: How do you improve Express performance?</div>
+    <ul>
+      <li><code>compression()</code> — gzip responses</li>
+      <li>Enable caching headers / Redis for repeated queries</li>
+      <li>Use clustering or PM2 to utilize all CPU cores</li>
+      <li>
+        Set <code>NODE_ENV=production</code> (up to 3x faster — disables dev
+        overhead)
+      </li>
+      <li>
+        Use lean queries (<code>Model.find().lean()</code>) and pagination
+      </li>
+      <li>Avoid synchronous code in handlers</li>
+    </ul>
+
+    <div class="q">Q25: JWT vs Sessions in Express?</div>
+    <table>
+      <tr>
+        <th></th>
+        <th>JWT</th>
+        <th>Sessions (express-session)</th>
+      </tr>
+      <tr>
+        <td>State</td>
+        <td>Stateless (client-side)</td>
+        <td>Stateful (server-side)</td>
+      </tr>
+      <tr>
+        <td>Scaling</td>
+        <td>Easy — no shared store</td>
+        <td>Needs Redis for multiple servers</td>
+      </tr>
+      <tr>
+        <td>Revocation</td>
+        <td>Hard until expiry</td>
+        <td>Instant (destroy session)</td>
+      </tr>
+      <tr>
+        <td>Best for</td>
+        <td>APIs, mobile, microservices</td>
+        <td>Server-rendered web apps</td>
+      </tr>
+    </table>
+
+    <div class="q">Q26: How do you test Express apps?</div>
+    <pre><code>const request = require('supertest');
+const app = require('../app');
+
+describe('GET /api/users', () => {
+  it('returns 200 and an array', async () => {
+    const res = await request(app).get('/api/users');
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it('returns 401 without token', async () => {
+    const res = await request(app).get('/api/profile');
+    expect(res.statusCode).toBe(401);
+  });
+});</code></pre>
+
+    <div class="q">Q27: How do you implement API versioning?</div>
+    <pre><code>app.use('/api/v1/users', v1UserRoutes);
+app.use('/api/v2/users', v2UserRoutes);</code></pre>
+    <p>
+      Alternatives: version via headers (<code>Accept-Version</code>) or query
+      params. URL versioning is most common and cache-friendly.
+    </p>
+
+    <div class="q">
+      Q28: What is app.all() and how does it differ from app.use()?
+    </div>
+    <ul>
+      <li>
+        <code>app.all('/path')</code> — all HTTP methods,
+        <strong>exact</strong> path match, supports route patterns
+      </li>
+      <li>
+        <code>app.use('/path')</code> — all methods,
+        <strong>prefix</strong> match (matches /path/anything)
+      </li>
+    </ul>
+
+    <div class="q">Q29: What does app.set('trust proxy', true) do?</div>
+    <p>
+      Tells Express it's behind a reverse proxy (nginx, load balancer), so
+      <code>req.ip</code> and <code>req.protocol</code> reflect the real client
+      via <code>X-Forwarded-*</code> headers. Required for correct rate limiting
+      and secure cookies in production.
+    </p>
+
+    <div class="q">Q30: How do you stream a response?</div>
+    <pre><code>app.get('/download', (req, res) => {
+  res.setHeader('Content-Type', 'video/mp4');
+  fs.createReadStream('large-video.mp4').pipe(res);
+});</code></pre>
+
+    <!-- ============ CODING TASKS ============ -->
+    <div class="section"></div>
+    <h1>4. Practical Coding Task — Complete CRUD API</h1>
+    <p>
+      The most common live-coding request. Be able to write this from scratch:
+    </p>
+    <pre><code>const express = require('express');
+const app = express();
+app.use(express.json());
+
+let users = [{ id: 1, name: 'Alice' }];
+let nextId = 2;
+
+// READ all (with pagination)
+app.get('/api/users', (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const start = (page - 1) * limit;
+  res.json(users.slice(start, start + Number(limit)));
+});
+
+// READ one
+app.get('/api/users/:id', (req, res) => {
+  const user = users.find(u => u.id === Number(req.params.id));
+  if (!user) return res.status(404).json({ error: 'Not found' });
+  res.json(user);
+});
+
+// CREATE
+app.post('/api/users', (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'Name required' });
+  const user = { id: nextId++, name };
+  users.push(user);
+  res.status(201).json(user);
+});
+
+// UPDATE
+app.put('/api/users/:id', (req, res) => {
+  const user = users.find(u => u.id === Number(req.params.id));
+  if (!user) return res.status(404).json({ error: 'Not found' });
+  user.name = req.body.name ?? user.name;
+  res.json(user);
+});
+
+// DELETE
+app.delete('/api/users/:id', (req, res) => {
+  const index = users.findIndex(u => u.id === Number(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Not found' });
+  users.splice(index, 1);
+  res.status(204).end();
+});
+
+// 404 + error handlers (always last)
+app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
+app.use((err, req, res, next) => {
+  res.status(500).json({ error: 'Server error' });
+});
+
+app.listen(3000);</code></pre>
+
+    <h2>Other common tasks</h2>
+    <ul>
+      <li>Write a request-logger middleware (method, URL, response time)</li>
+      <li>
+        Build a role-based authorization middleware
+        (<code>restrictTo('admin')</code>)
+      </li>
+      <li>Implement a simple in-memory rate limiter</li>
+      <li>Add validation middleware for request bodies</li>
+    </ul>
+
+    <!-- ============ QUICK FIRE ============ -->
+    <h1>5. Quick-Fire Round</h1>
+    <table>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+      <tr>
+        <td>Is Express opinionated?</td>
+        <td>No — unopinionated, minimal, flexible</td>
+      </tr>
+      <tr>
+        <td>What is morgan?</td>
+        <td>HTTP request logger middleware</td>
+      </tr>
+      <tr>
+        <td>What is helmet?</td>
+        <td>Sets ~15 security-related HTTP headers</td>
+      </tr>
+      <tr>
+        <td>res.redirect() default status?</td>
+        <td>302 (Found)</td>
+      </tr>
+      <tr>
+        <td>Can you chain res methods?</td>
+        <td>Yes: <code>res.status(201).json(data)</code></td>
+      </tr>
+      <tr>
+        <td>PUT vs PATCH?</td>
+        <td>PUT replaces the resource; PATCH partially updates</td>
+      </tr>
+      <tr>
+        <td>What is cookie-parser?</td>
+        <td>Middleware that populates <code>req.cookies</code></td>
+      </tr>
+      <tr>
+        <td>Template engines supported?</td>
+        <td>EJS, Pug, Handlebars (via <code>app.set('view engine')</code>)</td>
+      </tr>
+      <tr>
+        <td>What's new in Express 5?</td>
+        <td>Auto async error handling, promise support, dropped old Node</td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>Interview tip:</strong> Middleware (Q3, Q11, Q14, Q19) and async
+      error handling (Q21) are the #1 Express topics. Interviewers love asking
+      "what happens if you forget next()?" and "why is req.body undefined?" —
+      know these cold.
+    </div>
+  </body>
+</html>

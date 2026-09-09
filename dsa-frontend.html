@@ -1,0 +1,1715 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coding Practice — DSA for Frontend Interviews</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--practice" data-topic="dsa">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>Coding<br />Practice</h1>
+      <p>
+        Fifty-seven problems, frontend-flavored: the patterns interviewers
+        screen with, and the utilities they ask you to build from a blank
+        editor. Solve before you peek — hints first, solutions second.
+      </p>
+      <p style="margin-top: 10px">
+        Two Pointers &bull; Hashmaps &bull; Stacks &bull; Trees &bull; Machine
+        Coding &bull; DP-Lite &bull; DOM &amp; Async
+      </p>
+      <div class="badge">57 problems · hints + solutions</div>
+    </div>
+
+    <!-- ============ SECTION 1 ============ -->
+    <span class="level beginner">WARM-UP</span>
+    <h1>1. Arrays &amp; Strings: Two Pointers</h1>
+
+    <div class="q">P1: Reverse a string's characters in place</div>
+    <p>
+      Given an array of characters, reverse it in place — no second array, no
+      <code>.reverse()</code>.
+    </p>
+    <pre>
+reverse(["h","e","l","l","o"])  →  ["o","l","l","e","h"]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        One pointer at each end. Swap, walk them toward each other, stop when
+        they meet.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function reverse(chars) {
+  let l = 0, r = chars.length - 1;
+  while (l < r) {
+    [chars[l], chars[r]] = [chars[r], chars[l]];
+    l++; r--;
+  }
+  return chars;
+}</pre
+      >
+      <p>O(n) time, O(1) space — the point of "in place".</p>
+    </details>
+    <p class="asked">the warm-up that checks you can juggle two indices</p>
+
+    <div class="q">P2: Valid palindrome (ignore case and punctuation)</div>
+    <p>
+      True if the string reads the same both ways, considering only
+      alphanumeric characters: <code>"A man, a plan…"</code> counts.
+    </p>
+    <pre>
+isPalindrome("A man, a plan, a canal: Panama")  →  true
+isPalindrome("race a car")                      →  false</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Normalize first (lowercase, strip non-alphanumerics), or skip invalid
+        characters inside the two-pointer walk.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function isPalindrome(s) {
+  const t = s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  let l = 0, r = t.length - 1;
+  while (l < r) {
+    if (t[l] !== t[r]) return false;
+    l++; r--;
+  }
+  return true;
+}</pre
+      >
+      <p>O(n). The regex version is fine; mention the skip-in-place variant saves the copy.</p>
+    </details>
+
+    <div class="q">P3: Two sum on a sorted array</div>
+    <p>
+      Sorted array + target → indices of the two numbers that add to it.
+      Exploit the ordering.
+    </p>
+    <pre>
+twoSumSorted([2, 7, 11, 15], 9)  →  [0, 1]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Pointers at both ends: sum too small → move left up; too big → move
+        right down.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function twoSumSorted(nums, target) {
+  let l = 0, r = nums.length - 1;
+  while (l < r) {
+    const sum = nums[l] + nums[r];
+    if (sum === target) return [l, r];
+    if (sum < target) l++;
+    else r--;
+  }
+  return [-1, -1];
+}</pre
+      >
+      <p>O(n) time, O(1) space — vs the hashmap version's O(n) space (P8).</p>
+    </details>
+
+    <div class="q">P4: Remove duplicates from a sorted array, in place</div>
+    <p>
+      Return the count of unique values, with those values occupying the front
+      of the array.
+    </p>
+    <pre>
+dedupe([1, 1, 2, 2, 3])  →  3   (array begins [1, 2, 3, …])</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Slow pointer = last unique position; fast pointer scans. New value →
+        write it after slow.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function dedupe(nums) {
+  if (nums.length === 0) return 0;
+  let write = 1;
+  for (let read = 1; read < nums.length; read++) {
+    if (nums[read] !== nums[read - 1]) nums[write++] = nums[read];
+  }
+  return write;
+}</pre
+      >
+      <p>
+        The read/write pointer pattern — the same shape as "move zeroes" and
+        "compact an array".
+      </p>
+    </details>
+
+    <div class="q">P5: Move all zeroes to the end, keeping order</div>
+    <pre>
+moveZeroes([0, 1, 0, 3, 12])  →  [1, 3, 12, 0, 0]   (in place)</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Write pointer for "next non-zero slot": copy non-zeroes forward, then
+        fill the rest with zeroes.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function moveZeroes(nums) {
+  let write = 0;
+  for (const n of nums) if (n !== 0) nums[write++] = n;
+  while (write < nums.length) nums[write++] = 0;
+  return nums;
+}</pre
+      >
+      <p>O(n), one pass plus the zero-fill; stable (order preserved).</p>
+    </details>
+
+    <!-- ============ SECTION 2 ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">CORE PATTERNS</span>
+    <h1>2. Sliding Window &amp; Hashmaps</h1>
+
+    <div class="q">P6: Longest substring without repeating characters</div>
+    <pre>
+longestUnique("abcabcbb")  →  3   ("abc")
+longestUnique("pwwkew")    →  3   ("wke")</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Grow a window right; on a repeat, jump the left edge past the previous
+        occurrence. A map from char → last index does it in one pass.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function longestUnique(s) {
+  const last = new Map();
+  let best = 0, left = 0;
+  for (let right = 0; right < s.length; right++) {
+    const c = s[right];
+    if (last.has(c) && last.get(c) >= left) left = last.get(c) + 1;
+    last.set(c, right);
+    best = Math.max(best, right - left + 1);
+  }
+  return best;
+}</pre
+      >
+      <p>O(n) — the canonical variable-size sliding window.</p>
+    </details>
+    <p class="asked">the most common "medium" screen for frontend candidates</p>
+
+    <div class="q">P7: Max sum of any subarray of size k</div>
+    <pre>
+maxWindowSum([2, 1, 5, 1, 3, 2], 3)  →  9   (5+1+3)</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Don't re-add k numbers per step — slide: add the entering element,
+        subtract the leaving one.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function maxWindowSum(nums, k) {
+  let sum = 0;
+  for (let i = 0; i < k; i++) sum += nums[i];
+  let best = sum;
+  for (let i = k; i < nums.length; i++) {
+    sum += nums[i] - nums[i - k];
+    best = Math.max(best, sum);
+  }
+  return best;
+}</pre
+      >
+      <p>O(n) fixed-size window — vs O(n·k) naive. Say that comparison out loud.</p>
+    </details>
+
+    <div class="q">P8: Two sum (unsorted) — the hashmap classic</div>
+    <pre>
+twoSum([3, 2, 4], 6)  →  [1, 2]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        One pass: before storing each number, check whether its complement is
+        already in the map.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function twoSum(nums, target) {
+  const seen = new Map();               // value → index
+  for (let i = 0; i < nums.length; i++) {
+    const need = target - nums[i];
+    if (seen.has(need)) return [seen.get(need), i];
+    seen.set(nums[i], i);
+  }
+  return [];
+}</pre
+      >
+      <p>O(n) time, O(n) space. Checking before inserting handles duplicates correctly.</p>
+    </details>
+
+    <div class="q">P9: Group anagrams</div>
+    <pre>
+groupAnagrams(["eat","tea","tan","ate","nat","bat"])
+→ [["eat","tea","ate"], ["tan","nat"], ["bat"]]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Anagrams share a canonical form — the sorted word. Use it as a map
+        key.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function groupAnagrams(words) {
+  const groups = new Map();
+  for (const w of words) {
+    const key = [...w].sort().join("");
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(w);
+  }
+  return [...groups.values()];
+}</pre
+      >
+      <p>
+        O(n · m log m). Follow-up answer: a 26-count key
+        (<code>"1a0b2c…"</code>) makes it O(n · m).
+      </p>
+    </details>
+
+    <div class="q">P10: First non-repeating character</div>
+    <pre>
+firstUnique("swiss")  →  "w"</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>Two passes: count everything, then find the first count of 1.</p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function firstUnique(s) {
+  const count = new Map();
+  for (const c of s) count.set(c, (count.get(c) || 0) + 1);
+  for (const c of s) if (count.get(c) === 1) return c;
+  return null;
+}</pre
+      >
+      <p>O(n). The one-pass "clever" versions are usually slower — say why: the second pass is cache-friendly and simple.</p>
+    </details>
+
+    <div class="q">P11: Top k frequent elements</div>
+    <pre>
+topK([1,1,1,2,2,3], 2)  →  [1, 2]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>Count with a map, then sort the entries by count and slice.</p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function topK(nums, k) {
+  const count = new Map();
+  for (const n of nums) count.set(n, (count.get(n) || 0) + 1);
+  return [...count.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, k)
+    .map(([n]) => n);
+}</pre
+      >
+      <p>
+        O(n log n) — fine at interview scale. Bonus point: bucket-by-frequency
+        gets O(n).
+      </p>
+    </details>
+
+    <!-- ============ SECTION 3 ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">STACKS &amp; SEARCH</span>
+    <h1>3. Stacks, Recursion &amp; Search</h1>
+
+    <div class="q">P12: Valid parentheses</div>
+    <pre>
+isValid("([{}])")  →  true
+isValid("(]")      →  false</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Push openers; on a closer, the top of the stack must be its partner.
+        Empty stack at the end = valid.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function isValid(s) {
+  const pairs = { ")": "(", "]": "[", "}": "{" };
+  const stack = [];
+  for (const c of s) {
+    if (!pairs[c]) stack.push(c);
+    else if (stack.pop() !== pairs[c]) return false;
+  }
+  return stack.length === 0;
+}</pre
+      >
+      <p>O(n). Also the mental model for "are these HTML tags balanced?"</p>
+    </details>
+    <p class="asked">the single most common stack question in existence</p>
+
+    <div class="q">P13: Min stack — push/pop/top/getMin, all O(1)</div>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        A second stack that tracks "minimum so far" moves in lockstep with the
+        real one.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+class MinStack {
+  #stack = [];
+  #mins = [];
+  push(x) {
+    this.#stack.push(x);
+    const min = this.#mins.length ? Math.min(x, this.getMin()) : x;
+    this.#mins.push(min);
+  }
+  pop() { this.#mins.pop(); return this.#stack.pop(); }
+  top() { return this.#stack[this.#stack.length - 1]; }
+  getMin() { return this.#mins[this.#mins.length - 1]; }
+}</pre
+      >
+      <p>The trade: O(n) extra space buys O(1) getMin.</p>
+    </details>
+
+    <div class="q">P14: Next greater element (daily temperatures)</div>
+    <p>
+      For each day's temperature, how many days until a warmer one? 0 if
+      never.
+    </p>
+    <pre>
+waitDays([73,74,75,71,69,72,76,73])  →  [1,1,4,2,1,1,0,0]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Monotonic stack of indices still waiting for their answer. A warmer
+        day resolves everything smaller on the stack.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function waitDays(temps) {
+  const res = new Array(temps.length).fill(0);
+  const stack = [];                       // indices, temps descending
+  for (let i = 0; i < temps.length; i++) {
+    while (stack.length && temps[i] > temps[stack[stack.length - 1]]) {
+      const j = stack.pop();
+      res[j] = i - j;
+    }
+    stack.push(i);
+  }
+  return res;
+}</pre
+      >
+      <p>O(n) — each index is pushed and popped at most once.</p>
+    </details>
+
+    <div class="q">P15: Binary search</div>
+    <pre>
+search([-1, 0, 3, 5, 9, 12], 9)  →  4   (index; -1 if absent)</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Inclusive bounds, loop while <code>l <= r</code>, and compute mid
+        inside the loop. Off-by-ones live in those three choices.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function search(nums, target) {
+  let l = 0, r = nums.length - 1;
+  while (l <= r) {
+    const mid = (l + r) >> 1;
+    if (nums[mid] === target) return mid;
+    if (nums[mid] < target) l = mid + 1;
+    else r = mid - 1;
+  }
+  return -1;
+}</pre
+      >
+      <p>O(log n). Be ready for the variant "first index ≥ target" (shift the bounds).</p>
+    </details>
+
+    <div class="q">P16: Merge overlapping intervals</div>
+    <pre>
+merge([[1,3],[2,6],[8,10],[15,18]])  →  [[1,6],[8,10],[15,18]]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Sort by start. Then each interval either extends the last merged one
+        or starts a new one.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function merge(intervals) {
+  const sorted = intervals.toSorted((a, b) => a[0] - b[0]);
+  const out = [sorted[0]];
+  for (const [start, end] of sorted.slice(1)) {
+    const last = out[out.length - 1];
+    if (start <= last[1]) last[1] = Math.max(last[1], end);
+    else out.push([start, end]);
+  }
+  return out;
+}</pre
+      >
+      <p>O(n log n) for the sort. Real-world twin: merging calendar busy-slots.</p>
+    </details>
+
+    <div class="q">P17: Flatten a nested array — recursively and iteratively</div>
+    <pre>
+flatten([1, [2, [3, [4]], 5]])  →  [1, 2, 3, 4, 5]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Recursive: concat flattened children. Iterative: a stack, popping and
+        re-pushing array contents.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+// recursive
+function flatten(arr) {
+  return arr.reduce(
+    (out, item) =>
+      out.concat(Array.isArray(item) ? flatten(item) : item),
+    []
+  );
+}
+
+// iterative — no recursion limit
+function flattenIter(arr) {
+  const stack = [...arr], out = [];
+  while (stack.length) {
+    const item = stack.pop();
+    if (Array.isArray(item)) stack.push(...item);
+    else out.push(item);
+  }
+  return out.reverse();
+}
+// production answer: arr.flat(Infinity) — say it exists, then write your own</pre
+      >
+    </details>
+    <p class="asked">a top-3 frontend machine-coding warm-up</p>
+
+    <div class="q">P18: All subsets of an array</div>
+    <pre>
+subsets([1, 2])  →  [[], [1], [2], [1, 2]]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Iterative doubling: each new element clones every existing subset with
+        itself appended.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function subsets(nums) {
+  let out = [[]];
+  for (const n of nums) {
+    out = out.concat(out.map((set) => [...set, n]));
+  }
+  return out;
+}</pre
+      >
+      <p>
+        O(2ⁿ) output — say that's inherent, not an implementation flaw. The
+        backtracking version earns extra credit.
+      </p>
+    </details>
+
+    <!-- ============ SECTION 4 ============ -->
+    <div class="section"></div>
+    <span class="level advanced">LISTS &amp; TREES</span>
+    <h1>4. Linked Lists &amp; Trees (the DOM Is One)</h1>
+
+    <div class="q">P19: Reverse a linked list</div>
+    <pre>
+1 → 2 → 3 → null   becomes   3 → 2 → 1 → null</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Three names: prev, curr, next. Save next, point curr backward, walk
+        forward.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function reverseList(head) {
+  let prev = null, curr = head;
+  while (curr) {
+    const next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
+  }
+  return prev;
+}</pre
+      >
+      <p>O(n) time, O(1) space. Practice until the four-line body is muscle memory.</p>
+    </details>
+
+    <div class="q">P20: Detect a cycle in a linked list</div>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Floyd's tortoise and hare: slow moves 1, fast moves 2 — a cycle makes
+        them meet. (Or a Set of visited nodes, at O(n) space.)
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function hasCycle(head) {
+  let slow = head, fast = head;
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if (slow === fast) return true;
+  }
+  return false;
+}</pre
+      >
+      <p>O(n) time, O(1) space — the answer they want over the Set version.</p>
+    </details>
+
+    <div class="q">P21: Merge two sorted linked lists</div>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        A dummy head removes every "is this the first node?" special case.
+        Splice the smaller node in, advance that list.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function mergeLists(a, b) {
+  const dummy = { next: null };
+  let tail = dummy;
+  while (a && b) {
+    if (a.val <= b.val) { tail.next = a; a = a.next; }
+    else { tail.next = b; b = b.next; }
+    tail = tail.next;
+  }
+  tail.next = a || b;
+  return dummy.next;
+}</pre
+      >
+      <p>O(n + m). The dummy-node trick transfers to many list problems.</p>
+    </details>
+
+    <div class="q">P22: Binary tree traversals — in/pre/post order</div>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        All three are the same recursion; only where you "visit" moves: before
+        children (pre), between (in), after (post).
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function inorder(node, out = []) {
+  if (!node) return out;
+  inorder(node.left, out);
+  out.push(node.val);          // move this line up/down for pre/post
+  inorder(node.right, out);
+  return out;
+}</pre
+      >
+      <p>
+        O(n). Inorder on a BST yields sorted values — the fact interviewers
+        fish for.
+      </p>
+    </details>
+
+    <div class="q">P23: Level-order traversal (BFS)</div>
+    <pre>
+levels(tree)  →  [[1], [2, 3], [4, 5, 6]]</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        A queue; snapshot its length each round — that many nodes form one
+        level.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function levels(root) {
+  if (!root) return [];
+  const out = [], queue = [root];
+  while (queue.length) {
+    const level = [];
+    for (let n = queue.length; n > 0; n--) {
+      const node = queue.shift();
+      level.push(node.val);
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+    out.push(level);
+  }
+  return out;
+}</pre
+      >
+      <p>O(n). This is exactly how you'd walk a DOM by depth.</p>
+    </details>
+
+    <div class="q">P24: Max depth — of a tree, and of the real DOM</div>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Depth = 1 + the deepest child. The DOM version just swaps
+        left/right for <code>children</code>.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function maxDepth(node) {
+  if (!node) return 0;
+  return 1 + Math.max(maxDepth(node.left), maxDepth(node.right));
+}
+
+// same idea, real page:
+function domDepth(el) {
+  if (!el.children.length) return 1;
+  return 1 + Math.max(...[...el.children].map(domDepth));
+}
+domDepth(document.body);</pre
+      >
+      <p>
+        Frontend interviews love the DOM framing — same recursion, n children
+        instead of two.
+      </p>
+    </details>
+
+    <!-- ============ SECTION 5 ============ -->
+    <div class="section"></div>
+    <span class="level practical">MACHINE CODING I</span>
+    <h1>5. Machine Coding: Function Utilities</h1>
+    <p>
+      <em>
+        The frontend round: build lodash-grade utilities from scratch,
+        correctly handling <code>this</code>, arguments, and edge cases.
+      </em>
+    </p>
+
+    <div class="q">P25: debounce(fn, wait)</div>
+    <p>
+      Returns a version of fn that fires only after wait ms of silence —
+      every new call resets the clock.
+    </p>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        A timer id in the closure. Each call clears the pending timer and
+        schedules a new one. Forward this and args.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function debounce(fn, wait) {
+  let timer = null;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), wait);
+  };
+}
+// search box: input fires constantly, request goes out once typing stops</pre
+      >
+      <p>
+        Follow-ups to expect: a <code>cancel()</code> method, and a leading
+        (fire-first) option.
+      </p>
+    </details>
+    <p class="asked">the #1 frontend machine-coding question, period</p>
+
+    <div class="q">P26: throttle(fn, wait)</div>
+    <p>At most one call per wait ms, while events keep streaming.</p>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Timestamp version: run if enough time passed. Timer version: run,
+        then ignore calls until a cooldown timer clears.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function throttle(fn, wait) {
+  let last = 0;
+  return function (...args) {
+    const now = Date.now();
+    if (now - last >= wait) {
+      last = now;
+      fn.apply(this, args);
+    }
+  };
+}
+// scroll/mousemove handlers, drag position updates, analytics pings</pre
+      >
+      <p>
+        Contrast with debounce out loud: throttle guarantees a rhythm,
+        debounce guarantees silence first. Trailing-call support is the
+        follow-up.
+      </p>
+    </details>
+
+    <div class="q">P27: once(fn)</div>
+    <pre>
+const init = once(setup);
+init(); init(); init();   // setup ran exactly once; same result returned</pre
+    >
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function once(fn) {
+  let called = false, result;
+  return function (...args) {
+    if (!called) {
+      called = true;
+      result = fn.apply(this, args);
+    }
+    return result;
+  };
+}</pre
+      >
+      <p>Three lines of closure state — a quick filter question.</p>
+    </details>
+
+    <div class="q">P28: memoize(fn)</div>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Map from argument(s) to result. Single argument → the arg is the key;
+        multiple → JSON.stringify(args) (name its limits).
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function memoize(fn) {
+  const cache = new Map();
+  return function (...args) {
+    const key = args.length === 1 ? args[0] : JSON.stringify(args);
+    if (!cache.has(key)) cache.set(key, fn.apply(this, args));
+    return cache.get(key);
+  };
+}</pre
+      >
+      <p>
+        Say the caveats unprompted: JSON keys collide on object order, can't
+        stringify functions, and the cache grows forever (LRU — P40 — is the
+        fix).
+      </p>
+    </details>
+
+    <div class="q">P29: curry(fn)</div>
+    <pre>
+const add = curry((a, b, c) => a + b + c);
+add(1)(2)(3)   →  6
+add(1, 2)(3)   →  6</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Collect args until you have <code>fn.length</code> of them, then call;
+        otherwise return a collector for the rest.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) return fn.apply(this, args);
+    return (...more) => curried.apply(this, [...args, ...more]);
+  };
+}</pre
+      >
+      <p><code>fn.length</code> counts declared params (defaults and rest excluded) — mention it.</p>
+    </details>
+
+    <div class="q">P30: compose and pipe</div>
+    <pre>
+pipe(trim, lower, slug)("  Hello World ")   →  "hello-world"
+compose(slug, lower, trim)("  Hello World ") →  same, read right-to-left</pre
+    >
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+const pipe = (...fns) => (x) => fns.reduce((acc, f) => f(acc), x);
+const compose = (...fns) => (x) => fns.reduceRight((acc, f) => f(acc), x);</pre
+      >
+      <p>One line each. Knowing reduce vs reduceRight is the whole question.</p>
+    </details>
+
+    <div class="q">P31: deepClone(obj)</div>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Recurse: primitives return as-is; arrays map; objects rebuild
+        key-by-key. Handle Date, and use a WeakMap to survive cycles.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function deepClone(value, seen = new WeakMap()) {
+  if (value === null || typeof value !== "object") return value;
+  if (value instanceof Date) return new Date(value);
+  if (seen.has(value)) return seen.get(value);   // cycle guard
+
+  const out = Array.isArray(value) ? [] : {};
+  seen.set(value, out);
+  for (const key of Object.keys(value)) {
+    out[key] = deepClone(value[key], seen);
+  }
+  return out;
+}</pre
+      >
+      <p>
+        Open with "production uses structuredClone" — then write this anyway;
+        the cycle guard is what they're checking for.
+      </p>
+    </details>
+
+    <div class="q">P32: deepEqual(a, b)</div>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Identical references → true. Type mismatch or non-objects → strict
+        compare. Objects → same key count, then recurse per key.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function deepEqual(a, b) {
+  if (a === b) return true;
+  if (Number.isNaN(a) && Number.isNaN(b)) return true;
+  if (typeof a !== "object" || typeof b !== "object" || a === null || b === null)
+    return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+
+  const keys = Object.keys(a);
+  if (keys.length !== Object.keys(b).length) return false;
+  return keys.every((k) => deepEqual(a[k], b[k]));
+}</pre
+      >
+      <p>The NaN line and the array/object distinction are the planted traps.</p>
+    </details>
+
+    <!-- ============ SECTION 6 ============ -->
+    <div class="section"></div>
+    <span class="level practical">MACHINE CODING II</span>
+    <h1>6. Machine Coding: Data &amp; Async</h1>
+
+    <div class="q">P33: Flatten an object to dot-paths</div>
+    <pre>
+flat({ a: { b: 1, c: { d: 2 } }, e: 3 })
+→ { "a.b": 1, "a.c.d": 2, "e": 3 }</pre
+    >
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function flat(obj, prefix = "", out = {}) {
+  for (const [key, val] of Object.entries(obj)) {
+    const path = prefix ? prefix + "." + key : key;
+    if (val && typeof val === "object" && !Array.isArray(val)) {
+      flat(val, path, out);
+    } else {
+      out[path] = val;
+    }
+  }
+  return out;
+}</pre
+      >
+      <p>Follow-up is usually the inverse (unflatten) — build nested objects from the paths.</p>
+    </details>
+
+    <div class="q">P34: chunk(arr, size)</div>
+    <pre>
+chunk([1, 2, 3, 4, 5], 2)  →  [[1, 2], [3, 4], [5]]</pre
+    >
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function chunk(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) {
+    out.push(arr.slice(i, i + size));
+  }
+  return out;
+}</pre
+      >
+      <p>Guard size >= 1 in real code. Pagination in one loop.</p>
+    </details>
+
+    <div class="q">P35: groupBy(arr, keyFn)</div>
+    <pre>
+groupBy(users, (u) => u.role)
+→ { admin: [...], user: [...] }</pre
+    >
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function groupBy(arr, keyFn) {
+  return arr.reduce((acc, item) => {
+    const key = keyFn(item);
+    (acc[key] ||= []).push(item);
+    return acc;
+  }, {});
+}
+// modern platform: Object.groupBy(arr, keyFn) — know both</pre
+      >
+    </details>
+
+    <div class="q">P36: EventEmitter — on, off, once, emit</div>
+    <pre>
+const bus = new Emitter();
+const stop = bus.on("save", (doc) => render(doc));
+bus.emit("save", doc);
+stop();                       // or bus.off("save", handler)</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Map from event name → Set of handlers. once wraps the handler in one
+        that removes itself. Return an unsubscribe from on.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+class Emitter {
+  #events = new Map();
+  on(name, fn) {
+    if (!this.#events.has(name)) this.#events.set(name, new Set());
+    this.#events.get(name).add(fn);
+    return () => this.off(name, fn);       // unsubscribe handle
+  }
+  off(name, fn) {
+    this.#events.get(name)?.delete(fn);
+  }
+  once(name, fn) {
+    const wrap = (...args) => {
+      this.off(name, wrap);
+      fn(...args);
+    };
+    return this.on(name, wrap);
+  }
+  emit(name, ...args) {
+    for (const fn of [...(this.#events.get(name) || [])]) fn(...args);
+  }
+}</pre
+      >
+      <p>
+        Copying the set before emitting ([...set]) protects against handlers
+        that unsubscribe mid-emit — the detail that separates answers.
+      </p>
+    </details>
+    <p class="asked">the classic "design a pub/sub" — also how you explain Node's core</p>
+
+    <div class="q">P37: Implement Promise.all</div>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Count settled promises; write each result into its original slot;
+        resolve when the count hits the total; reject on the first failure.
+        Wrap inputs in Promise.resolve.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function promiseAll(inputs) {
+  return new Promise((resolve, reject) => {
+    const results = new Array(inputs.length);
+    let remaining = inputs.length;
+    if (remaining === 0) return resolve([]);
+
+    inputs.forEach((input, i) => {
+      Promise.resolve(input).then((value) => {
+        results[i] = value;             // original position, not finish order
+        if (--remaining === 0) resolve(results);
+      }, reject);                       // first rejection wins
+    });
+  });
+}</pre
+      >
+      <p>
+        The three traps: empty input, non-promise values, and order
+        preservation. Hit all three unprompted.
+      </p>
+    </details>
+
+    <div class="q">P38: promisify(fn) — error-first callback → promise</div>
+    <pre>
+const readFileP = promisify(fs.readFile);
+const data = await readFileP("notes.txt", "utf8");</pre
+    >
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function promisify(fn) {
+  return function (...args) {
+    return new Promise((resolve, reject) => {
+      fn.call(this, ...args, (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      });
+    });
+  };
+}</pre
+      >
+      <p>Explains the (err, data) convention and how util.promisify works — two answers in one.</p>
+    </details>
+
+    <div class="q">P39: retry(fn, attempts, delay) with exponential backoff</div>
+    <pre>
+await retry(() => fetchJson(url), 4, 500);
+// tries at 0ms, then waits 500, 1000, 2000</pre
+    >
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function retry(fn, attempts = 3, delay = 500) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastErr = e;
+      if (i < attempts - 1) await sleep(delay * 2 ** i);
+    }
+  }
+  throw lastErr;
+}</pre
+      >
+      <p>
+        Mention jitter (randomize the delay) so a thousand clients don't
+        retry in lockstep — the systems-aware flourish.
+      </p>
+    </details>
+
+    <div class="q">P40: LRU cache — get/put in O(1)</div>
+    <pre>
+const cache = new LRU(2);
+cache.put("a", 1); cache.put("b", 2);
+cache.get("a");            // 1 — "a" is now most recent
+cache.put("c", 3);         // evicts "b", the least recent</pre
+    >
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        JS Maps remember insertion order. Delete + re-set moves a key to the
+        "newest" end; the first key is always the oldest.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+class LRU {
+  #map = new Map();
+  constructor(capacity) { this.capacity = capacity; }
+  get(key) {
+    if (!this.#map.has(key)) return undefined;
+    const value = this.#map.get(key);
+    this.#map.delete(key);
+    this.#map.set(key, value);          // refresh recency
+    return value;
+  }
+  put(key, value) {
+    if (this.#map.has(key)) this.#map.delete(key);
+    this.#map.set(key, value);
+    if (this.#map.size > this.capacity) {
+      const oldest = this.#map.keys().next().value;
+      this.#map.delete(oldest);
+    }
+  }
+}</pre
+      >
+      <p>
+        The Map-order trick is the accepted JS answer; the doubly-linked-list
+        version is the language-agnostic one — name both.
+      </p>
+    </details>
+    <p class="asked">the standard closer for senior frontend loops</p>
+
+    <!-- ============ SECTION 7 ============ -->
+    <span class="level intermediate">KADANE &amp; DP-LITE</span>
+    <h1>7. Prefix Sums, Kadane &amp; DP-Lite</h1>
+
+    <div class="q">P41: Maximum subarray sum (Kadane)</div>
+    <pre>
+maxSubarray([-2, 1, -3, 4, -1, 2, 1, -5, 4])  →  6   // [4, -1, 2, 1]</pre>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        At each element decide: extend the run you're on, or start fresh here —
+        whichever is larger. One pass, two variables.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function maxSubarray(nums) {
+  let best = nums[0];
+  let run = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    run = Math.max(nums[i], run + nums[i]);
+    best = Math.max(best, run);
+  }
+  return best;
+}</pre>
+      <p>
+        O(n) time, O(1) space. Naming the algorithm — Kadane — is worth points
+        on its own.
+      </p>
+    </details>
+    <p class="asked">the most-asked array question, full stop</p>
+
+    <div class="q">P42: Best time to buy and sell stock</div>
+    <pre>
+maxProfit([7, 1, 5, 3, 6, 4])  →  5   // buy at 1, sell at 6</pre>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Walking left to right, the best sale at each day uses the cheapest
+        price seen so far. Track that minimum and the best profit.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function maxProfit(prices) {
+  let min = Infinity;
+  let best = 0;
+  for (const p of prices) {
+    min = Math.min(min, p);
+    best = Math.max(best, p - min);
+  }
+  return best;
+}</pre>
+      <p>Kadane in a costume: it's the max subarray of daily differences.</p>
+    </details>
+
+    <div class="q">P43: Count subarrays that sum to k</div>
+    <p>
+      Contiguous subarrays, negatives allowed — which is exactly why a sliding
+      window fails here.
+    </p>
+    <pre>
+countSubarrays([1, 1, 1], 2)      →  2
+countSubarrays([1, -1, 0], 0)     →  3</pre>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        A running prefix sum plus a map of "how many times have I seen this
+        prefix". If <code>sum - k</code> was seen before, every one of those
+        positions starts a valid subarray ending here.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function countSubarrays(nums, k) {
+  const seen = new Map([[0, 1]]); // prefix sum → times seen
+  let sum = 0;
+  let count = 0;
+  for (const n of nums) {
+    sum += n;
+    count += seen.get(sum - k) || 0;
+    seen.set(sum, (seen.get(sum) || 0) + 1);
+  }
+  return count;
+}</pre>
+    </details>
+    <p class="asked">the follow-up that filters out memorized sliding windows</p>
+
+    <div class="q">P44: Product of array except self</div>
+    <p>No division allowed — that rule exists because of zeroes.</p>
+    <pre>
+productExceptSelf([1, 2, 3, 4])  →  [24, 12, 8, 6]</pre>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Each answer is (product of everything left of i) × (product of
+        everything right of i). Two passes, one accumulator each.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function productExceptSelf(nums) {
+  const out = new Array(nums.length).fill(1);
+  let acc = 1;
+  for (let i = 0; i < nums.length; i++) {
+    out[i] = acc;
+    acc *= nums[i];
+  }
+  acc = 1;
+  for (let i = nums.length - 1; i >= 0; i--) {
+    out[i] *= acc;
+    acc *= nums[i];
+  }
+  return out;
+}</pre>
+      <p>
+        The divide-by-total shortcut breaks on zeroes — say so before the
+        interviewer does.
+      </p>
+    </details>
+
+    <div class="q">P45: Climbing stairs</div>
+    <p>You climb 1 or 2 steps at a time. How many distinct ways to the top?</p>
+    <pre>
+climb(2)  →  2      // 1+1, 2
+climb(5)  →  8</pre>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Ways to reach step n = ways to reach n−1 plus ways to reach n−2.
+        You've seen this sequence before.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function climb(n) {
+  let a = 1; // ways to reach step 0
+  let b = 1; // ways to reach step 1
+  for (let i = 2; i <= n; i++) [a, b] = [b, a + b];
+  return b;
+}</pre>
+      <p>
+        Fibonacci in disguise — the standard DP opener. If you start with plain
+        recursion, expect "now make it not O(2^n)": memoize, then iterate.
+      </p>
+    </details>
+
+    <div class="q">P46: House robber</div>
+    <p>Max sum of non-adjacent elements.</p>
+    <pre>
+rob([2, 7, 9, 3, 1])  →  12   // 2 + 9 + 1</pre>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function rob(nums) {
+  let take = 0; // best if we rob the current house
+  let skip = 0; // best if we don't
+  for (const n of nums) [take, skip] = [skip + n, Math.max(skip, take)];
+  return Math.max(take, skip);
+}</pre>
+      <p>
+        Two variables instead of a DP table — narrate what each one means as
+        you type.
+      </p>
+    </details>
+
+    <div class="q">P47: Majority element (Boyer&ndash;Moore voting)</div>
+    <pre>
+majority([2, 2, 1, 1, 1, 2, 2])  →  2   // appears more than n/2 times</pre>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Pair up each occurrence of the candidate with one non-occurrence and
+        cancel them. A true majority survives all cancellations.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function majority(nums) {
+  let candidate = null;
+  let count = 0;
+  for (const n of nums) {
+    if (count === 0) candidate = n;
+    count += n === candidate ? 1 : -1;
+  }
+  return candidate; // the problem guarantees a majority exists
+}</pre>
+      <p>
+        The hashmap count is the obvious answer; this is the O(1)-space
+        follow-up.
+      </p>
+    </details>
+
+    <!-- ============ SECTION 8 ============ -->
+    <span class="level beginner">STRING DRILLS</span>
+    <h1>8. More Strings &amp; Arrays</h1>
+
+    <div class="q">P48: Valid anagram</div>
+    <pre>
+isAnagram("listen", "silent")  →  true
+isAnagram("rat", "car")        →  false</pre>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function isAnagram(a, b) {
+  if (a.length !== b.length) return false;
+  const count = new Map();
+  for (const ch of a) count.set(ch, (count.get(ch) || 0) + 1);
+  for (const ch of b) {
+    if (!count.get(ch)) return false;
+    count.set(ch, count.get(ch) - 1);
+  }
+  return true;
+}</pre>
+      <p>
+        The sort-both-and-compare one-liner is fine to mention, but it's
+        O(n log n); the counter is O(n).
+      </p>
+    </details>
+
+    <div class="q">P49: Reverse the words in a string</div>
+    <pre>
+reverseWords("  the sky  is blue ")  →  "blue is sky the"</pre>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+const reverseWords = (s) => s.split(/\s+/).filter(Boolean).reverse().join(" ");</pre>
+      <p>
+        <code>filter(Boolean)</code> drops the empty strings that leading and
+        trailing spaces create. The follow-up is doing it without
+        <code>split</code> — walk the string and collect words by hand.
+      </p>
+    </details>
+
+    <div class="q">P50: Run-length encoding</div>
+    <pre>
+encode("aaabccdddd")  →  "a3b1c2d4"</pre>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function encode(s) {
+  let out = "";
+  let i = 0;
+  while (i < s.length) {
+    let j = i;
+    while (j < s.length && s[j] === s[i]) j++;
+    out += s[i] + (j - i);
+    i = j;
+  }
+  return out;
+}</pre>
+      <p>
+        Expect the decode as a follow-up, and the "what if the string has
+        digits in it?" edge-case question.
+      </p>
+    </details>
+
+    <div class="q">P51: Longest common prefix</div>
+    <pre>
+commonPrefix(["flower", "flow", "flight"])  →  "fl"</pre>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function commonPrefix(strs) {
+  if (!strs.length) return "";
+  for (let i = 0; i < strs[0].length; i++) {
+    const ch = strs[0][i];
+    for (const s of strs) {
+      if (i === s.length || s[i] !== ch) return strs[0].slice(0, i);
+    }
+  }
+  return strs[0];
+}</pre>
+      <p>
+        Neat alternative to narrate: sort the array, then compare only the
+        first and last strings — everything between shares their prefix.
+      </p>
+    </details>
+
+    <div class="q">P52: Rotate an array right by k steps, in place</div>
+    <pre>
+rotate([1, 2, 3, 4, 5, 6, 7], 3)  →  [5, 6, 7, 1, 2, 3, 4]</pre>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        The easy version is <code>slice</code> + <code>concat</code>. The
+        in-place version is three reversals: whole array, first k, rest.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function rotate(nums, k) {
+  k %= nums.length;
+  reverse(nums, 0, nums.length - 1);
+  reverse(nums, 0, k - 1);
+  reverse(nums, k, nums.length - 1);
+}
+
+function reverse(arr, i, j) {
+  while (i < j) {
+    const t = arr[i];
+    arr[i] = arr[j];
+    arr[j] = t;
+    i++;
+    j--;
+  }
+}</pre>
+      <p>Don't skip <code>k %= length</code> — k can exceed the array.</p>
+    </details>
+
+    <!-- ============ SECTION 9 ============ -->
+    <span class="level advanced">THE BROWSER ROUND</span>
+    <h1>9. The Browser Round: DOM &amp; Async</h1>
+
+    <div class="q">P53: getElementsByClassName from scratch</div>
+    <p>
+      No <code>querySelector</code>, no <code>getElementsBy*</code> — walk the
+      tree yourself. That's the whole point of the question.
+    </p>
+    <pre>
+byClass(document.body, "card")  →  [el, el, ...]  // document order</pre>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function byClass(root, cls) {
+  const out = [];
+  for (const child of root.children) {
+    if (child.classList.contains(cls)) out.push(child);
+    out.push(...byClass(child, cls));
+  }
+  return out;
+}</pre>
+      <p>
+        Recursion keeps document order for free. The follow-up is the
+        iterative version — a stack of elements, but note a plain
+        <code>pop()</code> walk visits right-to-left, so order needs care.
+      </p>
+    </details>
+    <p class="asked">asked as "the DOM is a tree — prove you can walk one"</p>
+
+    <div class="q">P54: closest(el, selector) from scratch</div>
+    <pre>
+closest(clicked, "[data-action]")  →  ancestor or null</pre>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function closest(el, selector) {
+  while (el && el.nodeType === 1) {
+    if (el.matches(selector)) return el;
+    el = el.parentElement;
+  }
+  return null;
+}</pre>
+      <p>
+        This is the engine inside event delegation: one listener on the
+        container, <code>closest</code> to find which button the click really
+        belongs to. Say that — it's why the question gets asked.
+      </p>
+    </details>
+
+    <div class="q">P55: sleep(ms) and withTimeout(promise, ms)</div>
+    <pre>
+await sleep(300);
+await withTimeout(fetchUser(), 2000);  // rejects if it takes > 2s</pre>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+function withTimeout(promise, ms) {
+  let timer;
+  const timeout = new Promise((_, rej) => {
+    timer = setTimeout(() => rej(new Error(`timeout after ${ms}ms`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}</pre>
+      <p>
+        The <code>finally</code> cleanup is what separates a senior answer —
+        without it the losing timer keeps the process alive in Node.
+      </p>
+    </details>
+
+    <div class="q">P56: mapLimit — async work with limited concurrency</div>
+    <p>
+      Run an async function over a list, at most <code>limit</code> at a time,
+      results in input order.
+    </p>
+    <pre>
+await mapLimit(urls, 3, fetchJson)  →  results aligned with urls</pre>
+    <details class="fold">
+      <summary>Hint</summary>
+      <p>
+        Spawn <code>limit</code> workers that share one index counter. Each
+        worker loops: claim the next index, await the task, store the result
+        at that index.
+      </p>
+    </details>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+async function mapLimit(items, limit, fn) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++; // safe: single-threaded between awaits
+      results[i] = await fn(items[i], i);
+    }
+  }
+  const workers = Array.from(
+    { length: Math.min(limit, items.length) },
+    worker
+  );
+  await Promise.all(workers);
+  return results;
+}</pre>
+      <p>
+        One rejection fails the whole thing, like Promise.all — mention the
+        allSettled-style variant as the extension.
+      </p>
+    </details>
+    <p class="asked">the async question that decides senior frontend loops</p>
+
+    <div class="q">P57: Implement Promise.race and Promise.any</div>
+    <pre>
+myRace([slow, fast])   →  settles with fast (fulfil OR reject)
+myAny([fail, ok])      →  first fulfilment; AggregateError if all fail</pre>
+    <details class="fold">
+      <summary>Solution</summary>
+      <pre>
+function myRace(promises) {
+  return new Promise((res, rej) => {
+    for (const p of promises) Promise.resolve(p).then(res, rej);
+  });
+}
+
+function myAny(promises) {
+  return new Promise((res, rej) => {
+    let pending = promises.length;
+    const errors = new Array(pending);
+    if (pending === 0) rej(new AggregateError([], "All promises rejected"));
+    promises.forEach((p, i) =>
+      Promise.resolve(p).then(res, (err) => {
+        errors[i] = err;
+        if (--pending === 0) {
+          rej(new AggregateError(errors, "All promises rejected"));
+        }
+      })
+    );
+  });
+}</pre>
+      <p>
+        <code>race</code> is three lines because a promise can only settle
+        once — every later <code>res</code>/<code>rej</code> call is a no-op.
+        Narrate that; it's the insight being tested.
+      </p>
+    </details>
+
+    <div class="tip">
+      <strong>How to drill:</strong> mark a problem
+      <em>know it</em> only after you've typed the solution from a blank
+      editor. The five that decide interviews:
+      <strong>debounce</strong> (P25), <strong>flatten</strong> (P17),
+      <strong>EventEmitter</strong> (P36), <strong>Promise.all</strong> (P37),
+      and <strong>LRU</strong> (P40) — and if the loop is senior, add
+      <strong>mapLimit</strong> (P56). Everything in sections 1–4 and 7–8 is
+      about narrating the pattern (two pointers, window, stack, BFS, prefix
+      sums) while you type; section 9 is the browser round — DOM walks and
+      promise plumbing.
+    </div>
+  </body>
+</html>

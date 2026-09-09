@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MongoDB Interview Questions — Complete Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--guide" data-topic="mongodb">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>MongoDB<br />Interview Questions</h1>
+      <p>Complete Guide with Answers &amp; Query Examples</p>
+      <p style="margin-top: 10px">
+        Beginner &bull; Intermediate &bull; Advanced &bull; Aggregations &bull;
+        Mongoose
+      </p>
+      <div class="badge">30+ Questions Covered</div>
+    </div>
+
+    <!-- ============ BEGINNER ============ -->
+    <span class="level beginner">BEGINNER LEVEL</span>
+    <h1>1. Beginner Questions</h1>
+
+    <div class="q">
+      Q1: What is MongoDB? How is it different from SQL databases?
+    </div>
+    <p>
+      A NoSQL, document-oriented database that stores data as flexible,
+      JSON-like documents (BSON) instead of rows and tables.
+    </p>
+    <table>
+      <tr>
+        <th>SQL (MySQL/Postgres)</th>
+        <th>MongoDB</th>
+      </tr>
+      <tr>
+        <td>Tables</td>
+        <td>Collections</td>
+      </tr>
+      <tr>
+        <td>Rows</td>
+        <td>Documents</td>
+      </tr>
+      <tr>
+        <td>Columns</td>
+        <td>Fields</td>
+      </tr>
+      <tr>
+        <td>Fixed schema</td>
+        <td>Flexible / dynamic schema</td>
+      </tr>
+      <tr>
+        <td>JOINs</td>
+        <td>$lookup / embedding</td>
+      </tr>
+      <tr>
+        <td>Scales vertically</td>
+        <td>Scales horizontally (sharding)</td>
+      </tr>
+    </table>
+
+    <div class="q">Q2: When would you choose MongoDB over SQL?</div>
+    <ul>
+      <li>Flexible/evolving schemas, rapid iteration</li>
+      <li>Hierarchical or nested data (naturally maps to JSON)</li>
+      <li>Horizontal scaling and high write throughput</li>
+      <li>
+        <strong>Choose SQL instead</strong> for complex multi-table joins,
+        strict relational integrity, heavy multi-row transactions
+      </li>
+    </ul>
+
+    <div class="q">Q3: What is BSON?</div>
+    <p>
+      Binary JSON — MongoDB's storage format. Supports extra types JSON lacks:
+      <code>ObjectId</code>, <code>Date</code>, <code>Decimal128</code>, binary
+      data. Faster to parse and traverse than plain JSON.
+    </p>
+
+    <div class="q">Q4: What is ObjectId and what's inside it?</div>
+    <p>
+      The default 12-byte unique <code>_id</code>:
+      <strong>4 bytes timestamp</strong> + <strong>5 bytes random</strong> +
+      <strong>3 bytes incrementing counter</strong>. Because it embeds a
+      timestamp, sorting by <code>_id</code> ≈ sorting by creation time.
+    </p>
+
+    <div class="q">
+      Q5: Show the basic CRUD operations. <span class="star">★</span>
+    </div>
+    <pre><code>// CREATE
+db.users.insertOne({ name: 'Alice', age: 25 });
+db.users.insertMany([{ name: 'Bob' }, { name: 'Carol' }]);
+
+// READ
+db.users.find({ age: { $gte: 18 } });        // all matches (cursor)
+db.users.findOne({ email: 'a@b.com' });      // first match
+
+// UPDATE
+db.users.updateOne({ name: 'Alice' }, { $set: { age: 26 } });
+db.users.updateMany({}, { $inc: { visits: 1 } });
+
+// DELETE
+db.users.deleteOne({ _id: someId });
+db.users.deleteMany({ inactive: true });</code></pre>
+
+    <div class="q">Q6: Common query operators?</div>
+    <pre><code>db.products.find({ price: { $gte: 10, $lte: 50 } });      // range
+db.users.find({ role: { $in: ['admin', 'editor'] } });     // in list
+db.users.find({ $or: [{ age: { $lt: 18 } }, { banned: true }] });
+db.users.find({ name: { $regex: /^ali/i } });               // regex
+db.users.find({ phone: { $exists: true } });                // field exists
+db.users.find({ tags: { $all: ['js', 'db'] } });            // array contains all</code></pre>
+
+    <div class="q">Q7: Common update operators?</div>
+    <pre><code>{ $set: { name: 'Bob' } }        // set/create field
+{ $unset: { temp: '' } }          // remove field
+{ $inc: { stock: -1 } }           // increment/decrement
+{ $push: { tags: 'new' } }        // append to array
+{ $pull: { tags: 'old' } }        // remove from array
+{ $addToSet: { tags: 'x' } }      // push only if not present</code></pre>
+
+    <div class="q">Q8: What is Mongoose and why use it?</div>
+    <p>
+      An ODM (Object Data Modeling) library for Node.js. Adds what raw MongoDB
+      lacks:
+      <strong
+        >schemas, validation, type casting, middleware hooks, population</strong
+      >
+      (pseudo-joins), and a cleaner query API.
+    </p>
+
+    <div class="q">Q9: find() vs findOne() return types?</div>
+    <p>
+      <code>find()</code> returns a <strong>cursor</strong> (array-like,
+      iterable); <code>findOne()</code> returns a single
+      <strong>document or null</strong>. In Mongoose, both return thenable Query
+      objects you can await.
+    </p>
+
+    <div class="q">Q10: Sort, limit, skip, and projection?</div>
+    <pre><code>db.users.find(
+  { age: { $gte: 18 } },          // filter
+  { name: 1, email: 1, _id: 0 }   // projection (only these fields)
+)
+.sort({ age: -1 })                 // -1 desc, 1 asc
+.skip(20)
+.limit(10);</code></pre>
+
+    <!-- ============ INTERMEDIATE ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">INTERMEDIATE LEVEL</span>
+    <h1>2. Intermediate Questions</h1>
+
+    <div class="q">
+      Q11: Explain the aggregation pipeline.
+      <span class="star">★ Most asked</span>
+    </div>
+    <p>
+      A framework for data processing: documents flow through
+      <strong>stages</strong>, each transforming the results — like a Unix pipe.
+    </p>
+    <pre><code>// "Top 5 customers by total spend on delivered orders"
+db.orders.aggregate([
+  { $match: { status: 'delivered' } },            // 1. filter early
+  { $group: {                                     // 2. group + compute
+      _id: '$customerId',
+      total: { $sum: '$amount' },
+      orders: { $sum: 1 }
+  }},
+  { $sort: { total: -1 } },                       // 3. sort
+  { $limit: 5 },                                  // 4. take top 5
+  { $project: {                                   // 5. reshape output
+      customerId: '$_id', total: 1, orders: 1, _id: 0
+  }}
+]);</code></pre>
+    <p>
+      <strong>Key stages:</strong> <code>$match</code>, <code>$group</code>,
+      <code>$project</code>, <code>$sort</code>, <code>$limit</code>,
+      <code>$skip</code>, <code>$lookup</code>, <code>$unwind</code>,
+      <code>$count</code>, <code>$addFields</code>.
+    </p>
+
+    <div class="q">Q12: How do you do JOINs in MongoDB ($lookup)?</div>
+    <pre><code>db.orders.aggregate([
+  { $lookup: {
+      from: 'users',            // collection to join
+      localField: 'userId',     // field in orders
+      foreignField: '_id',      // field in users
+      as: 'customer'            // output array field
+  }},
+  { $unwind: '$customer' }      // array → object
+]);</code></pre>
+
+    <div class="q">Q13: What is $unwind?</div>
+    <p>
+      Deconstructs an array field — outputs
+      <strong>one document per array element</strong>. Essential for
+      grouping/aggregating on array contents.
+    </p>
+
+    <div class="q">
+      Q14: Explain indexes. Types and tradeoffs. <span class="star">★</span>
+    </div>
+    <p>
+      B-tree structures that make queries fast by avoiding full collection
+      scans. <strong>Tradeoff:</strong> slower writes + extra storage/RAM.
+    </p>
+    <pre><code>db.users.createIndex({ email: 1 }, { unique: true });      // single + unique
+db.products.createIndex({ category: 1, price: -1 });        // compound
+db.articles.createIndex({ title: 'text', body: 'text' });   // text search
+db.sessions.createIndex({ createdAt: 1 },
+  { expireAfterSeconds: 3600 });                             // TTL (auto-delete)</code></pre>
+    <p>
+      <strong>Compound index rule:</strong> supports queries on prefixes — index
+      <code>{a:1, b:1}</code> helps queries on <code>{a}</code> and
+      <code>{a,b}</code>, but NOT on <code>{b}</code> alone.
+    </p>
+
+    <div class="q">Q15: How do you check if a query uses an index?</div>
+    <pre><code>db.users.find({ email: 'x@y.com' }).explain('executionStats');
+// Look for:
+// 'IXSCAN'    → index used ✅
+// 'COLLSCAN'  → full collection scan ❌
+// totalDocsExamined vs nReturned → efficiency ratio</code></pre>
+
+    <div class="q">
+      Q16: Embedding vs Referencing — how do you decide?
+      <span class="star">★</span>
+    </div>
+    <table>
+      <tr>
+        <th>Embed when...</th>
+        <th>Reference when...</th>
+      </tr>
+      <tr>
+        <td>Data is read together</td>
+        <td>Data is shared across documents</td>
+      </tr>
+      <tr>
+        <td>"Contains" relationship (1:few)</td>
+        <td>1:many or many:many</td>
+      </tr>
+      <tr>
+        <td>Sub-data rarely changes</td>
+        <td>Sub-data updates independently</td>
+      </tr>
+      <tr>
+        <td>Bounded size (user + addresses)</td>
+        <td>Unbounded growth (posts + comments)</td>
+      </tr>
+    </table>
+    <p>
+      <strong>Rule of thumb:</strong> "Data that is accessed together should be
+      stored together" — but never let a document grow unbounded (16MB limit).
+    </p>
+
+    <div class="q">Q17: Write a Mongoose schema with validation and hooks.</div>
+    <pre><code>const userSchema = new mongoose.Schema({
+  email: {
+    type: String, required: true,
+    unique: true, lowercase: true, trim: true
+  },
+  password: { type: String, required: true, minlength: 8, select: false },
+  age: { type: Number, min: 18, max: 100 },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' }
+}, { timestamps: true });   // auto createdAt / updatedAt
+
+// Pre-save hook — hash password
+userSchema.pre('save', async function () {
+  if (this.isModified('password'))
+    this.password = await bcrypt.hash(this.password, 12);
+});
+
+const User = mongoose.model('User', userSchema);</code></pre>
+
+    <div class="q">Q18: What is populate()?</div>
+    <p>
+      Mongoose's pseudo-join: replaces an ObjectId reference with the actual
+      document.
+    </p>
+    <pre><code>const postSchema = new mongoose.Schema({
+  title: String,
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+});
+
+const posts = await Post.find()
+  .populate('author', 'name email');   // only these fields</code></pre>
+
+    <div class="q">Q19: Offset vs cursor-based pagination?</div>
+    <pre><code>// Offset (skip/limit) — simple, but slow on deep pages
+Product.find().skip((page - 1) * 20).limit(20);
+
+// Cursor-based — fast at any depth (uses index on _id)
+Product.find({ _id: { $gt: lastSeenId } }).limit(20);</code></pre>
+    <p>
+      <code>skip(100000)</code> still walks 100k docs — cursor-based jumps
+      straight via the index.
+    </p>
+
+    <div class="q">Q20: What do the options in findOneAndUpdate mean?</div>
+    <pre><code>await User.findOneAndUpdate(
+  { email: 'a@b.com' },
+  { $set: { name: 'Alice' } },
+  {
+    new: true,              // return the UPDATED doc (default: old one!)
+    upsert: true,           // insert if not found
+    runValidators: true     // apply schema validation on update
+  }
+);</code></pre>
+
+    <!-- ============ ADVANCED ============ -->
+    <div class="section"></div>
+    <span class="level advanced">ADVANCED LEVEL</span>
+    <h1>3. Advanced Questions</h1>
+
+    <div class="q">
+      Q21: What is replication? How does a replica set work?
+      <span class="star">★</span>
+    </div>
+    <p>
+      A <strong>replica set</strong> = one <strong>primary</strong> (receives
+      all writes) + multiple <strong>secondaries</strong> (replicate the
+      primary's oplog). Purpose: <strong>high availability</strong> and data
+      redundancy.
+    </p>
+    <ul>
+      <li>
+        If the primary fails, secondaries hold an <strong>election</strong> and
+        promote a new primary (automatic failover)
+      </li>
+      <li>Minimum recommended: 3 nodes (or 2 + arbiter) for majority voting</li>
+      <li>
+        Secondaries can serve reads (<code>readPreference: 'secondary'</code>) —
+        eventual consistency tradeoff
+      </li>
+    </ul>
+
+    <div class="q">Q22: What is sharding? What makes a good shard key?</div>
+    <p>
+      Horizontal partitioning of data across multiple servers (shards) for
+      <strong>scaling beyond one machine</strong>. A <code>mongos</code> router
+      directs queries; config servers hold metadata.
+    </p>
+    <p>
+      <strong>Good shard key:</strong> high cardinality, evenly distributed
+      writes, matches common query patterns. <strong>Bad:</strong> monotonically
+      increasing keys (like timestamps) — all writes hit one shard ("hot
+      shard").
+    </p>
+    <table>
+      <tr>
+        <th></th>
+        <th>Replication</th>
+        <th>Sharding</th>
+      </tr>
+      <tr>
+        <td>Purpose</td>
+        <td>Availability / redundancy</td>
+        <td>Scalability / capacity</td>
+      </tr>
+      <tr>
+        <td>Data</td>
+        <td>Full copy on each node</td>
+        <td>Split across nodes</td>
+      </tr>
+    </table>
+
+    <div class="q">Q23: Does MongoDB support transactions?</div>
+    <p>
+      Yes — single-document operations are <strong>always atomic</strong>;
+      multi-document ACID transactions since v4.0 (replica sets) / v4.2
+      (sharded).
+    </p>
+    <pre><code>const session = await mongoose.startSession();
+session.startTransaction();
+try {
+  await Account.updateOne({ _id: from },
+    { $inc: { balance: -100 } }, { session });
+  await Account.updateOne({ _id: to },
+    { $inc: { balance: 100 } }, { session });
+  await session.commitTransaction();
+} catch (err) {
+  await session.abortTransaction();
+  throw err;
+} finally {
+  session.endSession();
+}</code></pre>
+    <p>
+      <strong>Note:</strong> good schema design (embedding) often removes the
+      need for transactions.
+    </p>
+
+    <div class="q">Q24: What are read and write concerns?</div>
+    <ul>
+      <li>
+        <strong>Write concern</strong> — <code>w: 1</code> (primary ack),
+        <code>w: 'majority'</code> (majority of nodes — durable),
+        <code>w: 0</code> (fire-and-forget)
+      </li>
+      <li>
+        <strong>Read concern</strong> — <code>local</code> (default),
+        <code>majority</code> (no rollback risk), <code>linearizable</code>
+      </li>
+      <li>Tradeoff: stronger guarantees = higher latency</li>
+    </ul>
+
+    <div class="q">Q25: How do you prevent NoSQL injection?</div>
+    <pre><code>// VULNERABLE: attacker sends { "$gt": "" } as password
+db.users.findOne({ email, password: req.body.password });
+
+// FIXES:
+// 1. Sanitize input
+app.use(require('express-mongo-sanitize')());
+// 2. Validate types (joi / express-validator)
+// 3. Never build queries directly from raw user objects</code></pre>
+
+    <div class="q">Q26: What are change streams?</div>
+    <p>
+      Real-time subscriptions to data changes (insert/update/delete) — like
+      triggers. Built on the oplog; requires a replica set.
+    </p>
+    <pre><code>const stream = Order.watch();
+stream.on('change', (change) => {
+  io.emit('orderUpdate', change.fullDocument);  // push to clients
+});</code></pre>
+
+    <div class="q">Q27: How do you optimize a slow MongoDB query?</div>
+    <ol>
+      <li>Run <code>.explain('executionStats')</code> — look for COLLSCAN</li>
+      <li>Add appropriate indexes (match query + sort fields)</li>
+      <li>Use projection — fetch only needed fields</li>
+      <li>
+        In aggregations: <code>$match</code> and <code>$project</code> as early
+        as possible
+      </li>
+      <li>
+        Use <code>.lean()</code> in Mongoose (plain objects, ~5x faster reads)
+      </li>
+      <li>
+        Check the profiler:
+        <code>db.setProfilingLevel(1, { slowms: 100 })</code>
+      </li>
+    </ol>
+
+    <div class="q">Q28: Name common schema design patterns.</div>
+    <ul>
+      <li>
+        <strong>Subset pattern</strong> — embed only the most-accessed items
+        (top 10 reviews), reference the rest
+      </li>
+      <li>
+        <strong>Bucket pattern</strong> — group time-series data into
+        hourly/daily docs
+      </li>
+      <li>
+        <strong>Computed pattern</strong> — store precomputed totals/averages on
+        write
+      </li>
+      <li>
+        <strong>Extended reference</strong> — duplicate a few frequently-needed
+        fields (name, thumbnail) alongside the ObjectId
+      </li>
+    </ul>
+
+    <!-- ============ PRACTICAL ============ -->
+    <div class="section"></div>
+    <h1>4. Practical Tasks (Be Ready to Write)</h1>
+
+    <div class="q">Task 1: Design a blog schema (classic question)</div>
+    <pre><code>// Users — referenced (shared entity)
+{ _id, name, email, avatar }
+
+// Posts — reference author, embed a few things
+{
+  _id, title, body,
+  author: ObjectId('...'),          // reference
+  tags: ['mongodb', 'node'],        // embed (small, bounded)
+  commentCount: 42,                  // computed pattern
+  createdAt
+}
+
+// Comments — separate collection (unbounded growth)
+{ _id, postId: ObjectId('...'), author: ObjectId('...'), text, createdAt }</code></pre>
+
+    <div class="q">Task 2: Average order value per month (aggregation)</div>
+    <pre><code>db.orders.aggregate([
+  { $group: {
+      _id: {
+        year: { $year: '$createdAt' },
+        month: { $month: '$createdAt' }
+      },
+      avgOrder: { $avg: '$amount' },
+      revenue: { $sum: '$amount' }
+  }},
+  { $sort: { '_id.year': 1, '_id.month': 1 } }
+]);</code></pre>
+
+    <div class="q">Task 3: Find duplicate emails</div>
+    <pre><code>db.users.aggregate([
+  { $group: { _id: '$email', count: { $sum: 1 } } },
+  { $match: { count: { $gt: 1 } } }
+]);</code></pre>
+
+    <!-- ============ QUICK FIRE ============ -->
+    <h1>5. Quick-Fire Round</h1>
+    <table>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+      <tr>
+        <td>Default port?</td>
+        <td>27017</td>
+      </tr>
+      <tr>
+        <td>Max document size?</td>
+        <td>16 MB (use GridFS for larger files)</td>
+      </tr>
+      <tr>
+        <td>What is GridFS?</td>
+        <td>Spec for storing files &gt;16MB in chunks</td>
+      </tr>
+      <tr>
+        <td>mongod vs mongosh?</td>
+        <td>mongod = server daemon; mongosh = shell client</td>
+      </tr>
+      <tr>
+        <td>What is MongoDB Atlas?</td>
+        <td>Official managed cloud database service</td>
+      </tr>
+      <tr>
+        <td>Is _id indexed by default?</td>
+        <td>Yes — unique index, automatic</td>
+      </tr>
+      <tr>
+        <td>countDocuments vs estimatedDocumentCount?</td>
+        <td>Accurate (scans) vs fast (metadata)</td>
+      </tr>
+      <tr>
+        <td>What is a capped collection?</td>
+        <td>Fixed-size, auto-overwrites oldest (good for logs)</td>
+      </tr>
+      <tr>
+        <td>What does .lean() do?</td>
+        <td>Returns plain JS objects — skips Mongoose overhead</td>
+      </tr>
+      <tr>
+        <td>What is the oplog?</td>
+        <td>Capped collection logging all writes — powers replication</td>
+      </tr>
+      <tr>
+        <td>WiredTiger?</td>
+        <td>Default storage engine (document-level locking, compression)</td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>Interview tip:</strong> Aggregation pipelines (Q11) and embedding
+      vs referencing (Q16) dominate MongoDB interviews. Practice writing $group
+      + $lookup queries by hand, and always mention the 16MB limit and
+      unbounded-array risk when discussing schema design.
+    </div>
+  </body>
+</html>

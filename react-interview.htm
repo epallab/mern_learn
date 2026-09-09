@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Interview Questions — Complete Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--guide" data-topic="react">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>React<br />Interview Questions</h1>
+      <p>Complete Guide with Answers &amp; Code Examples</p>
+      <p style="margin-top: 10px">
+        Hooks &bull; Rendering &bull; State Management &bull; Performance &bull;
+        Coding Tasks
+      </p>
+      <div class="badge">30+ Questions Covered</div>
+    </div>
+
+    <!-- ============ BEGINNER ============ -->
+    <span class="level beginner">BEGINNER LEVEL</span>
+    <h1>1. Beginner Questions</h1>
+
+    <div class="q">Q1: What is React and why use it?</div>
+    <p>
+      A JavaScript library for building user interfaces using reusable
+      <strong>components</strong>. Key benefits: declarative UI, Virtual DOM for
+      efficient updates, component reusability, one-way data flow, and a huge
+      ecosystem.
+    </p>
+
+    <div class="q">Q2: What is JSX?</div>
+    <p>
+      JavaScript XML — syntax sugar that lets you write HTML-like markup in JS.
+      Babel compiles it to <code>React.createElement()</code> calls.
+    </p>
+    <pre><code>const el = &lt;h1 className="title"&gt;Hello {name}&lt;/h1&gt;;
+// compiles to:
+const el = React.createElement('h1', { className: 'title' }, `Hello ${name}`);</code></pre>
+    <p>
+      Differences from HTML: <code>className</code> (not class),
+      <code>htmlFor</code>, camelCase events (<code>onClick</code>), expressions
+      in <code>{}</code>.
+    </p>
+
+    <div class="q">
+      Q3: What is the Virtual DOM? <span class="star">★ Most asked</span>
+    </div>
+    <p>
+      An in-memory, lightweight copy of the real DOM. On every state change
+      React:
+    </p>
+    <ol>
+      <li>Creates a new virtual tree</li>
+      <li>
+        <strong>Diffs</strong> it against the previous tree (reconciliation)
+      </li>
+      <li>Applies only the minimal set of changes to the real DOM (batched)</li>
+    </ol>
+    <p>
+      Real DOM manipulation is slow; diffing JS objects is fast — hence the
+      performance win.
+    </p>
+
+    <div class="q">Q4: Functional vs Class components?</div>
+    <table>
+      <tr>
+        <th>Functional (modern ✅)</th>
+        <th>Class (legacy)</th>
+      </tr>
+      <tr>
+        <td>Plain functions + hooks</td>
+        <td>extends React.Component</td>
+      </tr>
+      <tr>
+        <td>useState / useEffect</td>
+        <td>this.state / lifecycle methods</td>
+      </tr>
+      <tr>
+        <td>No <code>this</code> binding issues</td>
+        <td>Requires binding handlers</td>
+      </tr>
+      <tr>
+        <td>Less code, easier testing</td>
+        <td>Still needed for Error Boundaries</td>
+      </tr>
+    </table>
+
+    <div class="q">Q5: Props vs State?</div>
+    <ul>
+      <li>
+        <strong>Props</strong> — passed from parent,
+        <strong>read-only</strong> (immutable in child)
+      </li>
+      <li>
+        <strong>State</strong> — owned and managed by the component, changes
+        trigger re-render
+      </li>
+    </ul>
+    <p>
+      Analogy: props = function arguments; state = variables declared inside the
+      function.
+    </p>
+
+    <div class="q">
+      Q6: Why are keys important in lists? <span class="star">★</span>
+    </div>
+    <p>
+      Keys let React identify which items changed, were added, or removed during
+      diffing. Without stable keys, React re-renders incorrectly or loses input
+      state.
+    </p>
+    <pre><code>{users.map(user =&gt; &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;)}
+
+// ❌ Bad: key={index} — breaks when list reorders/filters
+// ✅ Good: key={user.id} — stable, unique</code></pre>
+
+    <div class="q">Q7: Controlled vs Uncontrolled components?</div>
+    <pre><code>// Controlled — React state is the source of truth ✅
+&lt;input value={name} onChange={e =&gt; setName(e.target.value)} /&gt;
+
+// Uncontrolled — DOM holds the value, read via ref
+&lt;input ref={inputRef} defaultValue="hello" /&gt;</code></pre>
+
+    <div class="q">Q8: Ways to render conditionally?</div>
+    <pre><code>{isLoggedIn &amp;&amp; &lt;Dashboard /&gt;}                     // logical AND
+{isLoggedIn ? &lt;Dashboard /&gt; : &lt;Login /&gt;}          // ternary
+{count === 0 ? null : &lt;Badge count={count} /&gt;}    // render nothing
+
+// ⚠️ Gotcha: {items.length &amp;&amp; &lt;List/&gt;} renders "0" when empty!
+// Fix: {items.length &gt; 0 &amp;&amp; &lt;List/&gt;}</code></pre>
+
+    <div class="q">Q9: What are Fragments?</div>
+    <p>Group children without adding extra DOM nodes:</p>
+    <pre><code>return (
+  &lt;&gt;
+    &lt;Header /&gt;
+    &lt;Content /&gt;
+  &lt;/&gt;
+);  // &lt;React.Fragment key={x}&gt; when a key is needed</code></pre>
+
+    <div class="q">Q10: What is one-way data flow?</div>
+    <p>
+      Data flows <strong>down</strong> via props; events flow
+      <strong>up</strong> via callback props. A child never modifies parent
+      state directly — it calls a function the parent passed down. Makes data
+      changes predictable and debuggable.
+    </p>
+
+    <!-- ============ INTERMEDIATE ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">INTERMEDIATE LEVEL</span>
+    <h1>2. Intermediate Questions — Hooks Deep Dive</h1>
+
+    <div class="q">Q11: Explain useState. Why use functional updates?</div>
+    <pre><code>const [count, setCount] = useState(0);
+
+// ❌ Trap: state updates are batched + closures capture old values
+const handleClick = () =&gt; {
+  setCount(count + 1);
+  setCount(count + 1);
+  setCount(count + 1);
+};  // count becomes 1, NOT 3!
+
+// ✅ Functional update — always uses latest state
+setCount(c =&gt; c + 1);  // ×3 → count becomes 3</code></pre>
+
+    <div class="q">
+      Q12: Explain useEffect and its dependency array.
+      <span class="star">★</span>
+    </div>
+    <pre><code>useEffect(() =&gt; { ... });          // runs after EVERY render
+useEffect(() =&gt; { ... }, []);      // runs ONCE (on mount)
+useEffect(() =&gt; { ... }, [id]);    // runs when `id` changes
+
+// Cleanup — runs before next effect &amp; on unmount
+useEffect(() =&gt; {
+  const id = setInterval(tick, 1000);
+  return () =&gt; clearInterval(id);   // prevents memory leaks
+}, []);</code></pre>
+
+    <div class="q">Q13: Map class lifecycle methods to hooks.</div>
+    <table>
+      <tr>
+        <th>Class method</th>
+        <th>Hook equivalent</th>
+      </tr>
+      <tr>
+        <td>componentDidMount</td>
+        <td><code>useEffect(fn, [])</code></td>
+      </tr>
+      <tr>
+        <td>componentDidUpdate</td>
+        <td><code>useEffect(fn, [deps])</code></td>
+      </tr>
+      <tr>
+        <td>componentWillUnmount</td>
+        <td>cleanup function returned from useEffect</td>
+      </tr>
+      <tr>
+        <td>shouldComponentUpdate</td>
+        <td><code>React.memo</code></td>
+      </tr>
+    </table>
+
+    <div class="q">Q14: What is useRef used for?</div>
+    <ol>
+      <li>
+        <strong>DOM access:</strong> <code>inputRef.current.focus()</code>
+      </li>
+      <li>
+        <strong
+          >Mutable values that persist across renders WITHOUT
+          re-rendering</strong
+        >
+        (timer IDs, previous values)
+      </li>
+    </ol>
+    <pre><code>const inputRef = useRef(null);
+&lt;input ref={inputRef} /&gt;
+&lt;button onClick={() =&gt; inputRef.current.focus()}&gt;Focus&lt;/button&gt;</code></pre>
+
+    <div class="q">
+      Q15: What is prop drilling and how does Context solve it?
+    </div>
+    <p>
+      Passing props through many intermediate components that don't use them.
+      Context provides values to any depth:
+    </p>
+    <pre><code>const ThemeContext = createContext('light');
+
+// Provider (top)
+&lt;ThemeContext.Provider value={theme}&gt;
+  &lt;App /&gt;
+&lt;/ThemeContext.Provider&gt;
+
+// Consumer (any depth)
+const theme = useContext(ThemeContext);</code></pre>
+    <p>
+      <strong>Caveat:</strong> every consumer re-renders when the context value
+      changes — don't put rapidly-changing state in context.
+    </p>
+
+    <div class="q">
+      Q16: useMemo vs useCallback? <span class="star">★</span>
+    </div>
+    <pre><code>// useMemo — memoizes a computed VALUE
+const sorted = useMemo(() =&gt; heavySort(items), [items]);
+
+// useCallback — memoizes the FUNCTION reference
+const handleClick = useCallback(() =&gt; setOpen(true), []);
+// useCallback(fn, deps) === useMemo(() =&gt; fn, deps)</code></pre>
+    <p>
+      <strong>When it matters:</strong> passing callbacks to
+      <code>React.memo</code> children (stable reference prevents re-render) or
+      skipping expensive recalculations.
+    </p>
+
+    <div class="q">Q17: What does React.memo do?</div>
+    <p>
+      A higher-order component that skips re-rendering when props are shallowly
+      equal:
+    </p>
+    <pre><code>const UserCard = React.memo(function UserCard({ user, onSelect }) {
+  return &lt;div onClick={onSelect}&gt;{user.name}&lt;/div&gt;;
+});
+// ⚠️ Only works if onSelect is stable → pair with useCallback</code></pre>
+
+    <div class="q">Q18: What are the Rules of Hooks?</div>
+    <ol>
+      <li>
+        Only call hooks at the <strong>top level</strong> — never inside loops,
+        conditions, or nested functions
+      </li>
+      <li>
+        Only call hooks from
+        <strong>React function components or custom hooks</strong>
+      </li>
+    </ol>
+    <p>
+      <strong>Why:</strong> React tracks hooks by call order — conditional calls
+      scramble the order.
+    </p>
+
+    <div class="q">
+      Q19: Write a custom hook. <span class="star">★ Common live-coding</span>
+    </div>
+    <pre><code>function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() =&gt; {
+    const controller = new AbortController();
+    setLoading(true);
+    fetch(url, { signal: controller.signal })
+      .then(res =&gt; res.json())
+      .then(setData)
+      .catch(err =&gt; err.name !== 'AbortError' &amp;&amp; setError(err))
+      .finally(() =&gt; setLoading(false));
+    return () =&gt; controller.abort();   // cancel on unmount/url change
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// Usage
+const { data, loading } = useFetch('/api/users');</code></pre>
+
+    <div class="q">Q20: When do you use useReducer over useState?</div>
+    <p>
+      When state is complex/nested or next state depends on multiple actions:
+    </p>
+    <pre><code>function reducer(state, action) {
+  switch (action.type) {
+    case 'add':    return [...state, action.todo];
+    case 'remove': return state.filter(t =&gt; t.id !== action.id);
+    default:       return state;
+  }
+}
+const [todos, dispatch] = useReducer(reducer, []);
+dispatch({ type: 'add', todo: newTodo });</code></pre>
+
+    <div class="q">Q21: React Router essentials?</div>
+    <pre><code>&lt;BrowserRouter&gt;
+  &lt;Routes&gt;
+    &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+    &lt;Route path="/users/:id" element={&lt;User /&gt;} /&gt;
+  &lt;/Routes&gt;
+&lt;/BrowserRouter&gt;
+
+// In components:
+const { id } = useParams();      // route params
+const navigate = useNavigate();   // programmatic navigation
+navigate('/dashboard');</code></pre>
+
+    <div class="q">Q22: Implement a protected route.</div>
+    <pre><code>function ProtectedRoute({ children }) {
+  const { user } = useAuth();
+  return user ? children : &lt;Navigate to="/login" replace /&gt;;
+}
+
+&lt;Route path="/dashboard"
+  element={&lt;ProtectedRoute&gt;&lt;Dashboard /&gt;&lt;/ProtectedRoute&gt;} /&gt;</code></pre>
+
+    <!-- ============ ADVANCED ============ -->
+    <div class="section"></div>
+    <span class="level advanced">ADVANCED LEVEL</span>
+    <h1>3. Advanced Questions</h1>
+
+    <div class="q">
+      Q23: Explain the stale closure problem. <span class="star">★ Tricky</span>
+    </div>
+    <pre><code>// ❌ Bug: count stuck at 1
+useEffect(() =&gt; {
+  const id = setInterval(() =&gt; {
+    setCount(count + 1);   // closure captured count = 0 forever
+  }, 1000);
+  return () =&gt; clearInterval(id);
+}, []);   // empty deps → effect never sees new count
+
+// ✅ Fix: functional update reads latest state
+setCount(c =&gt; c + 1);</code></pre>
+
+    <div class="q">Q24: Context API vs Redux — when do you need Redux?</div>
+    <table>
+      <tr>
+        <th>Context</th>
+        <th>Redux (Toolkit)</th>
+      </tr>
+      <tr>
+        <td>Low-frequency global data (theme, auth)</td>
+        <td>Complex, frequently-updated state</td>
+      </tr>
+      <tr>
+        <td>All consumers re-render on change</td>
+        <td>Selective subscriptions (useSelector)</td>
+      </tr>
+      <tr>
+        <td>No dev tooling</td>
+        <td>DevTools, time-travel, middleware</td>
+      </tr>
+    </table>
+    <pre><code>// Redux Toolkit slice
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) =&gt; { state.value += 1 }  // Immer makes this safe
+  }
+});
+
+// Component
+const value = useSelector(state =&gt; state.counter.value);
+const dispatch = useDispatch();
+dispatch(increment());</code></pre>
+
+    <div class="q">
+      Q25: How do you optimize React performance? <span class="star">★</span>
+    </div>
+    <ul>
+      <li>
+        <code>React.memo</code> + <code>useCallback</code>/<code>useMemo</code>
+        for expensive children
+      </li>
+      <li><strong>Code splitting</strong> with lazy/Suspense</li>
+      <li>Stable keys in lists; virtualize long lists (react-window)</li>
+      <li>
+        Move state <strong>down</strong> (localize re-renders) or lift content
+        up as children
+      </li>
+      <li>Debounce rapid inputs; paginate large data</li>
+      <li>Profile with React DevTools Profiler before optimizing</li>
+    </ul>
+
+    <div class="q">Q26: How does code splitting work?</div>
+    <pre><code>const Dashboard = lazy(() =&gt; import('./Dashboard'));
+
+&lt;Suspense fallback={&lt;Spinner /&gt;}&gt;
+  &lt;Dashboard /&gt;
+&lt;/Suspense&gt;</code></pre>
+    <p>
+      The Dashboard bundle downloads only when first rendered — smaller initial
+      load.
+    </p>
+
+    <div class="q">Q27: What are Error Boundaries?</div>
+    <p>
+      Components that catch render errors in their child tree and show a
+      fallback UI. <strong>Must be class components</strong> (or use the
+      react-error-boundary package).
+    </p>
+    <pre><code>class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error, info) { logService(error, info); }
+  render() {
+    if (this.state.hasError) return &lt;h1&gt;Something went wrong.&lt;/h1&gt;;
+    return this.props.children;
+  }
+}</code></pre>
+    <p>
+      <strong>Doesn't catch:</strong> event handlers, async code, SSR errors.
+    </p>
+
+    <div class="q">Q28: What's new in React 18?</div>
+    <ul>
+      <li>
+        <strong>Automatic batching</strong> — multiple setStates batched even in
+        promises/timeouts
+      </li>
+      <li>
+        <strong>Concurrent rendering</strong> — React can pause/resume renders
+      </li>
+      <li>
+        <code>useTransition</code> — mark updates as non-urgent (keep typing
+        responsive)
+      </li>
+      <li>
+        <code>useDeferredValue</code>, <code>useId</code>, Suspense improvements
+      </li>
+      <li>New root API: <code>createRoot(el).render(&lt;App /&gt;)</code></li>
+    </ul>
+
+    <div class="q">Q29: CSR vs SSR vs SSG?</div>
+    <table>
+      <tr>
+        <th>Strategy</th>
+        <th>HTML generated</th>
+        <th>Best for</th>
+      </tr>
+      <tr>
+        <td>CSR (plain React)</td>
+        <td>In browser (JS)</td>
+        <td>Dashboards, apps behind login</td>
+      </tr>
+      <tr>
+        <td>SSR (Next.js)</td>
+        <td>Per request on server</td>
+        <td>SEO + dynamic data</td>
+      </tr>
+      <tr>
+        <td>SSG (Next.js)</td>
+        <td>At build time</td>
+        <td>Blogs, marketing, docs</td>
+      </tr>
+    </table>
+    <p>
+      <strong>Hydration:</strong> attaching React event listeners to
+      server-rendered HTML.
+    </p>
+
+    <div class="q">
+      Q30: Why can't you update state on an unmounted component, and how do you
+      avoid it?
+    </div>
+    <p>
+      It signals a memory leak (e.g., fetch resolving after unmount). Avoid with
+      cleanup: AbortController for fetches, clearing timers/subscriptions in
+      useEffect cleanup, or an <code>isMounted</code> flag/cancelled variable in
+      the closure.
+    </p>
+
+    <!-- ============ CODING TASKS ============ -->
+    <div class="section"></div>
+    <h1>4. Practical Coding Tasks</h1>
+
+    <div class="q">Task 1: Todo App (the #1 live-coding question)</div>
+    <pre><code>function TodoApp() {
+  const [todos, setTodos] = useState([]);
+  const [text, setText] = useState('');
+
+  const addTodo = () =&gt; {
+    if (!text.trim()) return;
+    setTodos([...todos, { id: Date.now(), text, done: false }]);
+    setText('');
+  };
+
+  const toggle = (id) =&gt;
+    setTodos(todos.map(t =&gt;
+      t.id === id ? { ...t, done: !t.done } : t));
+
+  const remove = (id) =&gt;
+    setTodos(todos.filter(t =&gt; t.id !== id));
+
+  return (
+    &lt;div&gt;
+      &lt;input value={text}
+        onChange={e =&gt; setText(e.target.value)}
+        onKeyDown={e =&gt; e.key === 'Enter' &amp;&amp; addTodo()} /&gt;
+      &lt;button onClick={addTodo}&gt;Add&lt;/button&gt;
+      &lt;ul&gt;
+        {todos.map(t =&gt; (
+          &lt;li key={t.id}&gt;
+            &lt;span
+              style={{ textDecoration: t.done ? 'line-through' : 'none' }}
+              onClick={() =&gt; toggle(t.id)}&gt;
+              {t.text}
+            &lt;/span&gt;
+            &lt;button onClick={() =&gt; remove(t.id)}&gt;✕&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+    <div class="q">Task 2: Debounced Search (tests useEffect mastery)</div>
+    <pre><code>function Search() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+
+  useEffect(() =&gt; {
+    if (!query) { setResults([]); return; }
+
+    const id = setTimeout(async () =&gt; {
+      const res = await fetch(`/api/search?q=${query}`);
+      setResults(await res.json());
+    }, 500);
+
+    return () =&gt; clearTimeout(id);  // cancels previous timer = debounce!
+  }, [query]);
+
+  return (
+    &lt;&gt;
+      &lt;input value={query} onChange={e =&gt; setQuery(e.target.value)} /&gt;
+      &lt;ul&gt;{results.map(r =&gt; &lt;li key={r.id}&gt;{r.name}&lt;/li&gt;)}&lt;/ul&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+    <h2>Other common tasks</h2>
+    <ul>
+      <li>Counter with increment/decrement/reset (useState or useReducer)</li>
+      <li>Fetch + display users with loading/error states</li>
+      <li>Tabs / accordion / modal component</li>
+      <li>Form with validation</li>
+      <li>Stopwatch/timer (useRef for interval ID)</li>
+    </ul>
+
+    <!-- ============ QUICK FIRE ============ -->
+    <h1>5. Quick-Fire Round</h1>
+    <table>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+      <tr>
+        <td>What is StrictMode?</td>
+        <td>Dev-only checks; double-invokes renders/effects to expose bugs</td>
+      </tr>
+      <tr>
+        <td>react vs react-dom?</td>
+        <td>Core component logic vs browser DOM renderer</td>
+      </tr>
+      <tr>
+        <td>What is a Portal?</td>
+        <td>
+          Render children outside parent DOM (modals):
+          <code>createPortal(child, node)</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Can you use async directly in useEffect?</td>
+        <td>No — define an async fn inside and call it</td>
+      </tr>
+      <tr>
+        <td>What is a synthetic event?</td>
+        <td>React's cross-browser wrapper around native events</td>
+      </tr>
+      <tr>
+        <td>What is lifting state up?</td>
+        <td>Move shared state to closest common ancestor</td>
+      </tr>
+      <tr>
+        <td>PropTypes vs TypeScript?</td>
+        <td>Runtime checking vs compile-time typing (TS preferred)</td>
+      </tr>
+      <tr>
+        <td>Why immutable state updates?</td>
+        <td>React detects changes by reference comparison</td>
+      </tr>
+      <tr>
+        <td>What is a HOC?</td>
+        <td>Function taking a component, returning enhanced component</td>
+      </tr>
+      <tr>
+        <td>Default state batching?</td>
+        <td>React 18 batches everywhere (events, promises, timeouts)</td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>Interview tip:</strong> The most-failed React questions are the
+      <strong>stale closure</strong> (Q23),
+      <strong>batched setState output</strong> (Q11), and
+      <strong>useMemo vs useCallback</strong> (Q16). Also expect to build the
+      Todo app or debounced search live — practice typing them from memory.
+    </div>
+  </body>
+</html>

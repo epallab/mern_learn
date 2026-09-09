@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA Interview Questions — Theory Round</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--guide" data-topic="dsa-theory">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>DSA<br />Interview Questions</h1>
+      <p>The theory round — what they ask before you're allowed to code.</p>
+      <p style="margin-top: 10px">
+        Big-O &bull; Structures &bull; Traversals &bull; The Frontend Angle
+      </p>
+      <div class="badge">38 Questions + Quick-Fire</div>
+    </div>
+
+    <!-- ============ BEGINNER ============ -->
+    <span class="level beginner">BEGINNER LEVEL</span>
+    <h1>1. Complexity &amp; Big-O</h1>
+
+    <div class="q">Q1: What is Big-O, and why do interviewers care?</div>
+    <p>
+      Big-O describes how an algorithm's cost <strong>grows with input
+      size</strong>, ignoring hardware and constants. Interviewers care because
+      it's the shared language for comparing approaches — "can you do better
+      than O(n²)?" is really the whole game of the coding round.
+    </p>
+
+    <div class="q">Q2: Rank the common complexities with an example each</div>
+    <ul>
+      <li><strong>O(1)</strong> — array index, <code>Map.get</code></li>
+      <li><strong>O(log n)</strong> — binary search</li>
+      <li><strong>O(n)</strong> — one pass: <code>includes</code>, Kadane</li>
+      <li><strong>O(n log n)</strong> — good sorts: merge sort, Timsort</li>
+      <li><strong>O(n²)</strong> — nested loops: naive two-sum</li>
+      <li><strong>O(2^n)</strong> — all subsets, naive fibonacci</li>
+      <li><strong>O(n!)</strong> — all permutations</li>
+    </ul>
+
+    <div class="q">Q3: Why do we drop constants and lower-order terms?</div>
+    <p>
+      Because Big-O describes the <strong>shape of growth</strong>, not the
+      running time. For large n, the n² term in <code>3n² + 50n</code> dwarfs
+      everything else — so it's O(n²). Worth adding out loud: constants still
+      matter in practice, which is why a hashmap "O(1)" can lose to a small
+      array scan.
+    </p>
+
+    <div class="q">Q4: Best, average, worst case — which one is Big-O?</div>
+    <p>
+      By convention interviews mean <strong>worst case</strong> unless stated.
+      The classic example is quicksort: O(n log n) average but O(n²) worst
+      (already-sorted input with a bad pivot). Saying "average O(n log n),
+      worst O(n²), and here's how the pivot fixes it" is the complete answer.
+    </p>
+
+    <div class="q">Q5: What's the intuition for O(log n)?</div>
+    <p>
+      Each step <strong>cuts the remaining work by a constant factor</strong>
+      (usually half). Doubling the input adds one step instead of doubling the
+      steps — a million elements is only ~20 halvings. If your loop does
+      <code>i = i * 2</code> or discards half the search space, think log.
+    </p>
+
+    <div class="q">Q6: Big-O of the JS array operations you use daily?</div>
+    <table>
+      <tr>
+        <th>Operation</th>
+        <th>Complexity</th>
+      </tr>
+      <tr>
+        <td><code>arr[i]</code>, <code>push</code>, <code>pop</code></td>
+        <td>O(1) (push amortized)</td>
+      </tr>
+      <tr>
+        <td><code>shift</code>, <code>unshift</code>, <code>splice</code></td>
+        <td>O(n) — everything after the index moves</td>
+      </tr>
+      <tr>
+        <td><code>includes</code>, <code>indexOf</code>, <code>find</code></td>
+        <td>O(n) — linear scan</td>
+      </tr>
+      <tr>
+        <td><code>sort</code></td>
+        <td>O(n log n)</td>
+      </tr>
+    </table>
+    <p>
+      The one that fails people: using <code>shift()</code> to build a queue
+      makes the loop O(n²). Use an index pointer instead.
+    </p>
+
+    <div class="q">Q7: What is amortized complexity?</div>
+    <p>
+      The average cost per operation <strong>over a sequence</strong>, even if
+      single operations are occasionally expensive. <code>push</code> is the
+      canonical case: when the backing storage fills, the engine reallocates
+      and copies (O(n) that one time), but doubling capacity makes the copies
+      rare enough that the average push stays O(1).
+    </p>
+
+    <div class="q">Q8: Time vs space tradeoff — give a concrete example</div>
+    <p>
+      Two-sum: the nested-loop version is O(n²) time, O(1) space. Add a
+      hashmap of seen values and it becomes O(n) time, O(n) space. Most
+      interview "optimize this" moments are exactly this trade — say the
+      trade, not just the answer.
+    </p>
+
+    <div class="q">Q9: Two nested loops vs two sequential loops?</div>
+    <pre>
+for (const a of list)          // O(n + m): sequential — adds
+for (const b of other) ...
+
+for (const a of list)          // O(n × m): nested — multiplies
+  for (const b of other) ...</pre
+    >
+    <p>
+      Sequential passes <strong>add</strong>, nested loops
+      <strong>multiply</strong>. Three passes over the same array is still
+      O(n) — a point worth making when you write the two-pass solution.
+    </p>
+
+    <div class="q">Q10: Building a string with += in a loop — complexity?</div>
+    <p>
+      The safe interview answer: strings are immutable, each
+      <code>+=</code> copies what came before, so the loop totals
+      <strong>O(n²)</strong>. Collect parts in an array and
+      <code>join("")</code> for O(n). (Modern engines mitigate with internal
+      rope structures — mention it, then give the safe answer anyway.)
+    </p>
+
+    <!-- ============ INTERMEDIATE ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">DATA STRUCTURES</span>
+    <h1>2. Data Structures</h1>
+
+    <div class="q">Q11: Array vs linked list — the real tradeoffs?</div>
+    <table>
+      <tr>
+        <th></th>
+        <th>Array</th>
+        <th>Linked list</th>
+      </tr>
+      <tr>
+        <td>Access by index</td>
+        <td>O(1)</td>
+        <td>O(n)</td>
+      </tr>
+      <tr>
+        <td>Insert/delete at front</td>
+        <td>O(n)</td>
+        <td>O(1)</td>
+      </tr>
+      <tr>
+        <td>Memory</td>
+        <td>contiguous, cache-friendly</td>
+        <td>scattered nodes + pointers</td>
+      </tr>
+    </table>
+    <p>
+      In JS you almost always use arrays — engines optimize them heavily and
+      cache locality beats pointer chasing. Linked lists show up as
+      <em>interview material</em> and inside real structures (LRU, React
+      fiber), not as everyday collections.
+    </p>
+
+    <div class="q">Q12: Stack vs queue — and how do you build each in JS?</div>
+    <p>
+      <strong>Stack</strong> is LIFO — <code>push</code>/<code>pop</code> on an
+      array, both O(1). <strong>Queue</strong> is FIFO — but
+      <code>shift()</code> is O(n), so a clean queue uses an index pointer or
+      two stacks:
+    </p>
+    <pre>
+const queue = [];
+let head = 0;
+queue.push(x);                 // enqueue
+const item = queue[head++];    // dequeue, O(1)</pre
+    >
+    <p>
+      Uses to name: call stack, undo history (stacks); BFS, task scheduling,
+      rate limiting (queues).
+    </p>
+
+    <div class="q">Q13: How does a hashmap work under the hood?</div>
+    <p>
+      Hash the key to a bucket index; store the entry there. Two keys can land
+      in the same bucket — a <strong>collision</strong> — resolved by
+      <strong>chaining</strong> (a list per bucket) or
+      <strong>open addressing</strong> (probe for the next free slot). Lookups
+      are O(1) <em>average</em>; a bad hash function degrades toward O(n).
+      When the load factor grows, the table resizes and rehashes.
+    </p>
+
+    <div class="q">Q14: Map vs Object vs WeakMap — when each?</div>
+    <ul>
+      <li>
+        <strong>Map</strong> — any key type, remembers insertion order,
+        <code>size</code> for free, no prototype pollution. Default for
+        lookups keyed at runtime.
+      </li>
+      <li>
+        <strong>Object</strong> — string/symbol keys only, inherits from
+        <code>Object.prototype</code> (so <code>"constructor" in obj</code> is
+        true!). Right for fixed, record-like shapes.
+      </li>
+      <li>
+        <strong>WeakMap</strong> — object keys held weakly: when the key is
+        garbage-collected the entry goes too. Right for attaching metadata to
+        DOM nodes without leaking them.
+      </li>
+    </ul>
+
+    <div class="q">Q15: What is a Set good for?</div>
+    <p>
+      O(1) average membership tests and deduplication —
+      <code>[...new Set(arr)]</code> is the idiomatic dedupe. Any time your
+      solution says "have I seen this before?", the answer is a Set, and it
+      turns an O(n²) containment loop into O(n).
+    </p>
+
+    <div class="q">Q16: Binary tree vs binary search tree?</div>
+    <p>
+      A binary tree just limits children to two. A <strong>BST</strong> adds
+      the ordering rule: left subtree &lt; node &lt; right subtree — which
+      makes search O(h). The follow-up they want: h is log n only if the tree
+      is <strong>balanced</strong>; insert sorted data naively and the BST
+      degenerates into a linked list, O(n). That's why AVL/red-black trees
+      exist (name them, don't implement them).
+    </p>
+
+    <div class="q">Q17: What's a heap, and when would a frontend dev meet one?</div>
+    <p>
+      A <strong>binary heap</strong> is a complete tree (stored flat in an
+      array) where each parent beats its children — giving O(1) peek at the
+      min/max and O(log n) insert/extract. It backs
+      <strong>priority queues</strong>: "top k frequent" problems, merging
+      sorted streams, schedulers. In the browser world: task prioritization —
+      React's scheduler literally uses a min-heap of tasks.
+    </p>
+
+    <div class="q">Q18: Graphs — adjacency list vs adjacency matrix?</div>
+    <pre>
+// adjacency list — O(V + E) space, the default
+const graph = { a: ["b", "c"], b: ["d"], c: [], d: [] };
+
+// matrix — O(V²) space, O(1) edge lookup
+//   worth it only for dense graphs</pre
+    >
+    <p>
+      Real graphs (social edges, route maps, import trees) are sparse, so the
+      list wins almost always. Say "list, because E ≪ V²" and move on.
+    </p>
+
+    <div class="q">Q19: What is a trie?</div>
+    <p>
+      A prefix tree: one node per character, shared prefixes shared once.
+      Lookup and insert are O(word length), independent of how many words are
+      stored. The frontend-flavored answer:
+      <strong>autocomplete</strong> — type "re", walk two nodes, and every
+      completion lives in that subtree.
+    </p>
+
+    <div class="q">Q20: What structure backs an LRU cache, and why?</div>
+    <p>
+      The classic answer is <strong>hashmap + doubly linked list</strong>: the
+      map gives O(1) lookup, the list gives O(1) move-to-front and
+      evict-from-back. The JS answer: <code>Map</code> alone works because it
+      preserves insertion order — delete + re-set refreshes recency, and the
+      first key is always the oldest. Give both; typing it is Practice P40.
+    </p>
+
+    <div class="q">Q21: What is a deque?</div>
+    <p>
+      A double-ended queue — O(1) push/pop at <em>both</em> ends. The
+      interview cameo is <strong>sliding window maximum</strong>: keep a deque
+      of candidate indices, evict from the back anything smaller than the new
+      element, evict from the front anything that left the window. Also a fine
+      word to say when asked how browser history could support both back and
+      forward.
+    </p>
+
+    <div class="q">Q22: Is the DOM a tree or a graph?</div>
+    <p>
+      A <strong>tree</strong>: every node has exactly one parent, no cycles —
+      which is why DOM problems are tree problems (walk it, measure depth,
+      find ancestors). Two sharp follow-ups: <code>parentNode</code> pointers
+      make it navigable in both directions, and React's fiber tree threads
+      <code>child / sibling / return</code> pointers through it so traversal
+      can pause and resume — a linked list woven through a tree.
+    </p>
+
+    <!-- ============ ADVANCED ============ -->
+    <div class="section"></div>
+    <span class="level advanced">ALGORITHMS</span>
+    <h1>3. Algorithms</h1>
+
+    <div class="q">Q23: BFS vs DFS — mechanics, memory, when each wins</div>
+    <ul>
+      <li>
+        <strong>BFS</strong> — a <strong>queue</strong>, explores level by
+        level. Memory: O(widest level). Wins: shortest path (unweighted),
+        "nearest X", level-order UI questions.
+      </li>
+      <li>
+        <strong>DFS</strong> — a <strong>stack</strong> or recursion, dives
+        deep first. Memory: O(depth). Wins: cycle detection, topological sort,
+        exhaustive search/backtracking, "does a path exist".
+      </li>
+    </ul>
+    <p>
+      Frontend framing that lands well: DOM walks are usually DFS (document
+      order); "find the closest matching element outward" is BFS thinking.
+    </p>
+
+    <div class="q">Q24: Why does BFS find shortest paths in unweighted graphs?</div>
+    <p>
+      Because it visits nodes in <strong>order of distance</strong>: everything
+      at distance d is dequeued before anything at d+1. So the first time you
+      reach a node, no shorter route exists. That justification — not just
+      "use BFS" — is what the question is testing. (Weighted edges break the
+      guarantee; that's Dijkstra, which you should name, not derive.)
+    </p>
+
+    <div class="q">Q25: Binary search — preconditions and the classic traps</div>
+    <pre>
+function bsearch(arr, target) {
+  let lo = 0;
+  let hi = arr.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (arr[mid] === target) return mid;
+    if (arr[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}</pre
+    >
+    <p>
+      Precondition: the array is <strong>sorted</strong> (or the predicate is
+      monotonic — "first version that fails" is binary search too). The traps:
+      <code>lo &lt;= hi</code> not <code>&lt;</code>, and moving
+      <code>mid ± 1</code> — get either wrong and it loops forever.
+    </p>
+
+    <div class="q">Q26: Which sort does JavaScript use? Is it stable?</div>
+    <p>
+      V8 uses <strong>Timsort</strong> (merge sort + insertion sort hybrid),
+      and the spec requires <code>sort</code> to be
+      <strong>stable</strong> since ES2019 — equal elements keep their order,
+      which is why sorting a user table by one column doesn't scramble the
+      previous column's order. The gotcha to volunteer:
+    </p>
+    <pre>
+[1, 10, 2].sort();            // [1, 10, 2] — compares as strings!
+[1, 10, 2].sort((a, b) => a - b);  // [1, 2, 10]</pre
+    >
+
+    <div class="q">Q27: Merge sort vs quicksort — compare honestly</div>
+    <table>
+      <tr>
+        <th></th>
+        <th>Merge sort</th>
+        <th>Quicksort</th>
+      </tr>
+      <tr>
+        <td>Worst case</td>
+        <td>O(n log n) guaranteed</td>
+        <td>O(n²) (bad pivots)</td>
+      </tr>
+      <tr>
+        <td>Extra space</td>
+        <td>O(n)</td>
+        <td>O(log n) — in place</td>
+      </tr>
+      <tr>
+        <td>Stable</td>
+        <td>yes</td>
+        <td>typically no</td>
+      </tr>
+    </table>
+    <p>
+      Quicksort is usually faster in practice (cache-friendly, in place);
+      merge sort gives guarantees and stability. Timsort exists because real
+      data is often partially sorted — it exploits existing runs.
+    </p>
+
+    <div class="q">Q28: Recursion — base case, call stack, and JS's limits</div>
+    <p>
+      Every recursive solution needs a <strong>base case</strong> that
+      terminates and a step that shrinks the problem. Each call pushes a frame
+      onto the <strong>call stack</strong> — recurse ~10,000+ deep in JS and
+      you get <code>RangeError: Maximum call stack size exceeded</code>. The
+      senior detail: proper tail-call optimization is in the spec but only
+      Safari ships it, so in practice you convert deep recursion to a loop
+      with an explicit stack.
+    </p>
+
+    <div class="q">Q29: Memoization vs tabulation?</div>
+    <ul>
+      <li>
+        <strong>Memoization</strong> — top-down: recurse naturally, cache each
+        result the first time. Easy to add to an existing solution
+        (<code>memoize(fn)</code> is Practice P28).
+      </li>
+      <li>
+        <strong>Tabulation</strong> — bottom-up: fill a table from the base
+        cases with a loop. No stack risk, often reducible to two variables —
+        climbing stairs (P45) is the canonical example.
+      </li>
+    </ul>
+
+    <div class="q">Q30: Greedy vs dynamic programming — how do you tell?</div>
+    <p>
+      Both build answers from subproblems. <strong>Greedy</strong> commits to
+      the locally best choice and never looks back — valid only when local
+      optimum provably leads to global (interval scheduling, best time to buy
+      stock). <strong>DP</strong> is for overlapping subproblems where choices
+      interact (house robber: taking this element constrains the next). In an
+      interview, try greedy, look for a counterexample; if you find one, it's
+      DP.
+    </p>
+
+    <div class="q">Q31: When do two pointers or a sliding window apply?</div>
+    <p>
+      Both need <strong>sequential structure you never have to re-scan</strong>:
+      two pointers wants sorted input or an in-place partition ("move zeroes");
+      a sliding window wants a contiguous-range question — "longest/shortest
+      substring/subarray with property X" — where the property is
+      <strong>monotonic</strong>: growing the window can only make it worse,
+      shrinking can only help. Negative numbers break that monotonicity, which
+      is why "subarray sum = k" needs prefix sums instead (Practice P43).
+    </p>
+
+    <div class="q">Q32: What is topological sort, and where does frontend tooling use it?</div>
+    <p>
+      An ordering of a <strong>directed acyclic graph</strong> where every
+      edge points forward — "dependencies first". Kahn's algorithm: repeatedly
+      take a node with in-degree 0, remove its edges. If you can't empty the
+      graph, there's a cycle. This is exactly how bundlers order module
+      imports, how npm resolves install order, and how build systems schedule
+      tasks — say one of those and the interviewer relaxes.
+    </p>
+
+    <!-- ============ FRONTEND ANGLE ============ -->
+    <div class="section"></div>
+    <span class="level practical">THE FRONTEND ANGLE</span>
+    <h1>4. DSA in the Browser</h1>
+
+    <div class="q">Q33: Why do frameworks need keys on list items?</div>
+    <p>
+      True minimal tree diffing is <strong>O(n³)</strong> — hopeless for real
+      UIs. React's heuristic diff is O(n): compare level by level, assume
+      different element types mean different subtrees, and use
+      <strong>keys</strong> to match list children across renders. Without
+      stable keys the matcher falls back to index, so inserting at the top
+      makes every row "change" — state resets, inputs jump. Index-as-key is
+      the same bug with extra steps.
+    </p>
+
+    <div class="q">Q34: Describe the event loop in data-structure terms</div>
+    <p>
+      A <strong>call stack</strong> (frames), a <strong>task queue</strong>
+      (timers, I/O, clicks), and a <strong>microtask queue</strong> (promise
+      callbacks). When the stack empties: drain <em>all</em> microtasks, then
+      take <em>one</em> task, repeat. That drain-fully rule is why a chain of
+      resolved promises runs before a 0ms timeout — and why a microtask loop
+      can starve rendering.
+    </p>
+
+    <div class="q">Q35: Browser history — which data structure?</div>
+    <p>
+      Model it as <strong>two stacks</strong> (back and forward: navigating
+      pushes to back, going back pops one and pushes to forward) or one list
+      with an index. The detail that shows depth: a fresh navigation
+      <strong>clears the forward stack</strong> — that's why "forward"
+      disappears after you branch off. Same structure powers undo/redo in
+      every editor.
+    </p>
+
+    <div class="q">Q36: Debounce and throttle — what problem do they solve, formally?</div>
+    <p>
+      Rate control over an event stream. <strong>Debounce</strong> answers
+      "run once after the burst ends" (search-as-you-type);
+      <strong>throttle</strong> answers "at most once per interval" (scroll
+      handlers). Formally: debounce is a trailing-edge timer reset on every
+      event; throttle is a time-bucketed sampler. Being able to say when each
+      is <em>wrong</em> (debounced scroll feels dead; throttled search sends
+      stale queries) is the senior half of the answer. Typing them is
+      Practice P25–P26.
+    </p>
+
+    <div class="q">Q37: What is structural sharing in immutable updates?</div>
+    <p>
+      When you "copy" state immutably, unchanged branches are
+      <strong>reused, not cloned</strong>:
+    </p>
+    <pre>
+const next = { ...state, user: { ...state.user, name: "Ada" } };
+// next.posts === state.posts — same reference, shared structure</pre
+    >
+    <p>
+      That's why immutable updates are cheap (O(changed path), not O(state))
+      and why <code>React.memo</code> and reducers work off reference
+      equality. It's also why spread is <strong>shallow</strong> — you copy
+      exactly the path you change, nothing more.
+    </p>
+
+    <div class="q">Q38: How would you detect a cycle in a dependency graph?</div>
+    <p>
+      DFS with three colors: white (unvisited), gray (in the current path),
+      black (done). Reaching a <strong>gray</strong> node means you've looped
+      back into your own path — a cycle. This is precisely how bundlers emit
+      "circular dependency" warnings, and the follow-up to Q32: topological
+      sort fails exactly when this DFS finds gray.
+    </p>
+
+    <!-- ============ QUICK FIRE ============ -->
+    <div class="section"></div>
+    <h1>5. Quick-Fire Round</h1>
+    <table>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+      <tr>
+        <td>Array access by index?</td>
+        <td>O(1)</td>
+      </tr>
+      <tr>
+        <td><code>Array.prototype.shift()</code>?</td>
+        <td>O(n) — every element after it reindexes</td>
+      </tr>
+      <tr>
+        <td><code>Map.get</code> / <code>Set.has</code>?</td>
+        <td>O(1) average — hashing</td>
+      </tr>
+      <tr>
+        <td>Lower bound for comparison sorts?</td>
+        <td>O(n log n) — provable, no comparison sort beats it</td>
+      </tr>
+      <tr>
+        <td>JS's sort algorithm?</td>
+        <td>Timsort (V8) — stable, required by spec since ES2019</td>
+      </tr>
+      <tr>
+        <td>BFS uses a … / DFS uses a …?</td>
+        <td>queue / stack (or recursion)</td>
+      </tr>
+      <tr>
+        <td>BST search complexity?</td>
+        <td>O(h) — log n balanced, n if degenerate</td>
+      </tr>
+      <tr>
+        <td>What's a hash collision?</td>
+        <td>Two keys, one bucket — chain or probe past it</td>
+      </tr>
+      <tr>
+        <td>Priority queue is backed by?</td>
+        <td>A binary heap — O(log n) insert/extract, O(1) peek</td>
+      </tr>
+      <tr>
+        <td>Detect a cycle in a linked list?</td>
+        <td>Floyd's slow/fast pointers — they meet iff a cycle exists</td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>Interview tip:</strong> the most-failed theory questions are
+      <strong>shift/unshift complexity</strong> (Q6),
+      <strong>Map vs Object</strong> (Q14), <strong>justifying</strong> why
+      BFS finds shortest paths (Q24) — "because it visits in distance order",
+      not just "use BFS" — and <strong>sort stability</strong> (Q26). Theory
+      earns you the question; typing wins it — drill the same patterns in
+      <a href="dsa-frontend.html">Coding Practice</a>, especially sections 1–4
+      and 7.
+    </div>
+  </body>
+</html>

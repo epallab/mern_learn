@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MERN Prep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--hub">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="#guides">Guides</a>
+        <a href="#learn">Learn</a>
+        <a href="#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <!-- ============ HERO: the deck asks first ============ -->
+      <section class="hero">
+        <div class="lede rise">
+          <p class="lede__eyebrow">// start cold</p>
+          <h1 class="lede__title">
+            You either know it in<br />ten seconds, or you<br /><em
+              >don't know it.</em
+            >
+          </h1>
+          <p class="lede__body">
+            Twenty rapid-fire cards drawn from all nine banks. Flip a few
+            before deciding where the week goes.
+          </p>
+          <ul class="keys">
+            <li><kbd>space</kbd> flip</li>
+            <li><kbd>&rarr;</kbd> next</li>
+            <li><kbd>&larr;</kbd> back</li>
+          </ul>
+        </div>
+
+        <div class="deck rise">
+          <button
+            type="button"
+            class="card"
+            id="card"
+            aria-label="Flashcard. Press space to reveal the answer, arrow keys to change card."
+          >
+            <span class="card__inner">
+              <span class="card__face card__face--q">
+                <span class="card__tag">
+                  <b id="q-src">react</b>
+                  <span>quick-fire</span>
+                </span>
+                <span class="card__text" id="q-text">
+                  Can you use async directly in useEffect?
+                </span>
+                <span class="card__foot">
+                  <span class="card__pips" id="pips" aria-hidden="true"></span>
+                  <span id="q-count">01 / 18</span>
+                </span>
+              </span>
+
+              <span class="card__face card__face--a">
+                <span class="card__tag">
+                  <b id="a-src">react</b>
+                  <span>answer</span>
+                </span>
+                <span class="card__text" id="a-text">
+                  No &mdash; define an async fn inside and call it
+                </span>
+                <span class="card__foot">
+                  <span
+                    class="card__pips"
+                    id="pips-b"
+                    aria-hidden="true"
+                  ></span>
+                  <span id="a-count">01 / 18</span>
+                </span>
+              </span>
+            </span>
+          </button>
+          <p class="sr" id="live" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- ============ INTERVIEW ZONE ============ -->
+      <section class="zone" id="guides">
+        <div class="zone__head">
+          <p class="eyebrow">// interview bank · 9 guides</p>
+          <h2 class="zone__title">Where the questions sit</h2>
+          <p class="zone__note">
+            Each bar is one guide, split by section and sized by real question
+            counts. The colors are the difficulty ramp — the same five that
+            highlight every code sample on this site. The thin line underneath
+            fills as you mark questions known.
+          </p>
+        </div>
+
+        <ul class="legend">
+          <li>
+            <span class="swatch" style="background: var(--str)"></span>Beginner
+          </li>
+          <li>
+            <span class="swatch" style="background: var(--fn)"></span
+            >Intermediate
+          </li>
+          <li>
+            <span class="swatch" style="background: var(--kw)"></span>Advanced
+          </li>
+          <li>
+            <span class="swatch" style="background: var(--num)"></span
+            >Practical
+          </li>
+          <li>
+            <span class="swatch" style="background: var(--err)"></span
+            >Quick-fire
+          </li>
+        </ul>
+
+        <ul class="guides">
+          <li>
+            <a class="guide" href="javascript-interview.html">
+              <span class="guide__id">
+                <span class="guide__name">JavaScript</span>
+                <span class="guide__sub">the language round — start here</span>
+              </span>
+              <span class="track" aria-hidden="true">
+                <span class="seg seg--1" style="flex: 10" title="Beginner — 10">10</span>
+                <span class="seg seg--2" style="flex: 10" title="Intermediate — 10">10</span>
+                <span class="seg seg--3" style="flex: 10" title="Advanced — 10">10</span>
+                <span class="seg seg--4" style="flex: 6" title="Output prediction — 6">6</span>
+                <span class="seg seg--5" style="flex: 10" title="Quick-fire — 10">10</span>
+              </span>
+              <span class="guide__n"
+                >46<span class="guide__arrow">&rarr;</span></span
+              >
+              <span class="prog" data-topic="javascript"
+                ><span class="prog__fill"></span
+              ></span>
+            </a>
+          </li>
+
+          <li>
+            <a class="guide" href="react-interview.htm">
+              <span class="guide__id">
+                <span class="guide__name">React</span>
+                <span class="guide__sub">hooks deep dive</span>
+              </span>
+              <span class="track" aria-hidden="true">
+                <span class="seg seg--1" style="flex: 10" title="Beginner — 10">10</span>
+                <span class="seg seg--2" style="flex: 12" title="Intermediate, hooks deep dive — 12">12</span>
+                <span class="seg seg--3" style="flex: 8" title="Advanced — 8">8</span>
+                <span class="seg seg--4" style="flex: 2" title="Practical coding tasks — 2">2</span>
+                <span class="seg seg--5" style="flex: 10" title="Quick-fire — 10">10</span>
+              </span>
+              <span class="guide__n"
+                >42<span class="guide__arrow">&rarr;</span></span
+              >
+              <span class="prog" data-topic="react"
+                ><span class="prog__fill"></span
+              ></span>
+            </a>
+          </li>
+
+          <li>
+            <a class="guide" href="nodejs-interview.html">
+              <span class="guide__id">
+                <span class="guide__name">Node.js</span>
+                <span class="guide__sub">+ output prediction</span>
+              </span>
+              <span class="track" aria-hidden="true">
+                <span class="seg seg--1" style="flex: 10" title="Beginner — 10">10</span>
+                <span class="seg seg--2" style="flex: 10" title="Intermediate — 10">10</span>
+                <span class="seg seg--3" style="flex: 8" title="Advanced — 8">8</span>
+                <span class="seg seg--4" style="flex: 4" title="Output prediction + tasks — 4">4</span>
+                <span class="seg seg--5" style="flex: 7" title="Quick-fire — 7">7</span>
+              </span>
+              <span class="guide__n"
+                >39<span class="guide__arrow">&rarr;</span></span
+              >
+              <span class="prog" data-topic="node"
+                ><span class="prog__fill"></span
+              ></span>
+            </a>
+          </li>
+
+          <li>
+            <a class="guide" href="express-interview.html">
+              <span class="guide__id">
+                <span class="guide__name">Express</span>
+                <span class="guide__sub">middleware heavy</span>
+              </span>
+              <span class="track" aria-hidden="true">
+                <span class="seg seg--1" style="flex: 10" title="Beginner — 10">10</span>
+                <span class="seg seg--2" style="flex: 10" title="Intermediate — 10">10</span>
+                <span class="seg seg--3" style="flex: 10" title="Advanced — 10">10</span>
+                <span class="seg seg--4" style="flex: 1" title="Practical: full CRUD API — 1">1</span>
+                <span class="seg seg--5" style="flex: 9" title="Quick-fire — 9">9</span>
+              </span>
+              <span class="guide__n"
+                >40<span class="guide__arrow">&rarr;</span></span
+              >
+              <span class="prog" data-topic="express"
+                ><span class="prog__fill"></span
+              ></span>
+            </a>
+          </li>
+
+          <li>
+            <a class="guide" href="mongodb-interview.html">
+              <span class="guide__id">
+                <span class="guide__name">MongoDB</span>
+                <span class="guide__sub">longest rapid round</span>
+              </span>
+              <span class="track" aria-hidden="true">
+                <span class="seg seg--1" style="flex: 10" title="Beginner — 10">10</span>
+                <span class="seg seg--2" style="flex: 10" title="Intermediate — 10">10</span>
+                <span class="seg seg--3" style="flex: 8" title="Advanced — 8">8</span>
+                <span class="seg seg--4" style="flex: 3" title="Practical tasks — 3">3</span>
+                <span class="seg seg--5" style="flex: 11" title="Quick-fire — 11">11</span>
+              </span>
+              <span class="guide__n"
+                >42<span class="guide__arrow">&rarr;</span></span
+              >
+              <span class="prog" data-topic="mongodb"
+                ><span class="prog__fill"></span
+              ></span>
+            </a>
+          </li>
+
+          <li>
+            <a class="guide" href="system-design-interview.html">
+              <span class="guide__id">
+                <span class="guide__name">System &amp; API design</span>
+                <span class="guide__sub">the architecture round</span>
+              </span>
+              <span class="track" aria-hidden="true">
+                <span class="seg seg--1" style="flex: 8" title="HTTP & REST fundamentals — 8">8</span>
+                <span class="seg seg--2" style="flex: 10" title="Auth, validation & data flow — 10">10</span>
+                <span class="seg seg--3" style="flex: 8" title="Scaling & architecture — 8">8</span>
+                <span class="seg seg--4" style="flex: 3" title="Design tasks — 3">3</span>
+                <span class="seg seg--5" style="flex: 8" title="Quick-fire — 8">8</span>
+              </span>
+              <span class="guide__n"
+                >37<span class="guide__arrow">&rarr;</span></span
+              >
+              <span class="prog" data-topic="system"
+                ><span class="prog__fill"></span
+              ></span>
+            </a>
+          </li>
+
+          <li>
+            <a class="guide" href="html-css-interview.html">
+              <span class="guide__id">
+                <span class="guide__name">HTML &amp; CSS</span>
+                <span class="guide__sub">layout &amp; rendering pipeline</span>
+              </span>
+              <span class="track" aria-hidden="true">
+                <span class="seg seg--1" style="flex: 8" title="HTML, semantics & a11y — 8">8</span>
+                <span class="seg seg--2" style="flex: 10" title="CSS core mechanics — 10">10</span>
+                <span class="seg seg--3" style="flex: 8" title="Flexbox, grid & responsive — 8">8</span>
+                <span class="seg seg--4" style="flex: 6" title="Rendering & performance — 6">6</span>
+                <span class="seg seg--5" style="flex: 10" title="Quick-fire — 10">10</span>
+              </span>
+              <span class="guide__n"
+                >42<span class="guide__arrow">&rarr;</span></span
+              >
+              <span class="prog" data-topic="htmlcss"
+                ><span class="prog__fill"></span
+              ></span>
+            </a>
+          </li>
+
+          <li>
+            <a class="guide" href="dsa-interview.html">
+              <span class="guide__id">
+                <span class="guide__name">DSA theory</span>
+                <span class="guide__sub">before they let you code</span>
+              </span>
+              <span class="track" aria-hidden="true">
+                <span class="seg seg--1" style="flex: 10" title="Complexity & Big-O — 10">10</span>
+                <span class="seg seg--2" style="flex: 12" title="Data structures — 12">12</span>
+                <span class="seg seg--3" style="flex: 10" title="Algorithms — 10">10</span>
+                <span class="seg seg--4" style="flex: 6" title="DSA in the browser — 6">6</span>
+                <span class="seg seg--5" style="flex: 10" title="Quick-fire — 10">10</span>
+              </span>
+              <span class="guide__n"
+                >48<span class="guide__arrow">&rarr;</span></span
+              >
+              <span class="prog" data-topic="dsa-theory"
+                ><span class="prog__fill"></span
+              ></span>
+            </a>
+          </li>
+
+          <li>
+            <a class="guide guide--topic" href="mern-guide.html">
+              <span class="guide__id">
+                <span class="guide__name">MERN overview</span>
+                <span class="guide__sub">by topic, not difficulty</span>
+              </span>
+              <span class="track" aria-hidden="true">
+                <span class="seg" style="flex: 3" title="JavaScript fundamentals — 3">JS</span>
+                <span class="seg" style="flex: 4" title="Node.js — 4">Node</span>
+                <span class="seg" style="flex: 4" title="Express.js — 4">Exp</span>
+                <span class="seg" style="flex: 4" title="MongoDB — 4">Mongo</span>
+                <span class="seg" style="flex: 6" title="React — 6">React</span>
+                <span class="seg" style="flex: 4" title="Full-stack + challenges — 4">Stack</span>
+              </span>
+              <span class="guide__n"
+                >25<span class="guide__arrow">&rarr;</span></span
+              >
+              <span class="prog" data-topic="mern"
+                ><span class="prog__fill"></span
+              ></span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="zone__foot">
+          <span>marks live in this browser only — nothing leaves your machine</span>
+          <button type="button" class="reset-marks">Reset all marks</button>
+        </div>
+      </section>
+
+      <!-- ============ LEARN ZONE ============ -->
+      <section class="zone" id="learn">
+        <div class="zone__head">
+          <p class="eyebrow">// learn · 2 tracks</p>
+          <h2 class="zone__title">Build the base the questions assume</h2>
+          <p class="zone__note">
+            Teaching pages, not Q&amp;A — every concept ends with the angle an
+            interviewer takes on it.
+          </p>
+        </div>
+
+        <div class="tracks">
+          <a class="trackcard" href="learn-javascript.html">
+            <p class="trackcard__eyebrow">8 modules · 45 concepts</p>
+            <p class="trackcard__title">Learn <span>JavaScript</span></p>
+            <ul class="trackcard__mods">
+              <li>values &amp; coercion</li>
+              <li>scope &amp; closures</li>
+              <li>functions &amp; this</li>
+              <li>objects &amp; prototypes</li>
+              <li>arrays &amp; iteration</li>
+              <li>async &amp; the event loop</li>
+              <li>the browser</li>
+              <li>modern essentials</li>
+            </ul>
+            <span class="trackcard__go">start the track &rarr;</span>
+          </a>
+
+          <a class="trackcard" href="learn-typescript.html">
+            <p class="trackcard__eyebrow">9 modules · 40 concepts</p>
+            <p class="trackcard__title">Learn <span>TypeScript</span></p>
+            <ul class="trackcard__mods">
+              <li>setup &amp; strictness</li>
+              <li>type basics</li>
+              <li>narrowing</li>
+              <li>object types</li>
+              <li>functions &amp; generics</li>
+              <li>utility types</li>
+              <li>classes &amp; enums</li>
+              <li>TS in React</li>
+              <li>TS in Node + migration</li>
+            </ul>
+            <span class="trackcard__go">start the track &rarr;</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ============ PRACTICE ZONE ============ -->
+      <section class="zone" id="practice">
+        <div class="zone__head">
+          <p class="eyebrow">// practice · 57 problems</p>
+          <h2 class="zone__title">Type it from a blank editor</h2>
+          <p class="zone__note">
+            The patterns interviewers screen with, plus the machine-coding
+            canon — debounce, EventEmitter, Promise.all, LRU. Hints and
+            solutions stay folded until you ask.
+          </p>
+        </div>
+
+        <div class="patterns">
+          <a class="pattern" href="dsa-frontend.html#sec-1">
+            <span class="pattern__name">Two pointers</span>
+            <span class="pattern__n">5 problems · warm-up</span>
+          </a>
+          <a class="pattern" href="dsa-frontend.html#sec-2">
+            <span class="pattern__name">Windows &amp; hashmaps</span>
+            <span class="pattern__n">6 problems</span>
+          </a>
+          <a class="pattern" href="dsa-frontend.html#sec-3">
+            <span class="pattern__name">Stacks &amp; search</span>
+            <span class="pattern__n">7 problems</span>
+          </a>
+          <a class="pattern" href="dsa-frontend.html#sec-4">
+            <span class="pattern__name">Lists &amp; trees</span>
+            <span class="pattern__n">6 problems · DOM included</span>
+          </a>
+          <a class="pattern" href="dsa-frontend.html#sec-5">
+            <span class="pattern__name">Function utilities</span>
+            <span class="pattern__n">8 builds · debounce &amp; friends</span>
+          </a>
+          <a class="pattern" href="dsa-frontend.html#sec-6">
+            <span class="pattern__name">Data &amp; async</span>
+            <span class="pattern__n">8 builds · Promise.all, LRU</span>
+          </a>
+          <a class="pattern" href="dsa-frontend.html#sec-7">
+            <span class="pattern__name">Kadane &amp; DP-lite</span>
+            <span class="pattern__n">7 problems · the classics</span>
+          </a>
+          <a class="pattern" href="dsa-frontend.html#sec-8">
+            <span class="pattern__name">Strings &amp; arrays</span>
+            <span class="pattern__n">5 problems · drill fast</span>
+          </a>
+          <a class="pattern" href="dsa-frontend.html#sec-9">
+            <span class="pattern__name">The browser round</span>
+            <span class="pattern__n">5 builds · DOM walks, mapLimit</span>
+          </a>
+        </div>
+
+        <div class="zone__foot">
+          <span>practice progress</span>
+          <span class="prog" data-topic="dsa" style="flex: 1; max-width: 320px"
+            ><span class="prog__fill"></span
+          ></span>
+          <a href="dsa-frontend.html" style="font: inherit">open all 57 &rarr;</a>
+        </div>
+      </section>
+
+      <!-- ============ FAILURE MAP ============ -->
+      <section class="zone">
+        <div class="zone__head">
+          <p class="eyebrow">// triage</p>
+          <h2 class="zone__title">Where people actually fail</h2>
+          <p class="zone__note">
+            Pulled from the closing notes of each guide. Short on time? These
+            go first.
+          </p>
+        </div>
+
+        <ul class="fails">
+          <li class="fail">
+            <p class="fail__where">JavaScript</p>
+            <ul class="fail__list">
+              <li><b>Event-loop ordering</b> <code>Q21 Q32 Q33</code></li>
+              <li><b>Closures in loops</b> <code>Q12 Q36</code></li>
+              <li><b>this binding</b> <code>Q13 Q34</code></li>
+            </ul>
+          </li>
+
+          <li class="fail">
+            <p class="fail__where">React</p>
+            <ul class="fail__list">
+              <li><b>Stale closures</b> <code>Q23</code></li>
+              <li><b>Batched setState output</b> <code>Q11</code></li>
+              <li><b>useMemo vs useCallback</b> <code>Q16</code></li>
+              <li>Todo app + debounced search, live</li>
+            </ul>
+          </li>
+
+          <li class="fail">
+            <p class="fail__where">Node.js</p>
+            <ul class="fail__list">
+              <li><b>The event loop</b> <code>Q11&ndash;Q12</code></li>
+              <li><b>Scaling</b> <code>Q21</code></li>
+              <li>Explain both out loud, with code</li>
+            </ul>
+          </li>
+
+          <li class="fail">
+            <p class="fail__where">Express</p>
+            <ul class="fail__list">
+              <li><b>Middleware</b> <code>Q3 Q11 Q14 Q19</code></li>
+              <li><b>Async error handling</b> <code>Q21</code></li>
+              <li>&ldquo;What if you forget next()?&rdquo;</li>
+              <li>&ldquo;Why is req.body undefined?&rdquo;</li>
+            </ul>
+          </li>
+
+          <li class="fail">
+            <p class="fail__where">MongoDB</p>
+            <ul class="fail__list">
+              <li><b>Aggregation pipelines</b> <code>Q11</code></li>
+              <li><b>Embedding vs referencing</b> <code>Q16</code></li>
+              <li>$group and $lookup, by hand</li>
+              <li>16 MB limit + unbounded arrays</li>
+            </ul>
+          </li>
+
+          <li class="fail">
+            <p class="fail__where">System</p>
+            <ul class="fail__list">
+              <li><b>Token storage tradeoffs</b> <code>Q10</code></li>
+              <li><b>Cache invalidation</b> <code>Q19</code></li>
+              <li>URL shortener, end to end</li>
+            </ul>
+          </li>
+
+          <li class="fail">
+            <p class="fail__where">HTML &amp; CSS</p>
+            <ul class="fail__list">
+              <li><b>Specificity math</b> <code>Q9</code></li>
+              <li><b>Absolute's containing block</b> <code>Q12</code></li>
+              <li><b>min-width: auto flex trap</b> <code>Q26</code></li>
+            </ul>
+          </li>
+
+          <li class="fail">
+            <p class="fail__where">DSA theory</p>
+            <ul class="fail__list">
+              <li><b>shift/unshift complexity</b> <code>Q6</code></li>
+              <li><b>Map vs Object</b> <code>Q14</code></li>
+              <li><b>Justifying BFS for shortest path</b> <code>Q24</code></li>
+              <li><b>Sort stability</b> <code>Q26</code></li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ============ PLAN ============ -->
+      <section class="zone">
+        <div class="zone__head">
+          <p class="eyebrow">// four weeks</p>
+          <h2 class="zone__title">If you have a month</h2>
+          <p class="zone__note">
+            The schedule from the overview guide — colors track the same ramp.
+            It gets hotter as you go.
+          </p>
+        </div>
+
+        <ol class="plan">
+          <li class="leg">
+            <p class="leg__when">Week 1&ndash;2</p>
+            <p class="leg__what">
+              JavaScript deep-dive, then Node and Express
+            </p>
+          </li>
+          <li class="leg">
+            <p class="leg__when">Week 3</p>
+            <p class="leg__what">MongoDB, and build a REST API from scratch</p>
+          </li>
+          <li class="leg">
+            <p class="leg__when">Week 4</p>
+            <p class="leg__what">
+              React hooks, state management, a full CRUD app
+            </p>
+          </li>
+          <li class="leg">
+            <p class="leg__when">Final days</p>
+            <p class="leg__what">
+              System design basics, revise your projects, mock interviews
+            </p>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // Real pairs, lifted from the quick-fire rounds of all nine banks.
+        var DECK = [
+          {
+            s: "react",
+            q: "Can you use async directly in useEffect?",
+            a: "No — define an async fn inside and call it",
+          },
+          {
+            s: "javascript",
+            q: "What does <code>0.1 + 0.2 === 0.3</code> return?",
+            a: "false — binary floats; compare with <code>Number.EPSILON</code>",
+          },
+          {
+            s: "node",
+            q: "Default thread pool size?",
+            a: "4, configurable via <code>UV_THREADPOOL_SIZE</code>",
+          },
+          {
+            s: "html/css",
+            q: "rem vs em?",
+            a: "rem = root font size; em = the current element's",
+          },
+          {
+            s: "mongodb",
+            q: "Max document size?",
+            a: "16 MB — use GridFS for anything larger",
+          },
+          {
+            s: "system",
+            q: "401 vs 403?",
+            a: "401 = who are you? · 403 = I know you, and no",
+          },
+          {
+            s: "express",
+            q: "res.redirect() default status?",
+            a: "302 (Found)",
+          },
+          {
+            s: "javascript",
+            q: "Promise callback vs setTimeout(0) — which runs first?",
+            a: "The promise — microtasks drain before every macrotask",
+          },
+          {
+            s: "practice",
+            q: "Debounce vs throttle, one line each?",
+            a: "Debounce waits for silence; throttle enforces a rhythm",
+          },
+          {
+            s: "react",
+            q: "Why immutable state updates?",
+            a: "React detects changes by reference comparison",
+          },
+          {
+            s: "mongodb",
+            q: "What does .lean() do?",
+            a: "Returns plain JS objects — skips Mongoose overhead",
+          },
+          {
+            s: "system",
+            q: "Which HTTP methods are idempotent?",
+            a: "GET, PUT, DELETE — not POST",
+          },
+          {
+            s: "express",
+            q: "What is helmet?",
+            a: "Sets ~15 security-related HTTP headers",
+          },
+          {
+            s: "node",
+            q: "<code>npm ci</code> vs <code>npm install</code>?",
+            a: "<code>ci</code> installs exactly from the lock file — faster, for CI/CD",
+          },
+          {
+            s: "html/css",
+            q: "display: none vs visibility: hidden?",
+            a: "none leaves the flow entirely; hidden keeps its space",
+          },
+          {
+            s: "javascript",
+            q: "typeof null?",
+            a: "\"object\" — the historic bug; memorize it",
+          },
+          {
+            s: "react",
+            q: "What is a Portal?",
+            a: "Render children outside the parent DOM, for modals: <code>createPortal(child, node)</code>",
+          },
+          {
+            s: "practice",
+            q: "The LRU-cache trick in JavaScript?",
+            a: "Map keeps insertion order — delete + set refreshes recency",
+          },
+          {
+            s: "dsa",
+            q: "<code>Array.prototype.shift()</code> — complexity?",
+            a: "O(n) — every element reindexes; use an index pointer for queues",
+          },
+          {
+            s: "dsa",
+            q: "Shortest path in an unweighted graph — BFS or DFS?",
+            a: "BFS — it visits nodes in distance order, so first arrival is shortest",
+          },
+        ];
+
+        var card = document.getElementById("card");
+        if (!card) return;
+
+        var qText = document.getElementById("q-text");
+        var aText = document.getElementById("a-text");
+        var qSrc = document.getElementById("q-src");
+        var aSrc = document.getElementById("a-src");
+        var counts = [
+          document.getElementById("q-count"),
+          document.getElementById("a-count"),
+        ];
+        var live = document.getElementById("live");
+        var pipRows = [
+          document.getElementById("pips"),
+          document.getElementById("pips-b"),
+        ];
+
+        var i = 0;
+        var flipped = false;
+
+        pipRows.forEach(function (row) {
+          for (var n = 0; n < DECK.length; n++) {
+            var p = document.createElement("span");
+            p.className = "pip";
+            row.appendChild(p);
+          }
+        });
+
+        function pad(n) {
+          return (n < 10 ? "0" : "") + n;
+        }
+
+        function paint() {
+          var c = DECK[i];
+          qText.innerHTML = c.q;
+          aText.innerHTML = c.a;
+          qSrc.textContent = c.s;
+          aSrc.textContent = c.s;
+          var label = pad(i + 1) + " / " + pad(DECK.length);
+          counts.forEach(function (el) {
+            el.textContent = label;
+          });
+          pipRows.forEach(function (row) {
+            var pips = row.children;
+            for (var n = 0; n < pips.length; n++) {
+              pips[n].className = n === i ? "pip is-on" : "pip";
+            }
+          });
+        }
+
+        function flip() {
+          flipped = !flipped;
+          card.classList.toggle("is-flipped", flipped);
+          live.textContent = flipped
+            ? "Answer: " + aText.textContent.trim()
+            : "Question: " + qText.textContent.trim();
+        }
+
+        var noMotion =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        function go(step) {
+          var wasFlipped = flipped;
+          i = (i + step + DECK.length) % DECK.length;
+          flipped = false;
+          card.classList.remove("is-flipped");
+
+          if (wasFlipped && !(noMotion && noMotion.matches)) {
+            // let the card turn back before the face swaps
+            window.setTimeout(paint, 260);
+          } else {
+            paint();
+          }
+
+          live.textContent =
+            "Card " +
+            (i + 1) +
+            " of " +
+            DECK.length +
+            ". " +
+            DECK[i].q.replace(/<[^>]+>/g, "");
+        }
+
+        card.addEventListener("click", flip);
+
+        document.addEventListener("keydown", function (e) {
+          if (e.target !== card && e.target !== document.body) return;
+          if (e.key === "ArrowRight") {
+            e.preventDefault();
+            go(1);
+          } else if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            go(-1);
+          } else if (
+            e.target === document.body &&
+            (e.key === " " || e.key === "Enter")
+          ) {
+            e.preventDefault();
+            flip();
+          }
+        });
+
+        paint();
+      })();
+    </script>
+  </body>
+</html>

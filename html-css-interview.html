@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML &amp; CSS Interview Questions — Complete Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--guide" data-topic="htmlcss">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>HTML &amp; CSS<br />Interview Questions</h1>
+      <p>The frontend floor — semantics, layout, and how pixels get painted.</p>
+      <p style="margin-top: 10px">
+        Semantics &bull; Specificity &bull; Flexbox &amp; Grid &bull; Rendering
+        &bull; A11y
+      </p>
+      <div class="badge">32 Questions + Quick-Fire</div>
+    </div>
+
+    <!-- ============ HTML & SEMANTICS ============ -->
+    <span class="level beginner">HTML &amp; SEMANTICS</span>
+    <h1>1. HTML, Semantics &amp; Accessibility</h1>
+
+    <div class="q">Q1: Why does semantic HTML matter?</div>
+    <p>
+      Elements that say what they <em>are</em> —
+      <code>&lt;nav&gt;</code>, <code>&lt;button&gt;</code>,
+      <code>&lt;article&gt;</code> — give you three things divs don't:
+      <strong>accessibility</strong> (screen readers get landmarks and roles
+      free), <strong>SEO</strong> (crawlers understand structure), and
+      <strong>built-in behavior</strong> (buttons are focusable, keyboard
+      operable, and clickable by default). A
+      <code>&lt;div onClick&gt;</code> re-implements all of that badly.
+    </p>
+
+    <div class="q">Q2: header vs section vs article vs aside — when each?</div>
+    <ul>
+      <li><strong>header/footer</strong> — intro/outro of the page <em>or</em> of any section</li>
+      <li><strong>nav</strong> — major navigation blocks only</li>
+      <li><strong>main</strong> — the unique content, once per page</li>
+      <li>
+        <strong>article</strong> — self-contained, redistributable (a post, a
+        card, a comment)
+      </li>
+      <li><strong>section</strong> — a thematic grouping that deserves a heading</li>
+      <li><strong>aside</strong> — tangential content (sidebar, pull quote)</li>
+    </ul>
+    <p>Test: could it stand alone in a feed? → article. Needs a heading? → section. Neither? → div is fine.</p>
+
+    <div class="q">Q3: What makes a form accessible?</div>
+    <ul>
+      <li>
+        Every input gets a real <code>&lt;label for="id"&gt;</code> —
+        placeholder text is not a label (it vanishes on type)
+      </li>
+      <li>Group radios/checkboxes in <code>&lt;fieldset&gt;+&lt;legend&gt;</code></li>
+      <li>
+        Errors: tie the message to the field with
+        <code>aria-describedby</code> and set <code>aria-invalid</code>
+      </li>
+      <li>Right <code>type=</code> (email, tel) and <code>autocomplete=</code> attributes</li>
+      <li>Submit works with Enter; focus moves to the first error</li>
+    </ul>
+
+    <div class="q">Q4: Rules for alt text?</div>
+    <p>
+      Describe the <em>function</em>, not the pixels: a logo linking home is
+      <code>alt="Acme home"</code>. Decorative images get
+      <code>alt=""</code> (empty, not missing) so screen readers skip them.
+      Never start with "image of" — it's announced anyway. Complex charts get
+      a short alt plus a longer text alternative nearby.
+    </p>
+
+    <div class="q">Q5: script defer vs async vs plain?</div>
+    <ul>
+      <li><strong>plain</strong> — blocks parsing while it downloads and runs</li>
+      <li>
+        <strong>async</strong> — downloads in parallel, runs the moment it
+        arrives (any order) — analytics, ads
+      </li>
+      <li>
+        <strong>defer</strong> — downloads in parallel, runs after parsing, in
+        document order — the default choice for app code
+      </li>
+    </ul>
+    <p><code>type="module"</code> scripts defer by default.</p>
+
+    <div class="q">Q6: What does the viewport meta tag do?</div>
+    <pre>
+&lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;</pre
+    >
+    <p>
+      Without it, mobile browsers render a ~980px virtual page and zoom out —
+      your media queries never fire. This line makes the layout viewport match
+      the device width so responsive CSS works. Don't add
+      <code>user-scalable=no</code> — blocking zoom is an accessibility
+      failure.
+    </p>
+
+    <div class="q">Q7: What are data-* attributes for?</div>
+    <p>
+      Attaching app data to markup without inventing invalid attributes:
+      <code>data-user-id="42"</code> → <code>el.dataset.userId</code>. Good
+      for delegation targets, test hooks (<code>data-testid</code>), and CSS
+      hooks (<code>[data-state="open"]</code>). Not a database — anything big
+      or sensitive belongs in JS state.
+    </p>
+
+    <div class="q">Q8: Which SEO levers does the developer own?</div>
+    <ul>
+      <li>Unique <code>&lt;title&gt;</code> and meta description per page</li>
+      <li>One h1, a logical heading outline, semantic landmarks</li>
+      <li>Canonical URLs; Open Graph tags for sharing</li>
+      <li>Performance (Core Web Vitals rank) and mobile rendering</li>
+      <li>
+        For SPAs: server-side rendering or prerendering so crawlers see
+        content, not an empty root div
+      </li>
+    </ul>
+
+    <!-- ============ CSS CORE ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">CSS CORE</span>
+    <h1>2. CSS Core Mechanics</h1>
+
+    <div class="q">Q9: How is specificity calculated?</div>
+    <p>
+      Three-column score <strong>(a, b, c)</strong>: a = id selectors, b =
+      classes/attributes/pseudo-classes, c = elements/pseudo-elements. Compare
+      column by column; later rules win ties. Inline styles outrank all
+      selectors; <code>!important</code> outranks inline.
+    </p>
+    <pre>
+#nav .item a      → (1, 1, 1)
+.nav .item.active → (0, 3, 0)   loses to the id despite more classes
+:where(.x)        → (0, 0, 0)   :where zeroes its contents — great for resets
+a:hover           → (0, 1, 1)</pre
+    >
+
+    <div class="q">Q10: Box model — and why set box-sizing: border-box?</div>
+    <p>
+      Every box = content + padding + border + margin. Default
+      (<code>content-box</code>): <code>width</code> means content only, so
+      padding/border grow the box past your number.
+      <strong>border-box</strong> makes width mean "the visible box" —
+      padding and border squeeze inward. Every sane codebase starts with:
+    </p>
+    <pre>
+*, *::before, *::after { box-sizing: border-box; }</pre
+    >
+
+    <div class="q">Q11: display: none vs visibility: hidden vs opacity: 0?</div>
+    <table>
+      <tr>
+        <th></th>
+        <th>Takes space</th>
+        <th>Clickable</th>
+        <th>In a11y tree</th>
+      </tr>
+      <tr>
+        <td><code>display: none</code></td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><code>visibility: hidden</code></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><code>opacity: 0</code></td>
+        <td>Yes</td>
+        <td><strong>Yes</strong></td>
+        <td>Yes</td>
+      </tr>
+    </table>
+    <p>opacity is animatable and compositor-cheap; the other two are not animatable.</p>
+
+    <div class="q">Q12: The position values — and what anchors absolute?</div>
+    <ul>
+      <li><strong>static</strong> — default flow; top/left ignored</li>
+      <li><strong>relative</strong> — nudged from its own spot; original space kept; becomes an anchor</li>
+      <li>
+        <strong>absolute</strong> — out of flow, positioned against the
+        <em>nearest positioned ancestor</em> (else the initial containing
+        block) — forgetting <code>position: relative</code> on the parent is
+        the classic bug
+      </li>
+      <li><strong>fixed</strong> — pinned to the viewport (unless an ancestor has transform/filter — that becomes the containing block; gotcha)</li>
+      <li><strong>sticky</strong> — relative until its scroll threshold, then pinned within its parent</li>
+    </ul>
+
+    <div class="q">Q13: px vs em vs rem vs viewport units — when each?</div>
+    <ul>
+      <li><strong>rem</strong> — type scale and spacing; respects user font-size settings</li>
+      <li><strong>em</strong> — relative to current font size: padding that scales with the text it wraps</li>
+      <li><strong>px</strong> — hairlines, borders, shadows — things that shouldn't scale</li>
+      <li><strong>vw/vh, %</strong> — layout proportions; <code>dvh</code> for mobile browser chrome</li>
+      <li><strong>clamp(min, fluid, max)</strong> — fluid type without media queries</li>
+    </ul>
+
+    <div class="q">Q14: Which properties inherit — and how do inherit/initial/unset work?</div>
+    <p>
+      Text-ish properties inherit (color, font-*, line-height, text-align,
+      visibility); box-ish ones don't (margin, padding, border, width,
+      background). Keywords: <code>inherit</code> forces the parent's value,
+      <code>initial</code> the spec default, <code>unset</code> = inherit if
+      inheritable else initial, <code>revert</code> = back to browser
+      stylesheet.
+    </p>
+
+    <div class="q">Q15: Pseudo-class vs pseudo-element?</div>
+    <p>
+      <strong>Pseudo-class (:)</strong> — a <em>state</em> of an existing
+      element: <code>:hover</code>, <code>:focus-visible</code>,
+      <code>:nth-child</code>, <code>:not()</code>, <code>:has()</code>.
+      <strong>Pseudo-element (::)</strong> — a <em>generated part</em>:
+      <code>::before/::after</code> (need <code>content</code>),
+      <code>::placeholder</code>, <code>::selection</code>.
+      <code>:has()</code> is the newsworthy one — "a parent selector":
+      <code>label:has(input:invalid)</code>.
+    </p>
+
+    <div class="q">Q16: CSS custom properties — why better than Sass variables?</div>
+    <p>
+      They live at <em>runtime</em> in the cascade: themable per scope
+      (<code>[data-theme="dark"] { --bg: … }</code>), changeable from JS,
+      readable in any rule via <code>var(--bg, fallback)</code>. Sass
+      variables compile away — one theme, fixed forever. This app's theme
+      toggle is exactly this pattern.
+    </p>
+
+    <div class="q">Q17: Why does a huge z-index sometimes do nothing?</div>
+    <p>
+      z-index only competes <em>within the same stacking context</em>. A new
+      context is created by a positioned element with z-index, plus opacity
+      &lt; 1, transform, filter, fixed/sticky, and others. If your dropdown's
+      parent creates a context at z-index 1, nothing inside can escape above a
+      sibling context at 2 — fix the <em>parents'</em> ordering, or portal the
+      dropdown out (what React portals are for).
+    </p>
+
+    <div class="q">Q18: Your go-to centering techniques?</div>
+    <pre>
+/* the default answer */
+.parent { display: flex; justify-content: center; align-items: center; }
+
+/* one-liner grid */
+.parent { display: grid; place-items: center; }
+
+/* overlay / unknown size */
+.child { position: absolute; inset: 0; margin: auto; width: fit-content; height: fit-content; }
+
+/* just horizontal, block element */
+.child { margin-inline: auto; max-width: 60ch; }</pre
+    >
+
+    <!-- ============ LAYOUT ============ -->
+    <div class="section"></div>
+    <span class="level advanced">LAYOUT SYSTEMS</span>
+    <h1>3. Flexbox, Grid &amp; Responsive</h1>
+
+    <div class="q">Q19: Flexbox mental model?</div>
+    <p>
+      One dimension at a time. The container sets direction
+      (<code>flex-direction</code>), distribution along the main axis
+      (<code>justify-content</code>), alignment on the cross axis
+      (<code>align-items</code>), and wrapping. Children negotiate size via
+      <code>flex-grow / flex-shrink / flex-basis</code>. Reach for it for
+      toolbars, nav rows, card innards — anything that is a <em>line</em> of
+      things.
+    </p>
+
+    <div class="q">Q20: What does flex: 1 actually mean?</div>
+    <pre>
+flex: 1        →  flex: 1 1 0%     (grow 1, shrink 1, basis 0)
+flex: auto     →  flex: 1 1 auto   (starts from content size)
+flex: none     →  flex: 0 0 auto   (rigid)</pre
+    >
+    <p>
+      With basis 0, spare space is shared purely by grow ratios — three
+      <code>flex: 1</code> children become exact thirds regardless of
+      content. With basis auto, bigger content keeps a bigger share.
+    </p>
+
+    <div class="q">Q21: When Grid over Flexbox?</div>
+    <p>
+      Grid is two-dimensional and <strong>container-driven</strong>: the
+      parent defines tracks and children snap into them — page shells,
+      dashboards, card grids, anything where rows and columns must agree.
+      Flexbox is content-driven and one-dimensional. They compose: grid for
+      the layout, flex inside each cell.
+    </p>
+    <pre>
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;   /* the whole responsive card grid, no media queries */
+}</pre
+    >
+
+    <div class="q">Q22: Describe a mobile-first responsive strategy.</div>
+    <ul>
+      <li>Base styles = smallest screen; <code>min-width</code> queries layer complexity upward</li>
+      <li>Breakpoints where the <em>content</em> breaks, not at device names</li>
+      <li>Fluid foundations first: <code>clamp()</code> type, <code>auto-fit/minmax</code> grids, max-width measures</li>
+      <li>Media queries become the exception, not the system</li>
+    </ul>
+
+    <div class="q">Q23: Media queries vs container queries?</div>
+    <p>
+      Media queries ask about the <em>viewport</em>; container queries
+      (<code>@container</code>) ask about the <em>component's own box</em> —
+      so a card can switch layout based on the column it landed in, not the
+      screen. Mark the parent with <code>container-type: inline-size</code>.
+      This is the modern answer for reusable component libraries.
+    </p>
+
+    <div class="q">Q24: Responsive images — srcset vs picture?</div>
+    <pre>
+&lt;!-- same image, resolution switching: browser picks --&gt;
+&lt;img srcset="hero-480.jpg 480w, hero-1200.jpg 1200w"
+     sizes="(max-width: 600px) 100vw, 600px" src="hero-1200.jpg" alt="…" /&gt;
+
+&lt;!-- different crops / formats: you decide --&gt;
+&lt;picture&gt;
+  &lt;source type="image/avif" srcset="hero.avif" /&gt;
+  &lt;source media="(max-width: 600px)" srcset="hero-square.jpg" /&gt;
+  &lt;img src="hero.jpg" alt="…" /&gt;
+&lt;/picture&gt;</pre
+    >
+    <p>Plus <code>loading="lazy"</code> below the fold and explicit width/height to prevent layout shift.</p>
+
+    <div class="q">Q25: Page scrolls sideways on mobile — how do you debug?</div>
+    <p>
+      Something is wider than the viewport: unwrapped long strings, fixed
+      widths, 100vw + padding (100vw ignores the scrollbar), negative margins,
+      or an unconstrained flex/grid child. Find it with devtools by deleting
+      halves, or outline everything:
+      <code>* { outline: 1px solid red }</code>. Fixes:
+      <code>max-width: 100%</code> on media, <code>overflow-wrap:
+      break-word</code>, <code>minmax(0, 1fr)</code> instead of bare 1fr.
+    </p>
+
+    <div class="q">Q26: The flexbox overflow gotcha — min-width: auto?</div>
+    <p>
+      Flex (and grid) children default to <code>min-width: auto</code> — they
+      refuse to shrink below their content, so one long unbreakable string
+      blows the layout open. Fix on the child that should give way:
+      <code>min-width: 0</code> (or <code>overflow: hidden</code>), then
+      ellipsis works too:
+    </p>
+    <pre>
+.row { display: flex; }
+.row .title { min-width: 0; white-space: nowrap;
+              overflow: hidden; text-overflow: ellipsis; }</pre
+    >
+
+    <!-- ============ RENDERING ============ -->
+    <div class="section"></div>
+    <span class="level practical">RENDERING &amp; PERFORMANCE</span>
+    <h1>4. Rendering Pipeline &amp; Performance</h1>
+
+    <div class="q">Q27: Walk the critical rendering path.</div>
+    <p>
+      HTML → <strong>DOM</strong>; CSS → <strong>CSSOM</strong> (CSS is
+      render-blocking); DOM+CSSOM → <strong>render tree</strong> (visible
+      nodes) → <strong>layout</strong> (geometry) → <strong>paint</strong>
+      (pixels into layers) → <strong>composite</strong> (GPU stacks layers).
+      Speed it up: minimal critical CSS, defer JS, preload key assets, don't
+      make the browser redo layout constantly.
+    </p>
+
+    <div class="q">Q28: Reflow vs repaint — and what's cheap to animate?</div>
+    <p>
+      <strong>Reflow (layout)</strong> — geometry changed (width, top,
+      font-size, DOM insertion); expensive, can cascade to the whole tree.
+      <strong>Repaint</strong> — looks changed, geometry didn't (color,
+      shadow). Cheapest: <strong>transform and opacity</strong> — compositor
+      only, no layout, no paint. So animate position with
+      <code>transform: translate…</code>, never top/left. Also: batch DOM
+      reads then writes — interleaving them forces synchronous layout.
+    </p>
+
+    <div class="q">Q29: How do you keep an animation at 60fps?</div>
+    <ul>
+      <li>Animate transform/opacity only; promote with <code>will-change</code> sparingly</li>
+      <li>Prefer CSS transitions or the Web Animations API over per-frame JS style writes</li>
+      <li>Per-frame JS belongs in <code>requestAnimationFrame</code></li>
+      <li>Isolate heavy regions with <code>contain: content</code></li>
+      <li>
+        And respect <code>prefers-reduced-motion</code> — wrap non-essential
+        motion in the media query
+      </li>
+    </ul>
+
+    <div class="q">Q30: FOUT vs FOIT — how do you load web fonts?</div>
+    <p>
+      <strong>FOIT</strong> — text invisible until the font arrives (worst).
+      <strong>FOUT</strong> — fallback shows, then swaps.
+      <code>font-display: swap</code> chooses FOUT deliberately; pair with
+      <code>preconnect</code> to the font host, subset weights you actually
+      use, and a metric-compatible fallback stack to shrink the swap jump.
+    </p>
+
+    <div class="q">Q31: Why CSS naming conventions (BEM) — and the modern alternatives?</div>
+    <p>
+      CSS is global; conventions make collisions and specificity wars
+      impossible by construction. <strong>BEM</strong>:
+      <code>.card__title--featured</code> = block, element, modifier — flat
+      specificity (0,1,0) everywhere. Alternatives that solve the same
+      problem: CSS Modules (scoped by build), utility-first (Tailwind),
+      <code>@layer</code> for cascade ordering. Interviewers want to hear
+      "flat specificity, predictable ownership", not a religion.
+    </p>
+
+    <div class="q">Q32: How do you honor user preferences in CSS?</div>
+    <pre>
+@media (prefers-color-scheme: dark) { :root { --bg: #16181d; } }
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}</pre
+    >
+    <p>
+      Plus <code>:focus-visible</code> for keyboard users, real focus rings
+      (never <code>outline: none</code> without a replacement), and WCAG
+      contrast (4.5:1 body text). These questions increasingly decide frontend
+      loops.
+    </p>
+
+    <!-- ============ QUICK FIRE ============ -->
+    <div class="section"></div>
+    <span class="level quickfire">QUICK-FIRE</span>
+    <h1>5. Quick-Fire Round</h1>
+    <table>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+      <tr>
+        <td>rem vs em in one line?</td>
+        <td>rem = root font size; em = current element's font size</td>
+      </tr>
+      <tr>
+        <td>What is :root?</td>
+        <td>The html element as a pseudo-class — where global tokens live</td>
+      </tr>
+      <tr>
+        <td>Reset vs normalize?</td>
+        <td>Reset strips all defaults; normalize makes them consistent</td>
+      </tr>
+      <tr>
+        <td>SVG vs icon font?</td>
+        <td>SVG — crisp, styleable per-part, accessible, no FOIT</td>
+      </tr>
+      <tr>
+        <td>What is currentColor?</td>
+        <td>The element's own color value — borders/SVG that follow text</td>
+      </tr>
+      <tr>
+        <td>aspect-ratio?</td>
+        <td><code>aspect-ratio: 16/9</code> — reserved space, no padding hack</td>
+      </tr>
+      <tr>
+        <td>gap in flexbox?</td>
+        <td>Yes — spacing between items without margin gymnastics</td>
+      </tr>
+      <tr>
+        <td>When is !important okay?</td>
+        <td>Utilities meant to always win, and overriding third-party CSS</td>
+      </tr>
+      <tr>
+        <td>inline vs inline-block?</td>
+        <td>inline ignores width/height/vertical margins; inline-block takes them</td>
+      </tr>
+      <tr>
+        <td>What is the cascade order?</td>
+        <td>Origin/layers → specificity → source order (importance flips origins)</td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>Interview tip:</strong> The most-failed questions here are
+      <strong>specificity math</strong> (Q9), <strong>absolute positioning's
+      containing block</strong> (Q12), and the
+      <strong>min-width: auto flex gotcha</strong> (Q26). Expect a live
+      exercise: center a modal, build a responsive card grid, or fix a layout
+      that overflows — practice them in a bare CodePen without a framework.
+    </div>
+  </body>
+</html>

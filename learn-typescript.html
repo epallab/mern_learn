@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn TypeScript — Types That Earn Their Keep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--learn" data-topic="learn-ts">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>Learn<br />TypeScript</h1>
+      <p>
+        JavaScript with a proof-reader — what the compiler checks, how to
+        describe your data, and the typing patterns MERN codebases run on.
+      </p>
+      <p style="margin-top: 10px">
+        Narrowing &bull; Generics &bull; Utility Types &bull; React &bull;
+        Node
+      </p>
+      <div class="badge">9 modules · 40 concepts</div>
+    </div>
+
+    <!-- ============ MODULE 1 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 01</p>
+      <h1>What TypeScript Is (and Isn't)</h1>
+
+      <div class="concept">
+        <h2>Types exist only at compile time</h2>
+        <p>
+          TypeScript = JavaScript + a static checker. Compilation
+          <strong>erases</strong> every annotation — the runtime never sees
+          them. So types can't validate API responses or user input by
+          themselves; they document and enforce what <em>your code</em>
+          believes.
+        </p>
+        <pre>
+const n: number = JSON.parse('"actually a string"');
+// compiles fine, lies at runtime — validation (zod) bridges this gap</pre
+        >
+        <aside class="angle">
+          "Do types exist at runtime?" — no, erased. Follow-up "so how do you
+          trust API data?" — runtime validation at the boundary, which can
+          also <em>infer</em> the static type (zod's z.infer).
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>tsconfig: the handful that matters</h2>
+        <pre>
+{
+  "compilerOptions": {
+    "strict": true,              // the whole strict family — non-negotiable
+    "target": "ES2022",          // what syntax to emit
+    "module": "NodeNext",        // how imports resolve
+    "noUncheckedIndexedAccess": true,  // arr[i] is T | undefined — honest
+    "skipLibCheck": true
+  }
+}</pre
+        >
+        <p>
+          Everything else is project detail. Know what strict turns on and why
+          you want it from day one.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>What strict actually buys you</h2>
+        <ul>
+          <li>
+            <strong>strictNullChecks</strong> — null/undefined stop being
+            members of every type; the compiler forces the "what if it's
+            missing?" conversation
+          </li>
+          <li>
+            <strong>noImplicitAny</strong> — unannotated, uninferable
+            parameters are errors instead of silent any
+          </li>
+          <li>
+            <strong>strictFunctionTypes / strictBindCallApply</strong> —
+            function assignments and .call are checked properly
+          </li>
+        </ul>
+        <aside class="angle">
+          "Is your codebase strict?" is a culture probe. The good answer:
+          strict on new code always; legacy migrates incrementally.
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 2 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 02</p>
+      <h1>Type Basics</h1>
+
+      <div class="concept">
+        <h2>Inference first, annotation second</h2>
+        <pre>
+let port = 3000;            // inferred number — annotation would be noise
+const app = express();      // inferred Express
+
+// annotate where inference can't reach: parameters and public returns
+function priceAfterTax(price: number, rate: number): number {
+  return price * (1 + rate);
+}</pre
+        >
+        <p>
+          Let inference do local work; write types at boundaries — function
+          signatures, module exports, API shapes.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Arrays, tuples, and readonly</h2>
+        <pre>
+const tags: string[] = [];
+const pair: [lat: number, lng: number] = [48.85, 2.35];  // fixed length + roles
+const frozen: readonly number[] = [1, 2, 3];
+// frozen.push(4)  ✗ compile error</pre
+        >
+        <p>
+          Tuples are how hook returns are typed —
+          <code>[value, setValue]</code> — each slot with its own type.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Unions and literal types</h2>
+        <pre>
+type Status = "idle" | "loading" | "success" | "error";
+let s: Status = "loading";
+s = "done";        // ✗ not in the union
+
+function move(dir: "up" | "down", by: number) {}</pre
+        >
+        <p>
+          Unions of string literals replace enums in most modern codebases —
+          zero runtime, autocomplete everywhere, impossible values impossible.
+        </p>
+        <aside class="angle">
+          Model state as a union of literals and interviewers relax: it shows
+          you type <em>states</em>, not just primitives.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>any vs unknown vs never</h2>
+        <ul>
+          <li>
+            <strong>any</strong> — opts out of checking entirely, and spreads;
+            each one is a hole in the proof
+          </li>
+          <li>
+            <strong>unknown</strong> — "something, prove it before using":
+            forces narrowing first. The correct type for catch errors and
+            untyped input
+          </li>
+          <li>
+            <strong>never</strong> — "cannot happen": empty unions, functions
+            that always throw; powers exhaustiveness checks
+          </li>
+        </ul>
+        <pre>
+catch (e: unknown) {
+  if (e instanceof Error) log(e.message);   // must narrow before use
+}</pre
+        >
+        <aside class="angle">
+          "Difference between any and unknown?" is the single most common TS
+          screener. unknown = safe any.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Assertions: as, !, and satisfies</h2>
+        <pre>
+const el = document.querySelector("#app") as HTMLDivElement; // you promise
+input!.focus();                       // non-null assertion — you promise again
+
+const theme = {
+  primary: "#7048b6",
+  space: [0, 4, 8],
+} satisfies Record&lt;string, string | number[]&gt;;
+// checked against the shape, but keeps the NARROW inferred types</pre
+        >
+        <p>
+          Assertions silence the checker without changing runtime — every one
+          is a place tests can't save you. <code>satisfies</code> validates
+          without widening; prefer it for config objects.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 3 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 03</p>
+      <h1>Narrowing</h1>
+      <p>
+        The compiler tracks what it knows about a value through your control
+        flow. Narrowing is writing code the tracker can follow.
+      </p>
+
+      <div class="concept">
+        <h2>The built-in guards</h2>
+        <pre>
+function format(v: string | number | Date) {
+  if (typeof v === "string") return v.trim();     // v: string here
+  if (v instanceof Date) return v.toISOString();  // v: Date here
+  return v.toFixed(2);                            // only number remains
+}
+
+if ("error" in response) { /* response narrowed by property presence */ }</pre
+        >
+      </div>
+
+      <div class="concept">
+        <h2>Discriminated unions — the pattern</h2>
+        <p>
+          Give every variant a common literal field (<code>kind</code>,
+          <code>status</code>); switching on it narrows to the exact variant.
+          This is how you make illegal states unrepresentable.
+        </p>
+        <pre>
+type FetchState&lt;T&gt; =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "success"; data: T }        // data EXISTS only on success
+  | { status: "error"; error: string };
+
+function view(s: FetchState&lt;User[]&gt;) {
+  switch (s.status) {
+    case "success": return render(s.data);   // s.data is User[] — proven
+    case "error":   return show(s.error);
+    default:        return spinner();
+  }
+}</pre
+        >
+        <aside class="angle">
+          "Type a data-fetching state" is the canonical TS interview exercise
+          — this shape, verbatim. It also kills the
+          <code>data?: T; error?: string</code> anti-pattern where both can
+          exist at once.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Custom guards: type predicates</h2>
+        <pre>
+function isUser(v: unknown): v is User {
+  return !!v &amp;&amp; typeof v === "object" &amp;&amp; "email" in v;
+}
+const users = list.filter(isUser);   // unknown[] → User[]</pre
+        >
+        <p>
+          The <code>v is User</code> return type teaches the compiler your
+          runtime check. filter + predicate is the everyday use.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Exhaustiveness with never</h2>
+        <pre>
+switch (shape.kind) {
+  case "circle": return Math.PI * shape.r ** 2;
+  case "square": return shape.size ** 2;
+  default: {
+    const unreachable: never = shape;  // add "triangle" to the union →
+    return unreachable;                // this line turns red. Free regression test.
+  }
+}</pre
+        >
+        <aside class="angle">
+          Mentioning the never-default trick unprompted is a strong senior
+          signal — it makes the compiler enforce that new variants get
+          handled.
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 4 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 04</p>
+      <h1>Object Types</h1>
+
+      <div class="concept">
+        <h2>interface vs type — the honest answer</h2>
+        <p>
+          For object shapes they're interchangeable. Real differences:
+          <strong>type</strong> can alias anything (unions, tuples, mapped
+          types); <strong>interface</strong> supports declaration merging
+          (re-opening — how Express's <code>Request</code> gets extended) and
+          reads slightly better in errors. Pick one per codebase and be
+          consistent — the debate itself is the interview trap.
+        </p>
+        <pre>
+interface User { id: string; email: string; }
+type Result = User | null;            // only type can do this</pre
+        >
+      </div>
+
+      <div class="concept">
+        <h2>Optional and readonly members</h2>
+        <pre>
+interface Todo {
+  readonly id: string;      // set once, never reassigned
+  title: string;
+  dueAt?: Date;             // Date | undefined — callers must handle it
+}</pre
+        >
+        <p>
+          <code>?</code> means "may be absent" — with
+          <code>exactOptionalPropertyTypes</code> that's different from "may
+          be explicitly undefined". readonly is compile-time only; it doesn't
+          freeze the runtime object.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Index signatures and Record</h2>
+        <pre>
+interface Scores { [userId: string]: number }
+type Scores2 = Record&lt;string, number&gt;;          // same thing, tidier
+
+type Ramp = Record&lt;"beginner" | "advanced", string&gt;;  // exhaustive keys:
+// missing "advanced" → compile error</pre
+        >
+        <p>
+          Record with a literal-union key is quietly powerful: the compiler
+          guarantees every key is present.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Composing: extends and intersections</h2>
+        <pre>
+interface Timestamped { createdAt: Date; updatedAt: Date; }
+interface Post extends Timestamped { title: string; }
+
+type Draft = Post &amp; { status: "draft" };   // intersection — type's version</pre
+        >
+        <p>
+          Conflicting members: extends errors loudly (good); intersections
+          silently produce never (confusing). Another point for interface
+          when modeling plain shapes.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Structural typing — duck typing, checked</h2>
+        <p>
+          Compatibility is by <em>shape</em>, not by name: any object with the
+          right members satisfies the type. Fresh object literals get extra
+          strictness (excess property checks) — passing a literal with an
+          unknown key errors, while the same object via a variable passes.
+        </p>
+        <pre>
+interface Point { x: number; y: number }
+const p3d = { x: 1, y: 2, z: 3 };
+const p: Point = p3d;              // fine — has at least x and y
+const q: Point = { x: 1, y: 2, z: 3 };  // ✗ excess property on a literal</pre
+        >
+        <aside class="angle">
+          "Why does it error inline but not via a variable?" — excess
+          property checking on fresh literals. Rarely known; easy to shine.
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 5 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 05</p>
+      <h1>Functions &amp; Generics</h1>
+
+      <div class="concept">
+        <h2>Typing functions</h2>
+        <pre>
+type Comparator&lt;T&gt; = (a: T, b: T) =&gt; number;      // a function TYPE
+
+const byPrice: Comparator&lt;Product&gt; = (a, b) =&gt; a.price - b.price;
+// params infer from the alias — no re-annotating
+
+function log(level: "info" | "error", msg: string, meta?: object): void {}</pre
+        >
+      </div>
+
+      <div class="concept">
+        <h2>Generics: types as parameters</h2>
+        <p>
+          A generic function promises a <em>relationship</em>: "whatever type
+          comes in, that's what goes out." Without it you'd choose between
+          duplicating code and losing the type to any.
+        </p>
+        <pre>
+function first&lt;T&gt;(arr: T[]): T | undefined {
+  return arr[0];
+}
+first([1, 2, 3]);        // T inferred as number
+first(users);            // T inferred as User — no call-site annotation</pre
+        >
+        <aside class="angle">
+          "Write a typed identity/first/pluck function" is the standard
+          can-you-generics test. Let inference do the call sites.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Constraints: extends</h2>
+        <pre>
+function pluck&lt;T, K extends keyof T&gt;(items: T[], key: K): T[K][] {
+  return items.map((i) =&gt; i[key]);
+}
+pluck(users, "email");   // string[] — and "emial" is a compile error</pre
+        >
+        <p>
+          <code>K extends keyof T</code> ties the second argument to the
+          first's real keys. This one signature is the most-asked generics
+          exercise in interviews.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Generics in the wild: typed API client</h2>
+        <pre>
+async function api&lt;T&gt;(path: string): Promise&lt;T&gt; {
+  const res = await fetch(path);
+  if (!res.ok) throw new HttpError(res.status);
+  return res.json() as Promise&lt;T&gt;;    // the honest cast at the boundary
+}
+const todos = await api&lt;Todo[]&gt;("/api/todos");</pre
+        >
+        <p>
+          The assertion is the trust boundary — pair it with runtime
+          validation (zod) when the API isn't yours.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Overloads and default type params — know they exist</h2>
+        <pre>
+function get(key: "port"): number;          // overloads: precise per-input
+function get(key: "host"): string;          // return types
+function get(key: string): unknown { return config[key]; }
+
+type ApiResponse&lt;T = unknown&gt; = { data: T; requestId: string };</pre
+        >
+        <p>
+          Overloads model "return type depends on the argument"; usually a
+          union or generic does the job with less ceremony — say that.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 6 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 06</p>
+      <h1>Utility &amp; Derived Types</h1>
+      <p>
+        One source-of-truth type, everything else computed from it — the
+        skill that separates TS users from TS writers.
+      </p>
+
+      <div class="concept">
+        <h2>The everyday utilities</h2>
+        <pre>
+interface User { id: string; email: string; name: string; role: Role }
+
+type UserPatch  = Partial&lt;User&gt;;               // all optional — update DTOs
+type PublicUser = Omit&lt;User, "email"&gt;;         // drop fields
+type Credentials = Pick&lt;User, "id" | "role"&gt;;  // keep fields
+type UserMap    = Record&lt;string, User&gt;;
+type Frozen     = Readonly&lt;User&gt;;</pre
+        >
+        <aside class="angle">
+          "How would you type an update payload?" —
+          <code>Partial&lt;Omit&lt;User, "id"&gt;&gt;</code>. Composing two
+          utilities in one breath is exactly the expected register.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Extracting from functions: ReturnType, Parameters, Awaited</h2>
+        <pre>
+function buildStore() { return { todos: [] as Todo[], filter: "all" }; }
+type Store = ReturnType&lt;typeof buildStore&gt;;     // type follows the code
+
+type Row = Awaited&lt;ReturnType&lt;typeof fetchRows&gt;&gt;[number];
+//         unwrap Promise ─┘        └─ element type of the array</pre
+        >
+        <p>
+          Deriving types from implementations means refactors update the
+          types for free.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>keyof and typeof</h2>
+        <pre>
+const COLORS = { str: "#22834f", fn: "#2e66c7", kw: "#7048b6" } as const;
+type Token = keyof typeof COLORS;      // "str" | "fn" | "kw"
+type Hex   = (typeof COLORS)[Token];   // the value union
+
+function color(t: Token) { return COLORS[t]; }  // impossible to typo</pre
+        >
+        <p>
+          <code>as const</code> keeps literals narrow; keyof/typeof turn a
+          runtime constant into its own type. The end of hand-maintained
+          string unions.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Mapped and conditional types — read them, sparingly write them</h2>
+        <pre>
+type Nullable&lt;T&gt; = { [K in keyof T]: T[K] | null };   // mapped: transform each key
+
+type UnwrapArray&lt;T&gt; = T extends (infer U)[] ? U : T;  // conditional + infer
+UnwrapArray&lt;Todo[]&gt;;   // Todo</pre
+        >
+        <p>
+          This is the machinery the built-in utilities are made of. In
+          application code, reach for the built-ins first; write custom ones
+          when a real pattern repeats.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Template literal types — a taste</h2>
+        <pre>
+type Route = `/api/${string}`;
+const ok: Route = "/api/users";     // ✓
+const no: Route = "/users";         // ✗
+
+type EventName = `on${Capitalize&lt;"click" | "focus"&gt;}`;  // "onClick" | "onFocus"</pre
+        >
+        <p>
+          Types that understand string structure — how libraries type route
+          params and event maps. Recognize it; don't build a type-level
+          parser in an interview.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 7 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 07</p>
+      <h1>Classes &amp; Enums</h1>
+
+      <div class="concept">
+        <h2>Class typing: modifiers and implements</h2>
+        <pre>
+interface Repo&lt;T&gt; { find(id: string): Promise&lt;T | null&gt;; }
+
+class UserRepo implements Repo&lt;User&gt; {
+  constructor(private db: Db, readonly name = "users") {}
+  //          └ parameter property: declares + assigns in one stroke
+  async find(id: string) { return this.db.collection(this.name).findOne({ id }); }
+}</pre
+        >
+        <p>
+          private/protected are compile-time (JS <code>#fields</code> are the
+          runtime-real version); <code>implements</code> checks the shape
+          without inheriting anything.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Enums vs as const — the modern verdict</h2>
+        <pre>
+enum Role { Admin = "admin", User = "user" }     // generates runtime code
+
+const ROLES = ["admin", "user"] as const;        // the lighter idiom
+type Role2 = (typeof ROLES)[number];             // "admin" | "user"
+// runtime list for validation + static union, no emitted enum object</pre
+        >
+        <aside class="angle">
+          "Do you use enums?" — expected answer: literal unions +
+          <code>as const</code> for the runtime list; string enums only when
+          a team already standardized on them.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Abstract classes — when a base contract needs shared code</h2>
+        <pre>
+abstract class Job {
+  abstract run(): Promise&lt;void&gt;;          // subclasses must implement
+  async execute() {                       // shared wrapper: retry/log once
+    let lastErr;
+    for (let i = 0; i &lt; 3; i++) {
+      try { return await this.run(); } catch (e) { lastErr = e; }
+    }
+    throw lastErr;
+  }
+}</pre
+        >
+        <p>
+          Interface = contract only; abstract class = contract + shared
+          implementation. If there's no shared code, use the interface.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 8 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 08</p>
+      <h1>TypeScript in React</h1>
+
+      <div class="concept">
+        <h2>Props: the everyday shape</h2>
+        <pre>
+interface ButtonProps {
+  variant?: "primary" | "ghost";
+  disabled?: boolean;
+  onClick?: () =&gt; void;
+  children: React.ReactNode;      // anything renderable
+}
+
+function Button({ variant = "primary", ...rest }: ButtonProps) { … }</pre
+        >
+        <p>
+          <code>React.FC</code> is optional and mostly avoided now — a plain
+          function with a typed props parameter infers the rest.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Typing hooks</h2>
+        <pre>
+const [user, setUser] = useState&lt;User | null&gt;(null);  // annotate when it starts empty
+const [count, setCount] = useState(0);                // inferred — leave it
+
+const inputRef = useRef&lt;HTMLInputElement&gt;(null);      // DOM ref
+const timerRef = useRef&lt;ReturnType&lt;typeof setTimeout&gt;&gt;(undefined); // mutable box
+
+const [state, dispatch] = useReducer(reducer, initial);
+// type the ACTION as a discriminated union → dispatch is fully checked</pre
+        >
+        <aside class="angle">
+          The <code>useState&lt;User | null&gt;(null)</code> line is the
+          most-asked React+TS question: empty initial state needs the union
+          spelled out.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Event types</h2>
+        <pre>
+function onChange(e: React.ChangeEvent&lt;HTMLInputElement&gt;) {
+  setQuery(e.target.value);            // target is typed — .value exists
+}
+function onSubmit(e: React.FormEvent&lt;HTMLFormElement&gt;) {
+  e.preventDefault();
+}
+// inline handlers usually infer these — spell them out for extracted ones</pre
+        >
+      </div>
+
+      <div class="concept">
+        <h2>Generic components and hooks</h2>
+        <pre>
+function useFetch&lt;T&gt;(url: string) {
+  const [state, setState] = useState&lt;FetchState&lt;T&gt;&gt;({ status: "idle" });
+  // …
+  return state;    // FetchState&lt;T&gt; — the discriminated union from module 03
+}
+
+interface ListProps&lt;T&gt; {
+  items: T[];
+  renderItem: (item: T) =&gt; React.ReactNode;
+}
+function List&lt;T&gt;({ items, renderItem }: ListProps&lt;T&gt;) { … }</pre
+        >
+        <p>
+          The generic flows from the data to the render callback — item is
+          fully typed inside renderItem at every call site.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Extending native element props</h2>
+        <pre>
+interface FieldProps extends React.ComponentPropsWithoutRef&lt;"input"&gt; {
+  label: string;
+  error?: string;
+}
+function Field({ label, error, ...inputProps }: FieldProps) {
+  return (
+    &lt;label&gt;
+      {label}
+      &lt;input aria-invalid={!!error} {...inputProps} /&gt;
+    &lt;/label&gt;
+  );
+}</pre
+        >
+        <p>
+          Your wrapper accepts everything a real input does — placeholder,
+          onBlur, name — without re-declaring any of it.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 9 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 09</p>
+      <h1>TypeScript in Node &amp; Migration</h1>
+
+      <div class="concept">
+        <h2>Typing Express handlers</h2>
+        <pre>
+import type { Request, Response, NextFunction } from "express";
+
+// Request&lt;Params, ResBody, ReqBody, Query&gt;
+app.post(
+  "/users/:id",
+  (req: Request&lt;{ id: string }, unknown, UpdateUserDto&gt;, res: Response) =&gt; {
+    req.params.id;    // string — typed
+    req.body.email;   // from UpdateUserDto
+  }
+);</pre
+        >
+        <p>
+          The generic slots on Request are the interview detail: params,
+          response body, request body, query — in that order.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Extending Request (declaration merging, for real)</h2>
+        <pre>
+// types/express.d.ts
+declare global {
+  namespace Express {
+    interface Request {
+      user?: { id: string; role: "admin" | "user" };
+    }
+  }
+}
+// auth middleware sets req.user; every handler sees it typed</pre
+        >
+        <aside class="angle">
+          "How does req.user get its type?" — declaration merging on the
+          Express namespace. Knowing the mechanism's name matters.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Typed config: validate env once</h2>
+        <pre>
+const Env = z.object({
+  PORT: z.coerce.number().default(3000),
+  MONGO_URL: z.string().url(),
+  JWT_SECRET: z.string().min(32),
+});
+export const env = Env.parse(process.env);   // crashes at BOOT, not at 3am
+// typeof env is inferred — z.infer bridges runtime → static</pre
+        >
+      </div>
+
+      <div class="concept">
+        <h2>Sharing types across the stack</h2>
+        <p>
+          The MERN payoff: one <code>shared/types.ts</code> (or workspace
+          package) exporting the API DTOs; server handlers and React fetch
+          hooks import the same definitions. Rename a field → both sides turn
+          red before anything deploys. Zod schemas as the source of truth
+          give you the runtime validators <em>and</em> the types from one
+          declaration.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Migrating a JS codebase</h2>
+        <ol>
+          <li><code>allowJs: true</code> — TS and JS coexist; nothing breaks</li>
+          <li>Rename leaf files first (utils, constants) — fewest dependents</li>
+          <li>strict on for <em>new</em> files; ratchet flags up per folder</li>
+          <li>Kill each <code>any</code> deliberately — every one is a TODO</li>
+          <li>Types at the boundaries first: API DTOs, then inward</li>
+        </ol>
+        <aside class="angle">
+          Migration strategy is a favorite senior question — the winning
+          shape is "incremental, boundaries-first, strictness ratcheted, no
+          big-bang rewrite".
+        </aside>
+      </div>
+    </section>
+
+    <div class="tip">
+      <strong>Where to go next:</strong> re-do the
+      <strong>React guide</strong>'s hook questions naming the TS types as you
+      answer, and type your <strong>Practice section</strong> solutions —
+      debounce with generics
+      (<code>&lt;T extends (...args: unknown[]) =&gt; void&gt;</code>) is a
+      common combined question.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript Interview Questions — Complete Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--guide" data-topic="javascript">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>JavaScript<br />Interview Questions</h1>
+      <p>The language round — everything the framework questions assume.</p>
+      <p style="margin-top: 10px">
+        Closures &bull; this &bull; Prototypes &bull; Event Loop &bull; Output
+        Prediction
+      </p>
+      <div class="badge">36 Questions + Quick-Fire</div>
+    </div>
+
+    <!-- ============ BEGINNER ============ -->
+    <span class="level beginner">BEGINNER LEVEL</span>
+    <h1>1. Beginner Questions</h1>
+
+    <div class="q">Q1: var vs let vs const — what actually differs?</div>
+    <ul>
+      <li>
+        <strong>var</strong> — function-scoped, hoisted and initialized to
+        <code>undefined</code>, re-declarable, attaches to
+        <code>window</code> at top level
+      </li>
+      <li>
+        <strong>let</strong> — block-scoped, hoisted but uninitialized (the
+        <strong>temporal dead zone</strong>), reassignable
+      </li>
+      <li>
+        <strong>const</strong> — like let, but the <em>binding</em> can't be
+        reassigned. The value is still mutable:
+        <code>const arr = []; arr.push(1)</code> is legal
+      </li>
+    </ul>
+    <pre>
+console.log(a); // undefined (var hoisted + initialized)
+console.log(b); // ReferenceError (TDZ)
+var a = 1;
+let b = 2;</pre
+    >
+
+    <div class="q">Q2: List the data types. What does typeof get wrong?</div>
+    <p>
+      Seven primitives — <strong>string, number, bigint, boolean, undefined,
+      symbol, null</strong> — plus <strong>object</strong> (arrays, functions,
+      dates are all objects).
+    </p>
+    <pre>
+typeof null;        // "object"  — historic bug, memorize it
+typeof [];          // "object"  — use Array.isArray()
+typeof function(){} // "function" — the one non-primitive special case
+typeof NaN;         // "number"</pre
+    >
+
+    <div class="q">Q3: == vs === — how does coercion decide?</div>
+    <p>
+      <code>===</code> compares type and value with no conversion — the
+      default choice. <code>==</code> coerces first: null and undefined equal
+      each other (and nothing else), strings/booleans convert to numbers,
+      objects convert via <code>valueOf</code>/<code>toString</code>.
+    </p>
+    <pre>
+0 == "0"        // true   ("0" → 0)
+0 == []         // true   ([] → "" → 0)
+"0" == []       // false  ([] → "", "0" != "")
+null == undefined // true
+null == 0       // false — null only equals undefined</pre
+    >
+
+    <div class="q">Q4: Which values are falsy?</div>
+    <p>
+      Exactly eight: <code>false</code>, <code>0</code>, <code>-0</code>,
+      <code>0n</code>, <code>""</code>, <code>null</code>,
+      <code>undefined</code>, <code>NaN</code>. Everything else is truthy —
+      including <code>"0"</code>, <code>[]</code>, and <code>{}</code>. That's
+      why <code>if ([])</code> runs but <code>[] == false</code> is true —
+      different algorithms.
+    </p>
+
+    <div class="q">Q5: null vs undefined?</div>
+    <p>
+      <strong>undefined</strong> — the engine's "no value yet": missing
+      properties, unassigned variables, functions without return.
+      <strong>null</strong> — the programmer's deliberate "empty on purpose".
+      JSON has null but not undefined; <code>JSON.stringify</code> drops
+      undefined properties entirely.
+    </p>
+
+    <div class="q">Q6: Arrow functions vs regular functions?</div>
+    <ul>
+      <li>
+        Arrows have <strong>no own this</strong> — they close over the
+        enclosing scope's this (that's the point)
+      </li>
+      <li>No <code>arguments</code> object, no <code>prototype</code></li>
+      <li>Can't be used with <code>new</code></li>
+      <li>
+        Wrong tool for object methods and event handlers that rely on
+        <code>this</code> being the element
+      </li>
+    </ul>
+    <pre>
+const timer = {
+  seconds: 0,
+  start() {
+    // arrow keeps `this` = timer; function() would lose it
+    setInterval(() => this.seconds++, 1000);
+  },
+};</pre
+    >
+
+    <div class="q">Q7: Spread vs rest — same syntax, opposite jobs?</div>
+    <p>
+      <strong>Spread expands</strong> an iterable where values are expected;
+      <strong>rest collects</strong> leftovers where parameters are declared.
+    </p>
+    <pre>
+const merged = { ...defaults, ...options };   // spread (shallow!)
+const copy = [...arr];                        // spread
+function log(first, ...rest) {}               // rest
+const [head, ...tail] = list;                 // rest in destructuring</pre
+    >
+
+    <div class="q">Q8: Destructuring — defaults, renaming, nesting?</div>
+    <pre>
+const { id, name: label, meta: { tags = [] } = {} } = doc;
+//        │        │             └ nested + default for the object itself
+//        │        └ rename name → label
+//        └ plain pick
+
+function connect({ host = "localhost", port = 27017 } = {}) {}
+// = {} lets connect() be called with no argument at all</pre
+    >
+
+    <div class="q">Q9: map vs forEach vs reduce — when each?</div>
+    <ul>
+      <li>
+        <strong>map</strong> — transform every item, get a new array back.
+        Returns; never mutates
+      </li>
+      <li>
+        <strong>forEach</strong> — side effects only; returns undefined, can't
+        break early (use for..of if you need to)
+      </li>
+      <li>
+        <strong>reduce</strong> — fold to a single value: sums, lookups,
+        groupBy
+      </li>
+    </ul>
+    <pre>
+const byId = users.reduce((acc, u) => {
+  acc[u.id] = u;
+  return acc;
+}, {});</pre
+    >
+
+    <div class="q">Q10: What are template literals good for beyond strings?</div>
+    <p>
+      Interpolation <code>`${x}`</code>, real multiline strings, and
+      <strong>tagged templates</strong> — a function receives the string parts
+      and values separately (how libraries like styled-components and safe SQL
+      builders work).
+    </p>
+    <pre>
+const query = sql`SELECT * FROM users WHERE id = ${id}`;
+// sql() gets ["SELECT…id = ", ""] and [id] — it can escape id safely</pre
+    >
+
+    <!-- ============ INTERMEDIATE ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">INTERMEDIATE LEVEL</span>
+    <h1>2. Intermediate Questions</h1>
+
+    <div class="q">Q11: What is a closure? Give a practical use.</div>
+    <p>
+      A function bundled with its lexical scope — it keeps access to the
+      variables where it was <em>defined</em>, even after that scope has
+      returned. Uses: private state, factories, memoization, debounce, event
+      handlers remembering context.
+    </p>
+    <pre>
+function makeCounter() {
+  let count = 0;              // private — only reachable via the closure
+  return () => ++count;
+}
+const next = makeCounter();
+next(); // 1
+next(); // 2 — count survives between calls</pre
+    >
+
+    <div class="q">Q12: The classic bug: setTimeout inside a var loop?</div>
+    <pre>
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i)); // 3, 3, 3 — one shared i
+}
+for (let i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i)); // 0, 1, 2 — new binding per iteration
+}</pre
+    >
+    <p>
+      var creates <strong>one</strong> function-scoped i that has reached 3 by
+      the time the callbacks run. let creates a fresh block-scoped binding per
+      iteration, so each closure captures its own value. (Pre-let fix: wrap the
+      body in an IIFE.)
+    </p>
+
+    <div class="q">Q13: How is `this` decided? The four bindings.</div>
+    <ol>
+      <li>
+        <strong>new</strong> — <code>new Fn()</code>: this = the fresh object
+      </li>
+      <li>
+        <strong>Explicit</strong> — <code>fn.call(obj)</code> /
+        <code>apply</code> / <code>bind</code>: this = obj
+      </li>
+      <li>
+        <strong>Implicit</strong> — <code>obj.fn()</code>: this = the object
+        before the dot
+      </li>
+      <li>
+        <strong>Default</strong> — bare <code>fn()</code>: undefined in strict
+        mode, else the global object
+      </li>
+    </ol>
+    <p>
+      Arrows ignore all four and inherit lexically. Precedence: new &gt;
+      explicit &gt; implicit &gt; default.
+    </p>
+
+    <div class="q">Q14: call vs apply vs bind?</div>
+    <pre>
+greet.call(user, "Hi", "!");       // invoke now, args listed
+greet.apply(user, ["Hi", "!"]);    // invoke now, args as array
+const bound = greet.bind(user);    // invoke later, this locked in</pre
+    >
+    <p>
+      bind returns a <em>new</em> function permanently tied to that this — a
+      second bind can't override it, and neither can call.
+    </p>
+
+    <div class="q">Q15: Explain the prototype chain.</div>
+    <p>
+      Every object has an internal link (<code>__proto__</code>, officially
+      <code>[[Prototype]]</code>) to another object. Property lookups walk up
+      that chain until found or the chain ends at null. Methods like
+      <code>arr.map</code> live once on <code>Array.prototype</code>, not on
+      every array.
+    </p>
+    <pre>
+const arr = [];
+arr.__proto__ === Array.prototype;                 // true
+Array.prototype.__proto__ === Object.prototype;    // true
+Object.prototype.__proto__ === null;               // end of chain
+Object.create(proto);  // make an object with a chosen prototype</pre
+    >
+
+    <div class="q">Q16: class vs constructor function — what's real?</div>
+    <p>
+      class is syntax over the same prototype machinery — with real
+      differences: class bodies run in strict mode, aren't hoisted usably,
+      must be called with new, and get <code>extends</code>/<code>super</code>
+      plus private <code>#fields</code>.
+    </p>
+    <pre>
+class Repo {
+  #cache = new Map();            // truly private
+  constructor(model) { this.model = model; }
+  async find(id) {
+    if (!this.#cache.has(id))
+      this.#cache.set(id, await this.model.findById(id));
+    return this.#cache.get(id);
+  }
+}</pre
+    >
+
+    <div class="q">Q17: Shallow vs deep copy — and how to deep copy right?</div>
+    <p>
+      Spread and <code>Object.assign</code> copy one level; nested objects are
+      still shared references. <code>structuredClone(obj)</code> is the modern
+      deep copy (handles Dates, Maps, cycles).
+      <code>JSON.parse(JSON.stringify(x))</code> is the old trick — it drops
+      functions and undefined, and breaks Dates.
+    </p>
+
+    <div class="q">Q18: for..in vs for..of vs Object.entries?</div>
+    <ul>
+      <li>
+        <strong>for..in</strong> — enumerable <em>keys</em>, including
+        inherited ones; wrong tool for arrays (gives index strings)
+      </li>
+      <li>
+        <strong>for..of</strong> — <em>values</em> of any iterable (arrays,
+        strings, Map, Set); supports break/continue
+      </li>
+      <li>
+        <strong>Object.keys/values/entries</strong> — own properties only,
+        as arrays you can chain
+      </li>
+    </ul>
+    <pre>
+for (const [key, value] of Object.entries(config)) { ... }</pre
+    >
+
+    <div class="q">Q19: Optional chaining and nullish coalescing?</div>
+    <pre>
+const city = user?.address?.city;    // undefined instead of TypeError
+user?.save?.();                      // call only if it exists
+const limit = options.limit ?? 20;   // 0 stays 0 — only null/undefined fall through
+const bad   = options.limit || 20;   // 0 becomes 20 — the classic || bug</pre
+    >
+
+    <div class="q">Q20: ES Modules vs CommonJS?</div>
+    <ul>
+      <li>
+        <strong>ESM</strong> — <code>import/export</code>, static (analyzable
+        → tree-shaking), async loading, strict mode, live bindings
+      </li>
+      <li>
+        <strong>CJS</strong> — <code>require/module.exports</code>,
+        synchronous, values are copied at require time
+      </li>
+      <li>
+        Browsers speak ESM natively (<code>&lt;script type="module"&gt;</code>);
+        Node speaks both ("type": "module" or .mjs to opt in)
+      </li>
+    </ul>
+
+    <!-- ============ ADVANCED ============ -->
+    <div class="section"></div>
+    <span class="level advanced">ADVANCED LEVEL</span>
+    <h1>3. Advanced Questions</h1>
+
+    <div class="q">Q21: Walk through the event loop.</div>
+    <p>
+      One call stack. When it empties, the loop runs the entire
+      <strong>microtask queue</strong> (promise callbacks,
+      queueMicrotask), then <strong>one macrotask</strong> (setTimeout,
+      I/O, events), then microtasks again — repeat. Microtasks always beat
+      macrotasks; a microtask that queues microtasks can starve rendering.
+    </p>
+    <pre>
+console.log("A");
+setTimeout(() => console.log("B"));          // macrotask
+Promise.resolve().then(() => console.log("C")); // microtask
+console.log("D");
+// A, D, C, B — sync first, then microtasks, then the timer</pre
+    >
+
+    <div class="q">Q22: Promise states and error propagation?</div>
+    <p>
+      pending → fulfilled or rejected, exactly once, immutable after. Each
+      <code>.then</code> returns a <em>new</em> promise; a thrown error or
+      rejection skips forward to the nearest <code>.catch</code>, and the
+      chain continues fulfilled after it (catch "handles" it).
+    </p>
+    <pre>
+fetch(url)
+  .then((r) => {
+    if (!r.ok) throw new Error(r.status); // fetch doesn't reject on 404!
+    return r.json();
+  })
+  .catch((e) => fallback)   // handles network AND the throw above
+  .then((data) => render(data)); // still runs, with fallback</pre
+    >
+
+    <div class="q">Q23: async/await — what is it really doing?</div>
+    <p>
+      Syntax over promises: an async function always returns a promise;
+      <code>await</code> pauses <em>that function only</em>, parking the rest
+      as a microtask continuation. Errors become rejections you catch with
+      try/catch. Classic trap: awaiting in sequence what could run in
+      parallel.
+    </p>
+    <pre>
+// sequential — 2× latency          // parallel — one round trip
+const a = await getA();             const [a, b] = await Promise.all([
+const b = await getB();               getA(), getB(),
+                                    ]);</pre
+    >
+
+    <div class="q">Q24: Promise.all vs allSettled vs race vs any?</div>
+    <ul>
+      <li>
+        <strong>all</strong> — resolves with every value; rejects fast on the
+        first failure
+      </li>
+      <li>
+        <strong>allSettled</strong> — never rejects; gives
+        {status, value|reason} per input — right for "save what you can"
+      </li>
+      <li><strong>race</strong> — first to settle wins, success or failure (timeouts)</li>
+      <li>
+        <strong>any</strong> — first to <em>fulfill</em>; rejects only if all
+        reject (AggregateError)
+      </li>
+    </ul>
+
+    <div class="q">Q25: Debounce vs throttle — which, when?</div>
+    <p>
+      <strong>Debounce</strong> waits for silence: fire once, N ms after the
+      <em>last</em> call — search-as-you-type, resize handlers, autosave.
+      <strong>Throttle</strong> guarantees a rhythm: at most once per N ms
+      <em>while</em> events keep firing — scroll position, mousemove,
+      analytics. (Implementations are in the Practice section — be ready to
+      write both from memory.)
+    </p>
+
+    <div class="q">Q26: Event delegation — why and how?</div>
+    <p>
+      Events bubble from the target up through its ancestors. Attach one
+      listener on a stable parent and route by <code>event.target</code> —
+      fewer listeners, and dynamically added children work automatically.
+    </p>
+    <pre>
+list.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-delete]");
+  if (btn && list.contains(btn)) remove(btn.dataset.delete);
+});</pre
+    >
+
+    <div class="q">Q27: Common JS memory leaks?</div>
+    <ul>
+      <li>
+        Forgotten listeners/intervals on removed DOM (always clean up in SPA
+        unmounts)
+      </li>
+      <li>Closures pinning large objects a long-lived callback still references</li>
+      <li>Module-level caches/Maps that only ever grow</li>
+      <li>Detached DOM nodes still referenced from JS</li>
+    </ul>
+    <p>
+      <strong>WeakMap/WeakSet</strong> hold keys weakly — if nothing else
+      references the key, the entry can be collected. Right tool for metadata
+      about DOM nodes.
+    </p>
+
+    <div class="q">Q28: What are generators used for?</div>
+    <p>
+      <code>function*</code> returns an iterator you can pause and resume;
+      <code>yield</code> hands out a value and waits. Uses: lazy/infinite
+      sequences, custom iterables, and consuming paginated APIs one page at a
+      time.
+    </p>
+    <pre>
+function* pages(fetchPage) {
+  let page = 1, batch;
+  do {
+    batch = yield fetchPage(page++);   // caller decides when to pull more
+  } while (batch.hasMore);
+}</pre
+    >
+
+    <div class="q">Q29: What is currying? Where is it useful?</div>
+    <p>
+      Turning <code>f(a, b, c)</code> into <code>f(a)(b)(c)</code> — each call
+      locks in an argument via closure and returns a function wanting the
+      rest. Useful for configuration-first APIs and reusable partials.
+    </p>
+    <pre>
+const on = (type) => (handler) => (el) => el.addEventListener(type, handler);
+const onClick = on("click");
+buttons.forEach(onClick(save));</pre
+    >
+
+    <div class="q">Q30: Why does immutability matter (especially in React)?</div>
+    <p>
+      Change detection by reference: React, Redux, and memoization all decide
+      "did this change?" with <code>===</code>. Mutating in place keeps the
+      same reference — updates get skipped. So: copy-and-replace
+      (<code>{...state, done: true}</code>, <code>map/filter</code> over
+      splice/push). <code>Object.freeze</code> is shallow; libraries like
+      Immer give ergonomic deep updates.
+    </p>
+
+    <!-- ============ OUTPUT PREDICTION ============ -->
+    <div class="section"></div>
+    <span class="level practical">OUTPUT PREDICTION</span>
+    <h1>4. Output Prediction (Trick Questions)</h1>
+    <p><em>Read, predict, then check — these are asked verbatim.</em></p>
+
+    <div class="q">Q31: Hoisting — what does this print?</div>
+    <pre>
+console.log(x);
+console.log(getY);
+console.log(getY());
+var x = 5;
+function getY() { return 10; }
+// undefined — var hoisted, value not yet assigned
+// [Function: getY] — declarations hoist whole
+// 10 — callable before its line</pre
+    >
+
+    <div class="q">Q32: Microtasks vs macrotasks — order?</div>
+    <pre>
+setTimeout(() => console.log(1), 0);
+Promise.resolve().then(() => console.log(2));
+queueMicrotask(() => console.log(3));
+console.log(4);
+// 4  — sync
+// 2, 3 — the whole microtask queue drains first
+// 1  — then the timer macrotask</pre
+    >
+
+    <div class="q">Q33: await ordering — what does this print?</div>
+    <pre>
+async function main() {
+  console.log("a");
+  await null;            // everything after this line = microtask
+  console.log("b");
+}
+main();
+console.log("c");
+// a, c, b — await yields back to the caller synchronously</pre
+    >
+
+    <div class="q">Q34: Extracted method — what does this print?</div>
+    <pre>
+const user = {
+  name: "Ada",
+  hello() { return "Hi " + this.name; },
+};
+const f = user.hello;
+console.log(user.hello()); // "Hi Ada"   — implicit binding
+console.log(f());          // "Hi undefined" — default binding lost the object
+const g = user.hello.bind(user);
+console.log(g());          // "Hi Ada"   — bind restores it</pre
+    >
+
+    <div class="q">Q35: Coercion — what do these evaluate to?</div>
+    <pre>
+[] + []      // ""        — both become ""
+[] + {}      // "[object Object]"
+1 + "2"      // "12"      — + prefers strings
+"5" - 2      // 3         — - is numeric only
+0.1 + 0.2 === 0.3   // false — binary floats; compare with Number.EPSILON
+NaN === NaN  // false     — use Number.isNaN(x)</pre
+    >
+
+    <div class="q">Q36: Closures sharing state — what does this print?</div>
+    <pre>
+function make() {
+  let n = 0;
+  return { inc: () => ++n, get: () => n };
+}
+const a = make();
+const b = make();
+a.inc(); a.inc(); b.inc();
+console.log(a.get(), b.get());
+// 2 1 — each make() call creates a fresh scope; a and b don't share n</pre
+    >
+
+    <!-- ============ QUICK FIRE ============ -->
+    <div class="section"></div>
+    <span class="level quickfire">QUICK-FIRE</span>
+    <h1>5. Quick-Fire Round</h1>
+    <table>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+      <tr>
+        <td>Reliable NaN check?</td>
+        <td><code>Number.isNaN(x)</code> — no coercion, unlike global isNaN</td>
+      </tr>
+      <tr>
+        <td>Check "is an array"?</td>
+        <td><code>Array.isArray(x)</code> — typeof says "object"</td>
+      </tr>
+      <tr>
+        <td>What does <code>x == null</code> test?</td>
+        <td>null <em>or</em> undefined in one idiom — the useful ==</td>
+      </tr>
+      <tr>
+        <td>What is an IIFE?</td>
+        <td>
+          Immediately invoked function — <code>(function(){})()</code> — old
+          scope isolation
+        </td>
+      </tr>
+      <tr>
+        <td>What does "use strict" change?</td>
+        <td>
+          Silent errors throw; undeclared assignment fails; this defaults to
+          undefined
+        </td>
+      </tr>
+      <tr>
+        <td>Symbol — what for?</td>
+        <td>
+          Guaranteed-unique keys; protocol hooks like
+          <code>Symbol.iterator</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Modern deep clone?</td>
+        <td><code>structuredClone(obj)</code> — cycles, Dates, Maps included</td>
+      </tr>
+      <tr>
+        <td>Map vs plain object?</td>
+        <td>
+          Any key type, insertion order, .size, no prototype collisions
+        </td>
+      </tr>
+      <tr>
+        <td>Set — headline use?</td>
+        <td>Dedupe: <code>[...new Set(arr)]</code></td>
+      </tr>
+      <tr>
+        <td>Safe integer limit?</td>
+        <td>
+          <code>Number.MAX_SAFE_INTEGER</code> (2⁵³−1); beyond it use BigInt
+        </td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>Interview tip:</strong> The most-failed JavaScript questions are
+      <strong>event-loop ordering</strong> (Q21, Q32, Q33),
+      <strong>closures in loops</strong> (Q12, Q36), and
+      <strong>this binding</strong> (Q13, Q34). Interviewers read the output
+      questions to you verbatim — practice predicting out loud, then explaining
+      <em>why</em> in one sentence each.
+    </div>
+  </body>
+</html>

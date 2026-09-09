@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn JavaScript — From Values to the Event Loop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--learn" data-topic="learn-js">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>Learn<br />JavaScript</h1>
+      <p>
+        The language, in the order it makes sense — each concept ends with the
+        angle an interviewer takes on it.
+      </p>
+      <p style="margin-top: 10px">
+        Values &bull; Closures &bull; this &bull; Prototypes &bull; Async &bull;
+        Browser
+      </p>
+      <div class="badge">8 modules · 45 concepts</div>
+    </div>
+
+    <!-- ============ MODULE 1 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 01</p>
+      <h1>Values &amp; Types</h1>
+      <p>
+        Everything in JavaScript is either a small immutable value or a
+        reference to an object. Most "weird JS" is coercion between the two.
+      </p>
+
+      <div class="concept">
+        <h2>Primitives vs references</h2>
+        <p>
+          The seven primitives (string, number, bigint, boolean, undefined,
+          symbol, null) are copied <em>by value</em>. Everything else —
+          objects, arrays, functions — is handled <em>by reference</em>: the
+          variable holds a pointer, and copying the variable copies the
+          pointer.
+        </p>
+        <pre>
+let a = { count: 0 };
+let b = a;          // same object, two names
+b.count++;
+a.count;            // 1 — a saw it
+
+let x = 0;
+let y = x;          // independent copy
+y++;
+x;                  // 0</pre
+        >
+        <aside class="angle">
+          This one fact explains React's rules: state must be replaced, not
+          mutated, because change detection compares references, not contents.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Dynamic typing and typeof</h2>
+        <p>
+          Variables are untyped; values are typed. <code>typeof</code> reports
+          the value's type — with two famous quirks worth memorizing:
+          <code>typeof null === "object"</code> (a fossilized bug) and arrays
+          reporting "object" (use <code>Array.isArray</code>).
+        </p>
+        <pre>
+typeof "hi"     // "string"
+typeof null     // "object"  ← the trap
+typeof []       // "object"  ← use Array.isArray([])
+typeof (() => {}) // "function"</pre
+        >
+        <aside class="angle">
+          "How do you check if something is an array?" is a warm-up filter
+          question — answer instantly.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Coercion: the three targets</h2>
+        <p>
+          JavaScript converts values to exactly three targets — string,
+          number, or boolean — depending on the operation. <code>+</code>
+          prefers strings if either side is one; every other math operator
+          forces numbers; <code>if</code>/<code>!</code>/<code>&&</code> force
+          booleans.
+        </p>
+        <pre>
+1 + "2"    // "12"   (+ saw a string)
+"5" - 2    // 3      (- is numeric only)
+"5" * "2"  // 10
++"42"      // 42     (unary + = quick number conversion)
+!!""       // false  (double-bang = quick boolean)</pre
+        >
+        <aside class="angle">
+          Output-prediction rounds lean on these. Narrate the target type:
+          "minus forces numbers, so…"
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>== vs === in practice</h2>
+        <p>
+          <code>===</code> never converts — use it by default. <code>==</code>
+          runs the coercion algorithm; its one genuinely useful behavior is
+          that <code>x == null</code> is true for null <em>and</em> undefined,
+          which makes a tidy "is missing" check.
+        </p>
+        <pre>
+if (value == null) { /* null or undefined, nothing else */ }
+0 == ""    // true — why you avoid == everywhere else
+0 === ""   // false</pre
+        >
+        <aside class="angle">
+          Saying "I use === except the deliberate x == null idiom" signals you
+          know the rule <em>and</em> the exception.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Truthiness as a tool</h2>
+        <p>
+          Exactly eight values are falsy: false, 0, -0, 0n, "", null,
+          undefined, NaN. Everything else — including "0", [], {} — is
+          truthy. Short-circuit operators return the deciding <em>value</em>,
+          not a boolean, which powers common idioms:
+        </p>
+        <pre>
+const name = input && input.trim();   // guard then use
+const port = env.PORT || 3000;        // fallback (careful: 0 falls through!)
+const port2 = env.PORT ?? 3000;       // fallback only for null/undefined</pre
+        >
+        <aside class="angle">
+          The <code>|| vs ??</code> distinction (0 and "" are valid values!)
+          is a favorite senior-screen question.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Numbers: one type, sharp edges</h2>
+        <p>
+          All numbers are 64-bit floats — there is no integer type. Binary
+          fractions can't represent 0.1 exactly, integers are only safe to
+          2⁵³−1, and NaN is the only value not equal to itself.
+        </p>
+        <pre>
+0.1 + 0.2 === 0.3                       // false
+Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON // the right comparison
+Number.isNaN(value)                     // the right NaN check
+9007199254740993n                       // BigInt when you exceed safe ints</pre
+        >
+        <aside class="angle">
+          "Why is 0.1 + 0.2 !== 0.3?" — answer: binary floating point, and
+          name EPSILON. Two sentences, done.
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 2 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 02</p>
+      <h1>Scope &amp; Closures</h1>
+      <p>
+        Where a variable is visible is decided by where the code is
+        <em>written</em>, not where it runs. Closures fall out of that rule.
+      </p>
+
+      <div class="concept">
+        <h2>Lexical scope and blocks</h2>
+        <p>
+          Scopes nest: inner code sees outer variables, never the reverse.
+          <code>let</code>/<code>const</code> respect any <code>{}</code>
+          block; <code>var</code> only respects function boundaries — it
+          leaks out of if-blocks and loops.
+        </p>
+        <pre>
+function demo() {
+  if (true) {
+    var leaky = 1;
+    let contained = 2;
+  }
+  leaky;      // 1 — var ignored the block
+  contained;  // ReferenceError
+}</pre
+        >
+      </div>
+
+      <div class="concept">
+        <h2>Hoisting and the temporal dead zone</h2>
+        <p>
+          Declarations are registered before any code runs. Function
+          declarations hoist <em>whole</em> (callable early). var hoists and
+          initializes to undefined. let/const hoist but stay uninitialized —
+          touching them before their line is the
+          <strong>temporal dead zone</strong> error.
+        </p>
+        <pre>
+works();                 // fine — declaration hoisted whole
+function works() {}
+
+console.log(v);          // undefined
+var v = 1;
+
+console.log(l);          // ReferenceError: TDZ
+let l = 2;</pre
+        >
+        <aside class="angle">
+          Hoisting output questions open most JS interviews — predict all
+          three cases above without hesitating.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Closures: functions carry their birthplace</h2>
+        <p>
+          A function keeps live access to the scope where it was defined, even
+          after that scope's function has returned. The scope isn't copied —
+          it's kept alive and <em>shared</em> by every function born in it.
+        </p>
+        <pre>
+function bankAccount(balance) {
+  return {
+    deposit: (n) => (balance += n),
+    view: () => balance,      // both share the same `balance`
+  };
+}
+const acct = bankAccount(100);
+acct.deposit(50);
+acct.view(); // 150 — balance lives on, invisible from outside</pre
+        >
+        <aside class="angle">
+          "What is a closure?" wants three beats: definition, the
+          still-alive-after-return part, and a real use (private state,
+          debounce).
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Closure patterns you'll actually write</h2>
+        <pre>
+// memoize — cache lives in the closure
+function memoize(fn) {
+  const cache = new Map();
+  return (arg) => {
+    if (!cache.has(arg)) cache.set(arg, fn(arg));
+    return cache.get(arg);
+  };
+}
+
+// once — flag lives in the closure
+function once(fn) {
+  let done = false, result;
+  return (...args) => (done ? result : ((done = true), (result = fn(...args))));
+}</pre
+        >
+        <aside class="angle">
+          memoize, once, debounce, and throttle are the four closure factories
+          interviews ask you to write — all four are in the Practice section.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>The loop trap</h2>
+        <p>
+          One var per function means every async callback in a loop shares the
+          same, final value. <code>let</code> fixes it by creating a fresh
+          binding per iteration.
+        </p>
+        <pre>
+for (var i = 0; i < 3; i++) setTimeout(() => console.log(i)); // 3 3 3
+for (let i = 0; i < 3; i++) setTimeout(() => console.log(i)); // 0 1 2</pre
+        >
+        <aside class="angle">
+          Asked verbatim, constantly. Explain <em>why</em>: one shared binding
+          vs one per iteration.
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 3 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 03</p>
+      <h1>Functions &amp; this</h1>
+      <p>
+        Functions are values. The only genuinely tricky part is
+        <code>this</code> — and it follows four mechanical rules.
+      </p>
+
+      <div class="concept">
+        <h2>Declaration, expression, arrow</h2>
+        <pre>
+function decl() {}            // hoisted whole; has its own this
+const expr = function () {};  // not callable before this line
+const arrow = () => {};       // no own this/arguments; lexical instead</pre
+        >
+        <p>
+          Arrows are for callbacks and anywhere you want the surrounding
+          <code>this</code>. Declarations/expressions are for methods and
+          constructors.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Default and rest parameters</h2>
+        <pre>
+function paginate(items, { page = 1, size = 20 } = {}) {
+  return items.slice((page - 1) * size, page * size);
+}
+function sum(...nums) {                  // real array, unlike `arguments`
+  return nums.reduce((a, b) => a + b, 0);
+}</pre
+        >
+        <p>
+          Defaults fire on <code>undefined</code> only — passing null keeps
+          null. The <code>= {}</code> on the options object lets callers omit
+          it entirely.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>this: the four rules, in precedence order</h2>
+        <ol>
+          <li><code>new Fn()</code> → the newly created object</li>
+          <li><code>fn.call(obj)</code> / <code>bind</code> → obj, explicitly</li>
+          <li><code>obj.fn()</code> → the thing before the dot</li>
+          <li><code>fn()</code> → undefined (strict) / global (sloppy)</li>
+        </ol>
+        <p>
+          Ask "how is it <em>called</em>?", never "where is it defined?" —
+          except arrows, which ignore all four and use the scope they were
+          written in.
+        </p>
+        <aside class="angle">
+          Interviewers extract a method (<code>const f = obj.method</code>)
+          and ask what <code>f()</code> logs. Rule 4 — the object is gone.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>call, apply, bind</h2>
+        <pre>
+fn.call(ctx, a, b);      // now, args listed
+fn.apply(ctx, [a, b]);   // now, args as array
+const tied = fn.bind(ctx, a);  // later; also pre-fills args (partial application)</pre
+        >
+        <p>
+          bind's product is permanently tied — a later call/bind can't
+          re-point it. That's how React class components pinned handlers:
+          <code>this.onClick = this.onClick.bind(this)</code>.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Arrows and this, in real code</h2>
+        <pre>
+const poller = {
+  count: 0,
+  start() {
+    setInterval(() => {
+      this.count++;            // arrow: this is still poller ✓
+    }, 1000);
+  },
+};</pre
+        >
+        <p>
+          With <code>function () {}</code> inside setInterval, this would be
+          undefined/global. Flip side: arrows make <em>bad</em> object
+          methods — <code>{ name: "x", get: () => this.name }</code> never
+          sees the object.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Higher-order functions and composition</h2>
+        <p>
+          Functions that take or return functions are the language's main
+          abstraction tool — array methods, middleware, React hooks are all
+          this shape.
+        </p>
+        <pre>
+const pipe = (...fns) => (x) => fns.reduce((acc, f) => f(acc), x);
+const slugify = pipe(
+  (s) => s.trim().toLowerCase(),
+  (s) => s.replace(/[^a-z0-9]+/g, "-"),
+  (s) => s.replace(/^-|-$/g, "")
+);
+slugify("  Hello, World! "); // "hello-world"</pre
+        >
+        <aside class="angle">
+          Implementing pipe/compose with reduce is a frequent quick coding
+          exercise — one line each, worth memorizing.
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 4 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 04</p>
+      <h1>Objects &amp; Prototypes</h1>
+      <p>
+        Objects are bags of properties plus a hidden link to another object.
+        That link is the whole inheritance story.
+      </p>
+
+      <div class="concept">
+        <h2>Literals: shorthand, computed keys, methods</h2>
+        <pre>
+const type = "admin";
+const user = {
+  name,                       // shorthand for name: name
+  [`is_${type}`]: true,       // computed key → is_admin
+  greet() { return `Hi ${this.name}`; },  // method shorthand
+};</pre
+        >
+      </div>
+
+      <div class="concept">
+        <h2>Getters, setters, descriptors</h2>
+        <pre>
+const temp = {
+  celsius: 20,
+  get fahrenheit() { return this.celsius * 1.8 + 32; },
+  set fahrenheit(f) { this.celsius = (f - 32) / 1.8; },
+};
+temp.fahrenheit;       // 68 — computed on read
+Object.defineProperty(obj, "id", { writable: false }); // lock a property</pre
+        >
+        <p>
+          Every property has a descriptor (writable, enumerable,
+          configurable). You rarely write them directly, but they explain why
+          some properties don't show in loops or refuse assignment.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>The prototype chain</h2>
+        <p>
+          Reading a missing property walks the object's
+          <code>[[Prototype]]</code> link upward until found or null. Writing
+          never walks — it sets on the object itself. Methods exist once on
+          the prototype and are shared by every instance.
+        </p>
+        <pre>
+const proto = { describe() { return `${this.kind}`; } };
+const dog = Object.create(proto);
+dog.kind = "dog";
+dog.describe(); // "dog" — found one link up, this = dog</pre
+        >
+        <aside class="angle">
+          "Where does arr.map live?" — on Array.prototype, once. Chain:
+          arr → Array.prototype → Object.prototype → null.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Classes, modern shape</h2>
+        <pre>
+class Cache {
+  static instances = 0;      // on the class itself
+  #store = new Map();        // truly private per instance
+  constructor(ttl) {
+    this.ttl = ttl;
+    Cache.instances++;
+  }
+  get size() { return this.#store.size; }
+  set(k, v) { this.#store.set(k, { v, at: Date.now() }); }
+}</pre
+        >
+        <p>
+          Same prototype machinery underneath — plus strict mode, mandatory
+          new, static members, and enforced <code>#private</code> fields.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Inheritance and super</h2>
+        <pre>
+class HttpError extends Error {
+  constructor(status, message) {
+    super(message);           // must run before touching `this`
+    this.status = status;
+    this.name = "HttpError";
+  }
+}
+throw new HttpError(404, "Not found");</pre
+        >
+        <p>
+          Subclassing Error is the one inheritance every backend actually
+          uses — typed errors your Express error middleware can switch on.
+        </p>
+        <aside class="angle">
+          "Composition over inheritance" is the expected follow-up opinion:
+          deep class trees are rare in JS; prefer mixing behaviors via
+          functions.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Symbols and the iterator protocol</h2>
+        <pre>
+const range = {
+  from: 1, to: 3,
+  *[Symbol.iterator]() {
+    for (let n = this.from; n <= this.to; n++) yield n;
+  },
+};
+[...range];           // [1, 2, 3] — spread, for..of, destructuring all work</pre
+        >
+        <p>
+          Symbols are collision-proof keys; the well-known ones
+          (Symbol.iterator) are how your objects plug into language syntax.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 5 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 05</p>
+      <h1>Arrays &amp; Iteration</h1>
+      <p>
+        Ninety percent of application code is reshaping arrays. Fluency here
+        is visible within minutes in a live-coding round.
+      </p>
+
+      <div class="concept">
+        <h2>The big three: map, filter, reduce</h2>
+        <pre>
+const names  = users.map((u) => u.name);            // transform 1:1
+const active = users.filter((u) => !u.disabled);    // keep some
+const total  = items.reduce((sum, i) => sum + i.price, 0); // fold to one
+
+const byRole = users.reduce((acc, u) => {           // reduce as groupBy
+  (acc[u.role] ||= []).push(u);
+  return acc;
+}, {});</pre
+        >
+        <aside class="angle">
+          Chained map/filter/reduce over a sample dataset <em>is</em> the
+          screening question at many companies. Type these without thinking.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Search and test: find, some, every, includes</h2>
+        <pre>
+users.find((u) => u.id === id);      // first match or undefined
+users.some((u) => u.isAdmin);        // at least one?
+users.every((u) => u.verified);      // all?
+tags.includes("urgent");             // membership (===, handles NaN)</pre
+        >
+        <p>
+          find returns the element; findIndex the position; use some/every
+          instead of filter().length tricks.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>sort: the comparator trap</h2>
+        <pre>
+[10, 9, 1].sort();                 // [1, 10, 9] — string sort by default!
+nums.sort((a, b) => a - b);        // numeric ascending
+posts.sort((a, b) => b.date - a.date);        // newest first
+names.sort((a, b) => a.localeCompare(b));     // human alphabetical
+
+nums.toSorted((a, b) => a - b);    // modern: sorted COPY (sort mutates)</pre
+        >
+        <p>
+          sort, reverse, splice, push mutate; map, filter, slice, concat,
+          toSorted, toReversed return new arrays. Know which is which — React
+          state depends on it.
+        </p>
+        <aside class="angle">
+          "[10, 9, 1].sort() — output?" catches half of candidates. Default
+          sort compares strings.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Destructuring and spread, combined</h2>
+        <pre>
+const [first, ...rest] = queue;               // head/tail
+const { password, ...safeUser } = user;       // omit a field
+const merged = [...new Set([...a, ...b])];    // union, deduped
+const updated = todos.map((t) =>
+  t.id === id ? { ...t, done: !t.done } : t   // immutable update
+);</pre
+        >
+        <p>
+          That last line is the single most common pattern in React state
+          updates.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Iterables and generators</h2>
+        <pre>
+function* take(iterable, n) {
+  let i = 0;
+  for (const item of iterable) {
+    if (i++ >= n) return;
+    yield item;               // lazy — nothing computed until pulled
+  }
+}
+[...take(hugeList, 5)];</pre
+        >
+        <p>
+          for..of, spread, and destructuring all consume the same iterator
+          protocol; generators are the easiest way to produce it — lazy
+          sequences, pagination, custom traversals.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 6 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 06</p>
+      <h1>Async &amp; the Event Loop</h1>
+      <p>
+        One thread, never blocked: everything slow happens elsewhere and comes
+        back as a queued callback. Master the queue order and async stops
+        being mysterious.
+      </p>
+
+      <div class="concept">
+        <h2>Why async exists</h2>
+        <p>
+          The thread that runs your JS also paints the page (or serves other
+          requests, in Node). Waiting synchronously would freeze everything —
+          so slow work (network, disk, timers) is delegated, and completion
+          callbacks queue up for the loop to run.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>From callbacks to promises</h2>
+        <p>
+          A promise is a one-time container for a future value: pending →
+          fulfilled or rejected, settled once, immutable after. Chaining works
+          because every <code>.then</code> returns a new promise; errors skip
+          ahead to the nearest <code>.catch</code>.
+        </p>
+        <pre>
+getUser(id)
+  .then((u) => getPosts(u))     // return value feeds the next link
+  .then((posts) => render(posts))
+  .catch((e) => showError(e))   // any failure above lands here
+  .finally(() => spinner.hide());</pre
+        >
+      </div>
+
+      <div class="concept">
+        <h2>async/await, and the parallel trap</h2>
+        <pre>
+async function load() {
+  try {
+    // WRONG when independent: 300ms + 300ms
+    // const user = await getUser(); const feed = await getFeed();
+
+    // RIGHT: fire both, await together — 300ms total
+    const [user, feed] = await Promise.all([getUser(), getFeed()]);
+    return { user, feed };
+  } catch (e) {
+    // rejection from either lands here
+    throw new Error("load failed", { cause: e });
+  }
+}</pre
+        >
+        <aside class="angle">
+          Spotting sequential awaits that should be Promise.all is a
+          rite-of-passage code-review question.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>The combinators</h2>
+        <pre>
+Promise.all(ps)        // all values, or first rejection
+Promise.allSettled(ps) // every outcome: {status, value|reason}
+Promise.race(ps)       // first to settle — timeouts
+Promise.any(ps)        // first to fulfill — fastest mirror</pre
+        >
+        <p>
+          allSettled for "save what you can" batch jobs; race against a
+          timeout promise is the classic pattern.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Micro vs macro: the actual order</h2>
+        <p>
+          After the stack empties: drain <strong>all</strong> microtasks
+          (promise callbacks), then run <strong>one</strong> macrotask
+          (timer, I/O), then microtasks again. Hence promises always beat
+          setTimeout(…, 0).
+        </p>
+        <pre>
+console.log(1);
+setTimeout(() => console.log(2));
+Promise.resolve().then(() => console.log(3));
+console.log(4);
+// 1 4 3 2 — burn this ordering into memory</pre
+        >
+        <aside class="angle">
+          This exact snippet appears in a huge share of JS interviews. See
+          the JavaScript guide's output-prediction section for variants.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Cancellation and timeouts: AbortController</h2>
+        <pre>
+const ctrl = new AbortController();
+fetch(url, { signal: ctrl.signal }).catch((e) => {
+  if (e.name === "AbortError") return;   // expected, not a failure
+  throw e;
+});
+ctrl.abort();                             // e.g. user typed again
+
+fetch(url, { signal: AbortSignal.timeout(5000) }); // built-in timeout</pre
+        >
+        <p>
+          The standard answer to "how do you cancel a stale search request?"
+          — and the cleanup React effects should do.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 7 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 07</p>
+      <h1>The Browser</h1>
+      <p>
+        The DOM is a live tree the browser hands you; events, fetch, and
+        storage are the APIs around it. Frameworks abstract this — interviews
+        check you know what's underneath.
+      </p>
+
+      <div class="concept">
+        <h2>Selecting and changing the DOM</h2>
+        <pre>
+const el = document.querySelector("#list");        // first match, CSS syntax
+const all = document.querySelectorAll(".item");    // static NodeList
+
+el.textContent = "safe text";     // never parses HTML — XSS-safe
+el.innerHTML = "&lt;b&gt;runs markup&lt;/b&gt;";   // only with trusted content
+el.classList.toggle("open");
+el.append(newNode);
+el.closest("[data-row]");         // walk UP to the nearest match</pre
+        >
+        <aside class="angle">
+          textContent vs innerHTML is an XSS question in disguise — say
+          "textContent for user data" unprompted.
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Events: bubbling and delegation</h2>
+        <p>
+          Events travel target → up through ancestors (bubbling). Delegation
+          exploits that: one listener on the stable parent handles every
+          child, present or future.
+        </p>
+        <pre>
+table.addEventListener("click", (e) => {
+  const row = e.target.closest("tr[data-id]");
+  if (row) select(row.dataset.id);
+});
+// e.preventDefault() — stop the browser's default action
+// e.stopPropagation() — stop ancestors from hearing it (use sparingly)</pre
+        >
+      </div>
+
+      <div class="concept">
+        <h2>fetch, done right</h2>
+        <pre>
+async function api(path, options = {}) {
+  const res = await fetch(path, {
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
+  if (!res.ok) throw new HttpError(res.status, await res.text());
+  return res.status === 204 ? null : res.json();
+}
+api("/api/todos", { method: "POST", body: JSON.stringify(todo) });</pre
+        >
+        <p>
+          The interview point: fetch rejects only on <em>network</em> failure
+          — a 404 resolves fine. You check <code>res.ok</code> yourself.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Storage: local, session, cookie</h2>
+        <table>
+          <tr>
+            <th></th>
+            <th>Size</th>
+            <th>Lifetime</th>
+            <th>Sent to server?</th>
+          </tr>
+          <tr>
+            <td>localStorage</td>
+            <td>~5 MB</td>
+            <td>until cleared</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>sessionStorage</td>
+            <td>~5 MB</td>
+            <td>tab lifetime</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>cookie</td>
+            <td>~4 KB</td>
+            <td>configurable</td>
+            <td><strong>Every request</strong></td>
+          </tr>
+        </table>
+        <p>
+          Storage is synchronous and string-only (JSON.stringify). Auth
+          tokens: httpOnly cookies beat localStorage — JS (and therefore XSS)
+          can't read them.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Timers and animation frames</h2>
+        <pre>
+const id = setInterval(poll, 5000);
+clearInterval(id);                  // ALWAYS have a cleanup path
+
+requestAnimationFrame(step);        // runs before next paint — animation JS
+</pre
+        >
+        <p>
+          Timer delays are minimums, not guarantees. Forgotten intervals are
+          the classic SPA memory leak — cleanup belongs in the unmount path
+          (React's effect cleanup return).
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Forms without a framework</h2>
+        <pre>
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();                        // stop the full-page reload
+  const data = Object.fromEntries(new FormData(form));
+  if (!form.reportValidity()) return;        // built-in validation UI
+  await api("/api/signup", { method: "POST", body: JSON.stringify(data) });
+});</pre
+        >
+        <p>
+          FormData reads every named field in one call — the platform's
+          answer before controlled components existed.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 8 ============ -->
+    <section class="module">
+      <p class="eyebrow">// module 08</p>
+      <h1>Modern Essentials</h1>
+      <p>
+        The features that separate current JavaScript from tutorial-era
+        JavaScript.
+      </p>
+
+      <div class="concept">
+        <h2>Modules</h2>
+        <pre>
+// named — several per file, import must match (or alias)
+export const parse = () => {};
+import { parse as parseDoc } from "./parse.js";
+
+// default — one per file, importer names it
+export default class Store {}
+import Store from "./store.js";
+
+const heavy = await import("./charts.js");  // dynamic — code splitting</pre
+        >
+        <p>
+          ESM is static — bundlers tree-shake unused exports. Dynamic import
+          returns a promise and is how routes lazy-load.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Optional chaining and nullish coalescing</h2>
+        <pre>
+const street = order?.shipping?.address?.street;  // undefined, no throw
+config.retries ??= 3;                             // assign only if null/undefined
+onDone?.();                                       // call only if provided</pre
+        >
+        <p>
+          <code>?.</code> short-circuits the whole rest of the expression;
+          <code>??</code> respects 0/""/false as real values where
+          <code>||</code> would not.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Map, Set, and their weak siblings</h2>
+        <pre>
+const seen = new Set(ids);           // O(1) membership: seen.has(id)
+const cache = new Map();             // any key type, keeps insertion order
+const meta = new WeakMap();          // keys held weakly → GC-friendly
+meta.set(domNode, { clicks: 0 });    // node removed → entry collectable</pre
+        >
+        <p>
+          Map over plain object when keys aren't strings, you need size, or
+          you add/remove a lot. WeakMap for metadata about objects you don't
+          own.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h2>Copying and immutability helpers</h2>
+        <pre>
+structuredClone(state);            // real deep clone — dates, maps, cycles
+const next = { ...state, done: true };      // shallow, one level
+arr.toSorted(cmp); arr.toReversed(); arr.with(2, x);  // non-mutating variants
+Object.freeze(config);             // shallow lock — dev-time guard</pre
+        >
+        <aside class="angle">
+          If asked "deep clone?" — structuredClone first, note the
+          JSON.parse/stringify legacy trick and its casualties (Dates,
+          undefined, functions).
+        </aside>
+      </div>
+
+      <div class="concept">
+        <h2>Errors, done properly</h2>
+        <pre>
+class ValidationError extends Error {
+  constructor(fields) {
+    super("Validation failed");
+    this.name = "ValidationError";
+    this.fields = fields;
+  }
+}
+try {
+  save(data);
+} catch (e) {
+  if (e instanceof ValidationError) showFieldErrors(e.fields);
+  else throw e;                     // never swallow what you can't handle
+}
+// wrap and keep the original: new Error("save failed", { cause: e })</pre
+        >
+        <p>
+          Typed errors + instanceof switching + the <code>cause</code> option
+          — the difference between error handling and error hiding.
+        </p>
+      </div>
+    </section>
+
+    <div class="tip">
+      <strong>Where to go next:</strong> the
+      <strong>JavaScript interview guide</strong> asks these concepts as
+      questions (do the output-prediction section cold), and the
+      <strong>Practice section</strong> makes you implement the closure
+      factories — debounce, throttle, memoize — from a blank editor.
+    </div>
+  </body>
+</html>

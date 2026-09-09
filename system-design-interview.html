@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System &amp; API Design Interview Questions — MERN Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--guide" data-topic="system">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>System &amp; API Design<br />Interview Questions</h1>
+      <p>The architecture round — how your MERN app behaves at scale.</p>
+      <p style="margin-top: 10px">
+        REST &bull; Auth &bull; Caching &bull; Scaling &bull; Design Tasks
+      </p>
+      <div class="badge">29 Questions + Quick-Fire</div>
+    </div>
+
+    <!-- ============ FUNDAMENTALS ============ -->
+    <span class="level beginner">FUNDAMENTALS</span>
+    <h1>1. HTTP &amp; REST Fundamentals</h1>
+
+    <div class="q">Q1: What actually makes an API RESTful?</div>
+    <ul>
+      <li><strong>Resources as nouns</strong> — <code>/orders/42</code>, not <code>/getOrder?id=42</code></li>
+      <li><strong>HTTP verbs carry the action</strong> — GET/POST/PUT/PATCH/DELETE</li>
+      <li><strong>Stateless</strong> — every request carries what's needed (token, params); no server-side conversation memory</li>
+      <li><strong>Representations</strong> — the same resource can be JSON today, CSV tomorrow, negotiated via headers</li>
+      <li>Uniform status codes and cacheability</li>
+    </ul>
+    <p>
+      Most "REST" APIs are pragmatic REST — that's fine; be able to say which
+      constraints you kept and why.
+    </p>
+
+    <div class="q">Q2: HTTP methods — semantics and idempotency?</div>
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>Meaning</th>
+        <th>Idempotent?</th>
+      </tr>
+      <tr>
+        <td>GET</td>
+        <td>Read, no side effects</td>
+        <td>Yes (and safe)</td>
+      </tr>
+      <tr>
+        <td>POST</td>
+        <td>Create / non-idempotent action</td>
+        <td><strong>No</strong></td>
+      </tr>
+      <tr>
+        <td>PUT</td>
+        <td>Replace whole resource</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td>PATCH</td>
+        <td>Partial update</td>
+        <td>Not guaranteed</td>
+      </tr>
+      <tr>
+        <td>DELETE</td>
+        <td>Remove</td>
+        <td>Yes</td>
+      </tr>
+    </table>
+    <p>
+      Idempotent = same result no matter how many times it's retried — that's
+      what makes retries and load balancers safe. It's why "submit payment"
+      needs an <strong>idempotency key</strong> on POST.
+    </p>
+
+    <div class="q">Q3: Which status codes must an API get right?</div>
+    <ul>
+      <li><strong>200</strong> OK · <strong>201</strong> Created (+ Location header) · <strong>204</strong> No Content (deletes)</li>
+      <li><strong>301/308</strong> moved · <strong>304</strong> Not Modified (caching)</li>
+      <li>
+        <strong>400</strong> bad input · <strong>401</strong> not
+        authenticated · <strong>403</strong> authenticated but not allowed ·
+        <strong>404</strong> not found · <strong>409</strong> conflict
+        (duplicate) · <strong>422</strong> validation failed ·
+        <strong>429</strong> rate limited
+      </li>
+      <li><strong>500</strong> our bug · <strong>502/503</strong> upstream/overloaded</li>
+    </ul>
+
+    <div class="q">Q4: Why must the API layer be stateless?</div>
+    <p>
+      If any server can answer any request, you can add servers behind a load
+      balancer and kill unhealthy ones freely. State that must live somewhere
+      moves <em>out</em> of the process: sessions → Redis or JWT, uploads →
+      object storage, jobs → a queue. "Can I run three copies of this behind a
+      load balancer with zero code changes?" is the test.
+    </p>
+
+    <div class="q">Q5: Rules of thumb for resource URL design?</div>
+    <pre>
+GET  /api/products               list (filter via query: ?category=&sort=)
+POST /api/products               create
+GET  /api/products/:id           read one
+PATCH /api/products/:id          update
+GET  /api/products/:id/reviews   nested resource — one level deep max
+POST /api/orders/:id/cancel      action that isn't CRUD → verb sub-resource</pre
+    >
+    <p>
+      Plural nouns, kebab-case, no verbs in paths (except explicit action
+      endpoints), filters and pagination in the query string.
+    </p>
+
+    <div class="q">Q6: How do you version an API?</div>
+    <ul>
+      <li><strong>URL</strong> — <code>/api/v2/...</code>: visible, cache-friendly, most common</li>
+      <li><strong>Header</strong> — <code>Accept: application/vnd.app.v2+json</code>: cleaner URLs, harder to test by hand</li>
+      <li>
+        Best defense is <strong>not breaking things</strong>: additive changes
+        (new optional fields) need no version bump; reserve versions for
+        removed/renamed fields and changed semantics
+      </li>
+    </ul>
+
+    <div class="q">Q7: Which request/response headers earn their keep?</div>
+    <ul>
+      <li><strong>Authorization</strong> — <code>Bearer &lt;token&gt;</code></li>
+      <li><strong>Content-Type / Accept</strong> — what I'm sending / what I can read</li>
+      <li><strong>Cache-Control, ETag, Last-Modified</strong> — the caching contract</li>
+      <li><strong>X-Request-Id</strong> — correlate one request across services and logs</li>
+      <li><strong>Retry-After</strong> — pairs with 429/503</li>
+    </ul>
+
+    <div class="q">Q8: What does HTTPS actually protect — and not?</div>
+    <p>
+      TLS gives <strong>confidentiality</strong> (nobody reads the traffic),
+      <strong>integrity</strong> (nobody alters it), and
+      <strong>server authenticity</strong> (you're talking to the real host).
+      It does <em>not</em> validate input, stop injection, or authenticate the
+      user — app-layer security still applies. Terminate TLS at the proxy/load
+      balancer; redirect HTTP → HTTPS; add HSTS.
+    </p>
+
+    <!-- ============ AUTH & DATA FLOW ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">AUTH &amp; DATA FLOW</span>
+    <h1>2. Auth, Validation &amp; Data Flow</h1>
+
+    <div class="q">Q9: JWT vs server sessions — the real tradeoff?</div>
+    <ul>
+      <li>
+        <strong>Sessions</strong> — random id in a cookie, data on the server
+        (Redis). Instant revocation, tiny cookie; needs shared session store
+        to scale
+      </li>
+      <li>
+        <strong>JWT</strong> — signed claims live in the token itself.
+        Stateless verification (any server, no store hit); but revocation is
+        hard — you end up with short expiry + refresh tokens, or a denylist
+        (which is a session store again)
+      </li>
+    </ul>
+    <p>
+      Strong answer: JWTs shine for service-to-service and multi-API setups;
+      plain sessions are simpler and safer for a single web app. Say the
+      expiry/revocation caveat before they ask.
+    </p>
+
+    <div class="q">Q10: Where should the client store tokens?</div>
+    <ul>
+      <li>
+        <strong>localStorage</strong> — readable by any JS on the page →
+        one XSS bug leaks it. Convenient, risky
+      </li>
+      <li>
+        <strong>httpOnly + Secure + SameSite cookie</strong> — invisible to
+        JS (XSS can't read it), sent automatically; now consider CSRF, which
+        SameSite=Lax/Strict plus CSRF tokens for unsafe methods handles
+      </li>
+      <li>
+        Common production pattern: <strong>access token in memory</strong>,
+        <strong>refresh token in an httpOnly cookie</strong>
+      </li>
+    </ul>
+
+    <div class="q">Q11: Sketch the refresh-token flow.</div>
+    <pre>
+login  → issue access token (5–15 min) + refresh token (days, httpOnly)
+request → send access token; on 401 …
+refresh → POST /auth/refresh (cookie goes along) → new access token
+rotate  → each refresh issues a NEW refresh token and invalidates the old
+          (reuse of an old one = theft signal → kill the whole session)</pre
+    >
+    <p>
+      Short access life bounds the damage of a leaked token; rotation makes a
+      stolen refresh token detectable.
+    </p>
+
+    <div class="q">Q12: How do you store passwords?</div>
+    <p>
+      Never encrypted, always <strong>hashed</strong> with a slow, salted
+      algorithm — <strong>bcrypt</strong> (cost ~10–12) or argon2. The salt is
+      generated per password and stored inside the hash string; identical
+      passwords still produce different hashes, and rainbow tables die.
+    </p>
+    <pre>
+const hash = await bcrypt.hash(password, 12);      // register
+const ok = await bcrypt.compare(password, hash);   // login</pre
+    >
+
+    <div class="q">Q13: Where does input validation belong?</div>
+    <p>
+      At the <strong>API boundary</strong>, before any handler logic — schema
+      validation (zod / joi / express-validator) for shape and types, then
+      business rules deeper in. Client-side validation is UX only; the server
+      never trusts it. Reject with 400/422 and a machine-readable field list.
+    </p>
+    <pre>
+const CreateUser = z.object({
+  email: z.string().email(),
+  password: z.string().min(12),
+  age: z.coerce.number().int().min(13).optional(),
+});
+// route: const data = CreateUser.parse(req.body)  → throws → error middleware</pre
+    >
+
+    <div class="q">Q14: Offset vs cursor pagination — API view?</div>
+    <ul>
+      <li>
+        <strong>Offset</strong> (<code>?page=3&limit=20</code>) — jump to any
+        page; slow when deep (DB scans skipped rows) and unstable when rows
+        are inserted mid-browse
+      </li>
+      <li>
+        <strong>Cursor</strong> (<code>?after=eyJpZCI6…</code>) — "give me
+        what follows this opaque marker": stable and fast at any depth; no
+        random page jumps
+      </li>
+    </ul>
+    <p>
+      Return paging metadata either way:
+      <code>{ data, nextCursor }</code> or <code>{ data, page, total }</code>.
+    </p>
+
+    <div class="q">Q15: How do file uploads work at scale?</div>
+    <p>
+      Small scale: multipart/form-data through the API (multer), store on
+      disk or object storage. Real scale: the API only issues a
+      <strong>pre-signed URL</strong>; the browser uploads
+      <em>directly</em> to S3-style storage, then confirms — your Node
+      process never streams gigabytes. Always cap size, whitelist MIME types,
+      and never trust the client's filename.
+    </p>
+
+    <div class="q">Q16: What does a good error response look like?</div>
+    <pre>
+{
+  "error": {
+    "code": "VALIDATION_FAILED",       // stable, machine-readable
+    "message": "Email is invalid.",    // human-readable, no internals
+    "fields": { "email": "invalid" },
+    "requestId": "req_8fk2…"           // findable in your logs
+  }
+}</pre
+    >
+    <p>
+      One shape everywhere, stable codes the frontend can switch on, no stack
+      traces or SQL in production, and the request id that connects a user
+      report to the exact log line.
+    </p>
+
+    <div class="q">Q17: Rate limiting — why, and which algorithm?</div>
+    <p>
+      Protects against brute force, scraping, and one noisy client starving
+      everyone. Algorithms: <strong>fixed window</strong> (simple, bursty at
+      boundaries), <strong>sliding window</strong> (smooths that),
+      <strong>token bucket</strong> (steady rate + allows bursts — the usual
+      pick). Keep counters in <strong>Redis</strong> so limits hold across
+      instances; answer 429 + Retry-After. Tighter buckets on
+      <code>/login</code> and <code>/refresh</code>.
+    </p>
+
+    <div class="q">Q18: Explain CORS in one minute.</div>
+    <p>
+      Browsers block cross-origin <em>reads</em> by default. CORS is the
+      server saying "this origin may read me" via
+      <code>Access-Control-Allow-Origin</code>. Non-simple requests (JSON
+      content type, auth headers, PUT/DELETE) trigger a
+      <strong>preflight OPTIONS</strong> asking permission first. With
+      credentials, the allowed origin must be exact — no <code>*</code>. It
+      protects <em>browser users</em>, not your API — curl ignores it; auth
+      still does the real gatekeeping.
+    </p>
+
+    <!-- ============ SCALING ============ -->
+    <div class="section"></div>
+    <span class="level advanced">SCALING &amp; ARCHITECTURE</span>
+    <h1>3. Scaling &amp; Architecture</h1>
+
+    <div class="q">Q19: Walk through the caching layers of a MERN app.</div>
+    <ol>
+      <li><strong>Browser</strong> — Cache-Control on static assets (hashed filenames → cache forever)</li>
+      <li><strong>CDN</strong> — static files and cacheable GETs at the edge</li>
+      <li><strong>App cache (Redis)</strong> — hot query results, sessions, computed aggregates</li>
+      <li><strong>Database</strong> — indexes and its own working-set memory</li>
+    </ol>
+    <p>
+      The interview follow-up is always <strong>invalidation</strong>: TTLs
+      for tolerable staleness, key-based invalidation on writes
+      (delete <code>product:42</code> when product 42 changes), and
+      <strong>cache-aside</strong> as the default pattern — read cache → miss
+      → read DB → fill cache.
+    </p>
+
+    <div class="q">Q20: Horizontal vs vertical scaling?</div>
+    <p>
+      <strong>Vertical</strong> — bigger machine: zero code changes, quick
+      win, has a ceiling and a single point of failure.
+      <strong>Horizontal</strong> — more machines behind a load balancer:
+      near-limitless and fault-tolerant, but demands statelessness (Q4),
+      centralized sessions, and sticky-free design. Node specifics: one
+      process uses one core — <code>cluster</code>/PM2 to use the whole box,
+      then multiply boxes.
+    </p>
+
+    <div class="q">Q21: What does a load balancer do — and what are sticky sessions?</div>
+    <p>
+      Spreads requests across healthy instances (round-robin / least
+      connections), checks health, and removes dead nodes. <strong>Sticky
+      sessions</strong> pin a user to one instance — a crutch for in-memory
+      state that breaks the moment that instance dies; move state to Redis
+      instead. Nginx or a cloud LB also terminates TLS and can serve static
+      files.
+    </p>
+
+    <div class="q">Q22: Database scaling — in what order?</div>
+    <ol>
+      <li><strong>Indexes + query fixes</strong> — 90% of "we need to scale" cases end here</li>
+      <li><strong>Caching</strong> — keep reads off the DB entirely</li>
+      <li>
+        <strong>Replica set</strong> — replicas for availability (and
+        read-heavy offloading, accepting staleness)
+      </li>
+      <li>
+        <strong>Sharding</strong> — split data across machines by shard key;
+        operationally expensive, last resort
+      </li>
+    </ol>
+
+    <div class="q">Q23: WebSockets vs SSE vs polling?</div>
+    <ul>
+      <li><strong>Polling</strong> — request every N s: simple, laggy, wasteful; fine for infrequent changes</li>
+      <li>
+        <strong>SSE</strong> — one-way server→browser stream over plain HTTP:
+        perfect for feeds, notifications, progress
+      </li>
+      <li>
+        <strong>WebSockets</strong> — full duplex: chat, games, collaborative
+        editing. At scale, publish across instances via Redis pub/sub so a
+        message reaches users connected to other nodes
+      </li>
+    </ul>
+
+    <div class="q">Q24: When does a message queue enter the design?</div>
+    <p>
+      Whenever the response shouldn't wait on the work: emails, image
+      processing, webhooks, report generation. The API enqueues (BullMQ /
+      RabbitMQ / SQS), answers 202, workers consume with retries and a
+      dead-letter queue. You get spike-smoothing, failure isolation, and
+      independent scaling of the slow parts.
+    </p>
+
+    <div class="q">Q25: Monolith or microservices for a MERN product?</div>
+    <p>
+      Start <strong>modular monolith</strong>: one deployable, clean internal
+      module boundaries (routes/services/models per domain). Split a service
+      out only when something forces it — a component scaling very
+      differently, a team boundary, a different runtime. Microservices buy
+      independent deploys at the price of network failures, distributed data,
+      and much heavier ops. Saying "monolith first, and here's what would make
+      me split" reads as experience, not timidity.
+    </p>
+
+    <div class="q">Q26: What does a production MERN deployment look like?</div>
+    <pre>
+DNS → CDN (static React build)
+    → Nginx / cloud LB (TLS, gzip)
+      → Node/Express × N  (PM2 or containers; stateless)
+        → MongoDB replica set (managed: Atlas)
+        → Redis (cache, sessions, rate limits, queues)
+CI: test → build → deploy; config via env vars; logs + metrics shipped out</pre
+    >
+    <p>
+      Key phrases: twelve-factor config, health-check endpoint, graceful
+      shutdown (stop accepting, finish in-flight, close DB), zero-downtime
+      rolling deploys.
+    </p>
+
+    <!-- ============ DESIGN TASKS ============ -->
+    <div class="section"></div>
+    <span class="level practical">DESIGN TASKS</span>
+    <h1>4. Design Tasks (Whiteboard Rounds)</h1>
+
+    <div class="q">Task 1: Design a URL shortener.</div>
+    <p><strong>Clarify first:</strong> scale (reads ≫ writes), custom aliases? analytics? expiry?</p>
+    <ul>
+      <li>
+        <strong>Model:</strong> <code>{ code, longUrl, ownerId, createdAt, expiresAt, clicks }</code>,
+        unique index on <code>code</code>
+      </li>
+      <li>
+        <strong>Code generation:</strong> base62-encode an auto-incrementing
+        counter (or random 7 chars + retry on collision). 62⁷ ≈ 3.5T —
+        plenty
+      </li>
+      <li>
+        <strong>Redirect path:</strong> <code>GET /:code</code> → cache lookup
+        (Redis) → 301/302 → increment clicks <em>async</em> (queue, not in the
+        hot path)
+      </li>
+      <li>
+        <strong>Scale story:</strong> redirects are cache hits; DB only on
+        miss; shortening is the rare write
+      </li>
+    </ul>
+
+    <div class="q">Task 2: Design real-time chat.</div>
+    <ul>
+      <li>
+        <strong>Transport:</strong> WebSockets (socket.io) with auth at
+        connection time (token in the handshake)
+      </li>
+      <li>
+        <strong>Model:</strong> conversations + messages
+        (<code>{ convId, senderId, body, sentAt, readBy[] }</code>), index on
+        <code>(convId, sentAt)</code>, cursor-paginate history
+      </li>
+      <li>
+        <strong>Delivery:</strong> persist first, then broadcast to the
+        room; multiple Node instances share a
+        <strong>Redis pub/sub adapter</strong> so sockets on other nodes get
+        it
+      </li>
+      <li>
+        <strong>Extras when asked:</strong> typing = ephemeral events (never
+        stored), unread counts precomputed per user, presence via heartbeat
+        TTL keys in Redis
+      </li>
+    </ul>
+
+    <div class="q">Task 3: Design a product listing with search, filters, pagination.</div>
+    <ul>
+      <li>
+        <strong>API:</strong>
+        <code>GET /products?q=&category=&minPrice=&sort=price&after=…</code> —
+        every filter optional, cursor pagination, whitelist sort fields
+      </li>
+      <li>
+        <strong>Mongo:</strong> compound indexes matching the hot filter+sort
+        combos (<code>{ category: 1, price: 1 }</code>); text or Atlas Search
+        index for <code>q</code>; facet counts via aggregation, cached
+      </li>
+      <li>
+        <strong>Frontend:</strong> filters live in the URL (shareable,
+        back-button-safe), debounce the search box, keep previous page's data
+        while the next loads
+      </li>
+      <li>
+        <strong>Scale story:</strong> cache popular first pages; a dedicated
+        search engine (Elastic/Atlas Search) when relevance ranking matters
+      </li>
+    </ul>
+
+    <!-- ============ QUICK FIRE ============ -->
+    <div class="section"></div>
+    <span class="level quickfire">QUICK-FIRE</span>
+    <h1>5. Quick-Fire Round</h1>
+    <table>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+      <tr>
+        <td>401 vs 403?</td>
+        <td>401 = who are you? · 403 = I know you, and no</td>
+      </tr>
+      <tr>
+        <td>Which methods are idempotent?</td>
+        <td>GET, PUT, DELETE (HEAD, OPTIONS) — not POST</td>
+      </tr>
+      <tr>
+        <td>What is a CDN?</td>
+        <td>Edge servers caching content near users — latency + offload</td>
+      </tr>
+      <tr>
+        <td>What is an ETag?</td>
+        <td>
+          Content fingerprint; client revalidates, server answers 304 if
+          unchanged
+        </td>
+      </tr>
+      <tr>
+        <td>What triggers a CORS preflight?</td>
+        <td>
+          Non-simple requests: JSON content type, auth headers, PUT/DELETE
+        </td>
+      </tr>
+      <tr>
+        <td>p95 latency?</td>
+        <td>95% of requests are faster than this — tails matter, not averages</td>
+      </tr>
+      <tr>
+        <td>Connection pooling?</td>
+        <td>Reuse open DB connections instead of per-request handshakes</td>
+      </tr>
+      <tr>
+        <td>Blue-green deployment?</td>
+        <td>Two identical envs; switch traffic, instant rollback</td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>Interview tip:</strong> The most-failed topics here are
+      <strong>token storage tradeoffs</strong> (Q10),
+      <strong>cache invalidation</strong> (Q19), and the
+      <strong>URL-shortener task</strong> — practice it end-to-end out loud.
+      In every design round: ask about scale and constraints <em>before</em>
+      drawing, and say the tradeoff of each choice as you make it.
+    </div>
+  </body>
+</html>

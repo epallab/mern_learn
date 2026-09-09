@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Node.js Interview Questions — Complete Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script>
+      // set theme before first paint
+      (function () {
+        var d = document.documentElement;
+        d.className += " js";
+        var t = null;
+        try {
+          t = localStorage.getItem("prep.theme");
+        } catch (e) {}
+        if (t !== "day" && t !== "night") {
+          t =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "night"
+              : "day";
+        }
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body class="page page--guide" data-topic="node">
+    <header class="topbar">
+      <a class="topbar__brand" href="index.html">MERN <span>Prep</span></a>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="index.html#guides">Guides</a>
+        <a href="index.html#learn">Learn</a>
+        <a href="index.html#practice">Practice</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" class="theme-switch__opt" data-set-theme="day">
+          day
+        </button>
+        <button type="button" class="theme-switch__opt" data-set-theme="night">
+          night
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ COVER ============ -->
+    <div class="cover">
+      <h1>Node.js<br />Interview Questions</h1>
+      <p>Complete Guide with Answers &amp; Code Examples</p>
+      <p style="margin-top: 10px">
+        Beginner &bull; Intermediate &bull; Advanced &bull; Coding Tasks
+      </p>
+      <div class="badge">30+ Questions Covered</div>
+    </div>
+
+    <!-- ============ BEGINNER ============ -->
+    <span class="level beginner">BEGINNER LEVEL</span>
+    <h1>1. Beginner Questions</h1>
+
+    <div class="q">Q1: What is Node.js?</div>
+    <p>
+      A JavaScript runtime environment built on Chrome's V8 engine that executes
+      JS outside the browser. It uses an event-driven, non-blocking I/O model,
+      making it ideal for scalable network applications.
+    </p>
+
+    <div class="q">Q2: How is Node.js different from browser JavaScript?</div>
+    <ul>
+      <li>
+        No DOM/window; instead has <code>global</code>, <code>process</code>,
+        <code>Buffer</code>
+      </li>
+      <li>Access to file system, network, OS</li>
+      <li>Module systems (CommonJS/ESM) built-in</li>
+      <li>No browser security sandbox</li>
+    </ul>
+
+    <div class="q">Q3: Is Node.js single-threaded?</div>
+    <p>
+      The <strong>event loop is single-threaded</strong>, but Node uses the
+      <strong>libuv thread pool</strong> (default 4 threads) behind the scenes
+      for file I/O, DNS, and crypto operations. So: single-threaded JS
+      execution, multi-threaded under the hood.
+    </p>
+
+    <div class="q">Q4: package.json vs package-lock.json?</div>
+    <ul>
+      <li>
+        <code>package.json</code> — project metadata, dependency
+        <strong>ranges</strong> (<code>^4.18.0</code>)
+      </li>
+      <li>
+        <code>package-lock.json</code> — <strong>exact</strong> versions of the
+        entire dependency tree, ensuring identical installs across machines
+      </li>
+    </ul>
+
+    <div class="q">Q5: dependencies vs devDependencies?</div>
+    <ul>
+      <li><code>dependencies</code> — needed at runtime (express, mongoose)</li>
+      <li>
+        <code>devDependencies</code> — development only (nodemon, jest, eslint)
+      </li>
+    </ul>
+
+    <div class="q">Q6: CommonJS vs ES Modules?</div>
+    <pre><code>// CommonJS — synchronous, dynamic
+const fs = require('fs');
+module.exports = { myFunc };
+
+// ES Modules — asynchronous, static, tree-shakeable
+import fs from 'fs';
+export default myFunc;</code></pre>
+
+    <div class="q">Q7: What is callback hell and how do you avoid it?</div>
+    <p>
+      Deeply nested callbacks that become unreadable. Solutions:
+      <strong>Promises</strong>, <strong>async/await</strong>, modularizing
+      functions.
+    </p>
+
+    <div class="q">Q8: What are __dirname and __filename?</div>
+    <p>
+      <code>__dirname</code> = absolute path of the current directory;
+      <code>__filename</code> = absolute path of the current file. (Not
+      available in ES modules — use <code>import.meta.url</code> instead.)
+    </p>
+
+    <div class="q">Q9: Synchronous vs asynchronous fs methods?</div>
+    <pre><code>const data = fs.readFileSync('file.txt');        // blocks event loop ❌
+fs.readFile('file.txt', (err, data) => {...});   // non-blocking ✅
+const data = await fs.promises.readFile('file.txt'); // modern ✅</code></pre>
+
+    <div class="q">Q10: What is REPL?</div>
+    <p>
+      Read-Eval-Print-Loop — the interactive shell you get by typing
+      <code>node</code> in the terminal.
+    </p>
+
+    <!-- ============ INTERMEDIATE ============ -->
+    <div class="section"></div>
+    <span class="level intermediate">INTERMEDIATE LEVEL</span>
+    <h1>2. Intermediate Questions</h1>
+
+    <div class="q">
+      Q11: Explain the Event Loop phases. <span class="star">★ Most asked</span>
+    </div>
+    <p>The event loop cycles through these phases:</p>
+    <ol>
+      <li>
+        <strong>Timers</strong> — executes <code>setTimeout</code> /
+        <code>setInterval</code> callbacks
+      </li>
+      <li><strong>Pending callbacks</strong> — deferred I/O callbacks</li>
+      <li><strong>Idle/prepare</strong> — internal use</li>
+      <li>
+        <strong>Poll</strong> — retrieves new I/O events; executes I/O callbacks
+      </li>
+      <li>
+        <strong>Check</strong> — executes <code>setImmediate</code> callbacks
+      </li>
+      <li>
+        <strong>Close callbacks</strong> — e.g., <code>socket.on('close')</code>
+      </li>
+    </ol>
+    <p>
+      Between every phase, Node drains <strong>microtask queues</strong>: first
+      the <code>process.nextTick</code> queue, then the Promise queue.
+    </p>
+
+    <div class="q">
+      Q12: process.nextTick() vs setImmediate() vs setTimeout(fn, 0)?
+    </div>
+    <pre><code>setTimeout(() => console.log('timeout'), 0);
+setImmediate(() => console.log('immediate'));
+process.nextTick(() => console.log('nextTick'));
+Promise.resolve().then(() => console.log('promise'));
+console.log('sync');
+
+// Output: sync → nextTick → promise → timeout/immediate</code></pre>
+    <ul>
+      <li><code>nextTick</code> — highest priority, fires before promises</li>
+      <li>
+        Inside an <strong>I/O callback</strong>,
+        <code>setImmediate</code> always beats <code>setTimeout</code>
+      </li>
+      <li>
+        In the main module, timeout vs immediate order is non-deterministic
+      </li>
+    </ul>
+
+    <div class="q">Q13: What is the EventEmitter?</div>
+    <p>
+      The core of Node's event-driven architecture. Most core modules (http,
+      streams) extend it.
+    </p>
+    <pre><code>const EventEmitter = require('events');
+
+class OrderService extends EventEmitter {}
+const orders = new OrderService();
+
+orders.on('placed', (id) => console.log(`Order ${id} placed`));
+orders.once('placed', (id) => sendEmail(id));  // fires only once
+orders.emit('placed', 42);</code></pre>
+
+    <div class="q">Q14: What are Streams? Name the types.</div>
+    <p>
+      Interfaces for processing data in chunks instead of loading it all in
+      memory.
+    </p>
+    <ul>
+      <li><strong>Readable</strong> — <code>fs.createReadStream</code></li>
+      <li><strong>Writable</strong> — <code>fs.createWriteStream</code></li>
+      <li><strong>Duplex</strong> — both (TCP sockets)</li>
+      <li>
+        <strong>Transform</strong> — modify while passing through (zlib
+        compression)
+      </li>
+    </ul>
+    <pre><code>// Serve a 2GB file using ~64KB of memory
+fs.createReadStream('huge-video.mp4').pipe(res);</code></pre>
+
+    <div class="q">Q15: What is a Buffer?</div>
+    <p>
+      A fixed-size chunk of raw binary data outside V8's heap. Used for TCP
+      streams, file operations, binary protocols.
+    </p>
+    <pre><code>const buf = Buffer.from('Hello');
+console.log(buf);            // &lt;Buffer 48 65 6c 6c 6f&gt;
+console.log(buf.toString()); // 'Hello'</code></pre>
+
+    <div class="q">Q16: spawn() vs exec() vs fork()?</div>
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>Use case</th>
+      </tr>
+      <tr>
+        <td><code>spawn</code></td>
+        <td>Long-running process, streams output (large data)</td>
+      </tr>
+      <tr>
+        <td><code>exec</code></td>
+        <td>Short commands, buffers entire output in memory</td>
+      </tr>
+      <tr>
+        <td><code>fork</code></td>
+        <td>
+          Spawns a new <strong>Node</strong> process with built-in IPC channel
+        </td>
+      </tr>
+    </table>
+
+    <div class="q">Q17: How do you handle errors in async code?</div>
+    <pre><code>// async/await — try/catch
+try {
+  const user = await User.findById(id);
+} catch (err) {
+  next(err);
+}
+
+// Global safety nets (log + graceful shutdown)
+process.on('unhandledRejection', (err) => { ... });
+process.on('uncaughtException', (err) => { process.exit(1); });</code></pre>
+
+    <div class="q">Q18: What is middleware in Node.js?</div>
+    <p>
+      Functions in the request pipeline that can inspect/modify
+      <code>req</code>/<code>res</code> and pass control via
+      <code>next()</code>. Core to Express architecture.
+    </p>
+
+    <div class="q">Q19: How do environment variables work?</div>
+    <pre><code>require('dotenv').config();
+const port = process.env.PORT || 3000;</code></pre>
+    <p>
+      Never commit <code>.env</code> files — use them for secrets, API keys, DB
+      URIs.
+    </p>
+
+    <div class="q">Q20: What is libuv?</div>
+    <p>
+      The C library that gives Node its event loop and async I/O. It manages the
+      thread pool, handles OS-level differences, and delegates heavy operations
+      off the main thread.
+    </p>
+
+    <!-- ============ ADVANCED ============ -->
+    <div class="section"></div>
+    <span class="level advanced">ADVANCED LEVEL</span>
+    <h1>3. Advanced Questions</h1>
+
+    <div class="q">
+      Q21: Cluster vs Worker Threads vs Child Processes?
+      <span class="star">★</span>
+    </div>
+    <table>
+      <tr>
+        <th></th>
+        <th>Cluster</th>
+        <th>Worker Threads</th>
+        <th>Child Process</th>
+      </tr>
+      <tr>
+        <td>Memory</td>
+        <td>Separate</td>
+        <td>Shared possible</td>
+        <td>Separate</td>
+      </tr>
+      <tr>
+        <td>Best for</td>
+        <td>Scaling HTTP servers</td>
+        <td>CPU-heavy tasks</td>
+        <td>External programs</td>
+      </tr>
+      <tr>
+        <td>Communication</td>
+        <td>IPC</td>
+        <td>Messages / shared memory</td>
+        <td>IPC / stdio</td>
+      </tr>
+    </table>
+    <pre><code>// Cluster — one worker per core
+const cluster = require('cluster');
+const os = require('os');
+
+if (cluster.isPrimary) {
+  os.cpus().forEach(() => cluster.fork());
+  cluster.on('exit', () => cluster.fork()); // auto-restart
+} else {
+  require('./server');
+}</code></pre>
+
+    <div class="q">Q22: How do you detect and prevent memory leaks?</div>
+    <p>
+      <strong>Common causes:</strong> global variables, forgotten
+      timers/listeners, closures holding large references, unbounded caches.
+    </p>
+    <p>
+      <strong>Detection:</strong> <code>process.memoryUsage()</code>, Chrome
+      DevTools heap snapshots (<code>node --inspect</code>), clinic.js.
+    </p>
+    <p>
+      <strong>Prevention:</strong> remove listeners (<code>emitter.off</code>),
+      clear intervals, use <code>WeakMap</code>, cap cache sizes (LRU).
+    </p>
+
+    <div class="q">Q23: What is backpressure in streams?</div>
+    <p>
+      When a writable stream can't consume data as fast as the readable produces
+      it. <code>pipe()</code> handles it automatically; manually,
+      <code>write()</code> returns <code>false</code> → pause until the
+      <code>'drain'</code> event.
+    </p>
+
+    <div class="q">Q24: How do you implement graceful shutdown?</div>
+    <pre><code>process.on('SIGTERM', () => {
+  server.close(async () => {        // stop accepting new requests
+    await mongoose.disconnect();     // close DB connections
+    process.exit(0);
+  });
+  setTimeout(() => process.exit(1), 10000); // force-kill fallback
+});</code></pre>
+
+    <div class="q">Q25: How would you avoid blocking the event loop?</div>
+    <ul>
+      <li>
+        Never use sync methods (<code>fs.readFileSync</code>,
+        <code>crypto.pbkdf2Sync</code>) in servers
+      </li>
+      <li>Offload CPU work to worker threads</li>
+      <li>Break large loops with <code>setImmediate</code> chunks</li>
+      <li>Use streaming instead of loading full payloads</li>
+    </ul>
+
+    <div class="q">Q26: Node.js security best practices?</div>
+    <ul>
+      <li>Validate/sanitize all input (prevent injection)</li>
+      <li>
+        <code>helmet</code> for security headers, rate limiting
+        (<code>express-rate-limit</code>)
+      </li>
+      <li>
+        Avoid <code>eval()</code>; keep dependencies audited (<code
+          >npm audit</code
+        >)
+      </li>
+      <li>
+        Store secrets in env vars; hash passwords with <code>bcrypt</code>
+      </li>
+      <li>Run with least privilege; set request size limits</li>
+    </ul>
+
+    <div class="q">Q27: How does V8 garbage collection work?</div>
+    <p>
+      Generational GC: <strong>new space</strong> (short-lived objects, fast
+      Scavenge collection) and <strong>old space</strong> (survivors,
+      Mark-Sweep-Compact). Long GC pauses hint at memory pressure.
+    </p>
+
+    <div class="q">Q28: REST vs GraphQL in a Node backend?</div>
+    <p>
+      <strong>REST:</strong> simple, cacheable, standard.
+      <strong>GraphQL:</strong> single endpoint, client specifies exact fields
+      (no over/under-fetching), but adds complexity in caching and rate
+      limiting.
+    </p>
+
+    <!-- ============ OUTPUT PREDICTION ============ -->
+    <div class="section"></div>
+    <h1>4. Output Prediction (Trick Questions)</h1>
+
+    <div class="q">Q29: What does this print?</div>
+    <pre><code>const fs = require('fs');
+fs.readFile(__filename, () => {
+  setTimeout(() => console.log('timeout'), 0);
+  setImmediate(() => console.log('immediate'));
+});
+
+// Output: immediate → timeout
+// (Inside I/O callbacks, the check phase comes
+//  before the next timers phase)</code></pre>
+
+    <div class="q">Q30: What does this print?</div>
+    <pre><code>async function test() {
+  console.log('A');
+  await Promise.resolve();
+  console.log('B');
+}
+test();
+console.log('C');
+
+// Output: A → C → B
+// (everything after await = microtask)</code></pre>
+
+    <!-- ============ CODING TASKS ============ -->
+    <h1>5. Practical Coding Tasks</h1>
+
+    <div class="q">Task 1: HTTP server without Express</div>
+    <pre><code>const http = require('http');
+
+const server = http.createServer((req, res) => {
+  if (req.url === '/api/users' &amp;&amp; req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify([{ id: 1, name: 'Alice' }]));
+  } else {
+    res.writeHead(404);
+    res.end(JSON.stringify({ error: 'Not found' }));
+  }
+});
+
+server.listen(3000, () => console.log('Running on 3000'));</code></pre>
+
+    <div class="q">Task 2: Read POST body without Express</div>
+    <pre><code>let body = '';
+req.on('data', chunk => body += chunk);
+req.on('end', () => {
+  const data = JSON.parse(body);
+  // process data
+});</code></pre>
+
+    <h2>Other common tasks</h2>
+    <ul>
+      <li>Build a simple rate limiter</li>
+      <li>Copy a large file using streams</li>
+      <li>Promisify a callback-based function</li>
+      <li>Create a custom middleware logger</li>
+    </ul>
+
+    <!-- ============ QUICK FIRE ============ -->
+    <h1>6. Quick-Fire Round</h1>
+    <table>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+      <tr>
+        <td>Default thread pool size?</td>
+        <td>4 (configurable via <code>UV_THREADPOOL_SIZE</code>)</td>
+      </tr>
+      <tr>
+        <td>What is PM2?</td>
+        <td>Production process manager — restarts, clustering, logs</td>
+      </tr>
+      <tr>
+        <td><code>npm ci</code> vs <code>npm install</code>?</td>
+        <td>
+          <code>ci</code> installs exactly from lock file — faster, for CI/CD
+        </td>
+      </tr>
+      <tr>
+        <td>What is nodemon?</td>
+        <td>Auto-restarts server on file changes (dev only)</td>
+      </tr>
+      <tr>
+        <td>Node.js LTS meaning?</td>
+        <td>Long Term Support — production-recommended versions</td>
+      </tr>
+      <tr>
+        <td>What is <code>express.Router()</code>?</td>
+        <td>Modular, mountable route handlers</td>
+      </tr>
+      <tr>
+        <td>Semver <code>^</code> vs <code>~</code>?</td>
+        <td>
+          <code>^</code> allows minor updates, <code>~</code> only patch updates
+        </td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>Interview tip:</strong> The event loop (Q11–Q12) and scaling
+      questions (Q21) are the most heavily tested Node.js topics. Practice
+      explaining them out loud with the code examples.
+    </div>
+  </body>
+</html>
