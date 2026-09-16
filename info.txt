@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy Policy — Picture Puzzle by pocopie</title>
-<meta name="description" content="Privacy Policy for Picture Puzzle, an Android puzzle game by pocopie. Explains what data is collected through Google AdMob advertising, how it is used, and the choices and rights available to players under GDPR and CCPA/CPRA.">
+<title>Privacy Policy — Pocopie Apps</title>
+<meta name="description" content="Privacy Policy for all Android apps published by Pocopie. Our apps work offline, need no account or login, and collect no data themselves; the only data collection is through Google AdMob advertising. Explains what AdMob collects, how it is used, our use of generative-AI-created assets, and your rights under GDPR and CCPA/CPRA.">
 <meta name="robots" content="index, follow">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://pocopie.github.io/">
@@ -307,12 +307,12 @@
 <div class="wrap">
 
   <header class="page-head">
-    <p class="eyebrow">Picture Puzzle &middot; Android</p>
+    <p class="eyebrow">Pocopie &middot; Android Apps</p>
     <h1>Privacy Policy</h1>
     <ul class="meta">
-      <li><b>Last Updated:</b> 15 September 2026</li>
-      <li><b>Effective:</b> 15 September 2026</li>
-      <li><b>Developer:</b> pocopie</li>
+      <li><b>Last Updated:</b> 16 September 2026</li>
+      <li><b>Effective:</b> 16 September 2026</li>
+      <li><b>Developer:</b> Pocopie</li>
     </ul>
   </header>
 
@@ -321,11 +321,12 @@
     <div class="summary">
       <h2>In short</h2>
       <p>
-        Picture Puzzle is an offline puzzle game. We do not ask you to create an account, we do not
-        ask for your name or email, and the game itself sends nothing about you to us. The one thing
-        that does collect data is the advertising we use to keep the game free: Google AdMob. This
-        policy explains exactly what AdMob collects, why, and how you can limit it. This summary is
-        for convenience only &mdash; the full sections below are what applies.
+        Every app we publish works offline. Our apps do not ask you to create an account, they never
+        ask for your name or email, and they send nothing about you to us. The one thing that does
+        collect data is the advertising we use to keep our apps free: Google AdMob. This policy
+        explains exactly what AdMob collects, why, and how you can limit it. It also discloses that
+        some of the artwork and other assets in our apps were created with the help of generative AI
+        tools. This summary is for convenience only &mdash; the full sections below are what applies.
       </p>
     </div>
 
@@ -336,6 +337,7 @@
         <li><a href="#information-we-collect">Information We Collect</a></li>
         <li><a href="#automatically-collected-data">Automatically Collected Data</a></li>
         <li><a href="#third-party-services">Third-Party Services</a></li>
+        <li><a href="#generative-ai">Generative AI and In-App Content</a></li>
         <li><a href="#how-we-use-information">How We Use Information</a></li>
         <li><a href="#legal-basis">Legal Basis for Processing (GDPR)</a></li>
         <li><a href="#your-choices">Your Choices and Controls</a></li>
@@ -353,24 +355,27 @@
     <section id="introduction">
       <h2>1. Introduction</h2>
       <p>
-        This Privacy Policy describes how information is handled in connection with <b>Picture
-        Puzzle</b> (the &ldquo;App&rdquo;), a mobile puzzle game for Android devices published on the
-        Google Play Store by <b>pocopie</b> (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;).
-        pocopie is an independent app developer. The App is built with the Unity game engine.
+        This Privacy Policy describes how information is handled in connection with the mobile
+        applications published on the Google Play Store under the developer name <b>Pocopie</b>
+        (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;). It applies to every such
+        application (each an &ldquo;App&rdquo;, and together &ldquo;our apps&rdquo;) unless a
+        particular App links to its own separate privacy policy from its store listing. Pocopie is an
+        independent app developer. Our apps are built with the Unity game engine.
       </p>
       <p>
-        Picture Puzzle is a single-player game that runs on your device. It does not require an
-        account, a login, or an internet connection to play. It contains no in-app purchases. The
-        App is supported by advertising, which is delivered by Google AdMob and requires an internet
-        connection to display.
+        All of our apps share the same design principles. Each App runs entirely on your device: it
+        does not require an account, a login, or an internet connection to use, and it contains no
+        in-app purchases. We operate no servers, and no App sends information about you to us. Our
+        apps are supported by advertising, which is delivered by Google AdMob and requires an
+        internet connection to display.
       </p>
       <p>
-        This policy applies only to the Picture Puzzle Android application. It does not apply to the
-        Google Play Store, to advertisers whose ads may appear in the App, or to any website or
+        This policy applies only to our Android applications themselves. It does not apply to the
+        Google Play Store, to advertisers whose ads may appear in an App, or to any website or
         service you may reach by tapping an ad. Those are governed by their own privacy policies.
       </p>
       <p>
-        By installing and using Picture Puzzle, you acknowledge the practices described in this
+        By installing and using any of our apps, you acknowledge the practices described in this
         policy. If you do not agree with them, please do not use the App.
       </p>
       <p><a class="to-top" href="#main">&uarr; Back to top</a></p>
@@ -382,26 +387,26 @@
       <h2>2. Information We Collect</h2>
       <div class="callout">
         <p>
-          <b>pocopie does not collect, store, or receive any personally identifiable information
+          <b>Pocopie does not collect, store, or receive any personally identifiable information
           from you directly.</b> We operate no servers, no user accounts, and no databases of
-          player information.
+          user information.
         </p>
       </div>
       <p>
         We never ask you for your name, email address, phone number, postal address, date of birth,
-        photographs, contacts, or payment details, and the App contains no forms or sign-up screens
-        that could capture them. Your game progress, settings, and scores are stored locally on your
-        own device and are not transmitted to us. Uninstalling the App removes that local data.
+        photographs, contacts, or payment details, and our apps contain no forms or sign-up screens
+        that could capture them. Your progress, settings, scores, and preferences are stored locally
+        on your own device and are not transmitted to us. Uninstalling an App removes that local data.
       </p>
       <p>
         Information <i>is</i>, however, collected automatically by our third-party advertising
-        partner, <b>Google AdMob</b>, when advertisements are requested and displayed in the App.
+        partner, <b>Google AdMob</b>, when advertisements are requested and displayed in an App.
         This collection happens between your device and Google&rsquo;s systems; the data goes to
         Google, not to us. Section&nbsp;3 lists what is collected and Section&nbsp;4 explains
         Google&rsquo;s role.
       </p>
       <p>
-        Separately, if you choose to email us using the address in Section&nbsp;15, we will
+        Separately, if you choose to email us using the address in Section&nbsp;16, we will
         necessarily see your email address and whatever you write. We use that only to respond to
         you and do not add it to any mailing list.
       </p>
@@ -424,7 +429,7 @@
             A resettable, pseudonymous identifier provided by Google Play services that is used to
             recognise your device for advertising purposes. It is not your name and is not
             permanently tied to you &mdash; you can reset or delete it at any time (see
-            Section&nbsp;7).
+            Section&nbsp;8).
           </dd>
         </div>
         <div>
@@ -432,8 +437,8 @@
           <dd>
             Your device&rsquo;s IP address is visible whenever it connects to Google&rsquo;s ad
             servers, and a coarse location &mdash; typically at the level of a city, region, or
-            country &mdash; may be derived from it. The App does not request Android&rsquo;s precise
-            GPS location permission and does not access your exact location.
+            country &mdash; may be derived from it. Our apps do not request Android&rsquo;s precise
+            GPS location permission and do not access your exact location.
           </dd>
         </div>
         <div>
@@ -457,7 +462,8 @@
           <dd>
             Limited in-app events tied to advertising, such as the App being opened or resumed, the
             point at which an ad request is made, which ad placement was involved (banner,
-            interstitial, or rewarded video), and the version of the App and the ads SDK in use.
+            interstitial, rewarded video, or app open), and the version of the App and the ads SDK
+            in use.
           </dd>
         </div>
       </dl>
@@ -475,19 +481,20 @@
     <section id="third-party-services">
       <h2>4. Third-Party Services</h2>
       <p>
-        Google AdMob is the only third-party service integrated into Picture Puzzle that collects
-        data. The App contains no social media SDKs, no separate analytics platform, no crash
-        reporting service, and no advertising networks other than those Google works with to fill
-        ad inventory.
+        Google AdMob is the only third-party service integrated into our apps that collects data.
+        Our apps contain no social media SDKs, no separate analytics platform, no crash reporting
+        service, and no advertising networks other than those Google works with to fill ad
+        inventory.
       </p>
 
       <h3>Google AdMob</h3>
       <p>
-        AdMob is Google&rsquo;s mobile advertising platform. We use it to show banner ads,
-        interstitial (full-screen) ads, and rewarded video ads inside the App, and this advertising
-        revenue is what allows us to offer Picture Puzzle free of charge. When an ad slot needs to
-        be filled, the AdMob SDK on your device sends a request to Google containing the data
-        described in Section&nbsp;3, and Google selects and returns an advertisement.
+        AdMob is Google&rsquo;s mobile advertising platform. We use it to show advertisements inside
+        our apps &mdash; depending on the App, these may include banner ads, interstitial
+        (full-screen) ads, rewarded video ads, and app open ads &mdash; and this advertising revenue
+        is what allows us to offer our apps free of charge. When an ad slot needs to be filled, the
+        AdMob SDK on your device sends a request to Google containing the data described in
+        Section&nbsp;3, and Google selects and returns an advertisement.
       </p>
       <p>
         In doing so, Google acts as an independent data controller for the data it collects, and its
@@ -514,16 +521,44 @@
 
     <hr class="divider">
 
+    <section id="generative-ai">
+      <h2>5. Generative AI and In-App Content</h2>
+      <p>
+        In the interest of transparency, we want you to know how the content inside our apps is
+        made. Our apps are built with the Unity game engine, and some of the assets they contain
+        &mdash; such as artwork, images, icons, backgrounds, sound effects, music, or text &mdash;
+        were created or refined with the help of generative artificial intelligence tools during
+        development. These assets are static files that are packaged inside each App when it is
+        built and published.
+      </p>
+      <div class="callout">
+        <p>
+          <b>No generative AI model runs inside any of our apps.</b> Our apps contain no AI
+          features, no chat or image-generation functions, and no component that sends your input,
+          images, voice, device data, or anything else to an AI service. Nothing you do in an App is
+          used to train any AI model, by us or by anyone else.
+        </p>
+      </div>
+      <p>
+        This disclosure concerns how our apps were produced; it has no effect on what data is
+        collected while you use them. The only data collection that takes place is the advertising
+        data described in Section&nbsp;3.
+      </p>
+      <p><a class="to-top" href="#main">&uarr; Back to top</a></p>
+    </section>
+
+    <hr class="divider">
+
     <section id="how-we-use-information">
-      <h2>5. How We Use Information</h2>
+      <h2>6. How We Use Information</h2>
       <p>
         Because we do not receive your personal data, the uses below describe what the data
         collected through AdMob is used for by Google on our behalf:
       </p>
       <ul>
         <li>
-          <b>Ad delivery.</b> Selecting and serving banner, interstitial, and rewarded video ads
-          that are technically compatible with your device, network, and language.
+          <b>Ad delivery.</b> Selecting and serving advertisements that are technically compatible
+          with your device, network, and language.
         </li>
         <li>
           <b>Ad personalization.</b> Where you have given consent, showing ads that Google considers
@@ -533,7 +568,7 @@
         </li>
         <li>
           <b>Frequency capping.</b> Limiting how often the same ad is repeated to you and spacing
-          out full-screen ads so the game stays playable.
+          out full-screen ads so the App stays usable.
         </li>
         <li>
           <b>Fraud and abuse prevention.</b> Detecting invalid traffic, automated clicks, and other
@@ -542,12 +577,12 @@
         <li>
           <b>Aggregate analytics and reporting.</b> Producing summary statistics &mdash; impressions,
           click-through rates, fill rates, and estimated revenue &mdash; that help us understand how
-          the App performs overall and how to improve it. These reports are aggregated and do not
+          each App performs overall and how to improve it. These reports are aggregated and do not
           identify individual users.
         </li>
       </ul>
       <p>
-        We do not sell your personal information for money, we do not build profiles of players
+        We do not sell your personal information for money, we do not build profiles of users
         ourselves, and we do not use any of this data to contact you.
       </p>
       <p><a class="to-top" href="#main">&uarr; Back to top</a></p>
@@ -556,7 +591,7 @@
     <hr class="divider">
 
     <section id="legal-basis">
-      <h2>6. Legal Basis for Processing (GDPR)</h2>
+      <h2>7. Legal Basis for Processing (GDPR)</h2>
       <p>
         If you are located in the European Economic Area, the United Kingdom, or Switzerland, the
         General Data Protection Regulation requires a lawful basis for processing personal data. The
@@ -568,13 +603,13 @@
           Android Advertising ID for that purpose rely on your consent. Where required, a consent
           message is presented in the App (using Google&rsquo;s User Messaging Platform) before
           personalized ads are served, and you may decline or later change your choice. Declining
-          does not prevent you from playing the game; it means ads are shown on a non-personalized
+          does not prevent you from using the App; it means ads are shown on a non-personalized
           basis.
         </li>
         <li>
           <b>Legitimate interests &mdash; Article 6(1)(f).</b> Basic service functionality and the
           prevention of fraud, invalid traffic, and abuse rely on the legitimate interests of
-          pocopie and of Google in operating a functioning, secure, ad-supported application. Even
+          Pocopie and of Google in operating a functioning, secure, ad-supported application. Even
           non-personalized ads require a minimum of data &mdash; such as your IP address and basic
           device characteristics &mdash; to be delivered at all and to be protected against fraud.
           We have considered this processing against your rights and consider it proportionate and
@@ -582,8 +617,8 @@
         </li>
       </ul>
       <p>
-        You may withdraw consent at any time, as described in Section&nbsp;7, and you may object to
-        processing based on legitimate interests as described in Section&nbsp;9. Withdrawing consent
+        You may withdraw consent at any time, as described in Section&nbsp;8, and you may object to
+        processing based on legitimate interests as described in Section&nbsp;10. Withdrawing consent
         does not affect the lawfulness of processing carried out before the withdrawal.
       </p>
       <p><a class="to-top" href="#main">&uarr; Back to top</a></p>
@@ -592,7 +627,7 @@
     <hr class="divider">
 
     <section id="your-choices">
-      <h2>7. Your Choices and Controls</h2>
+      <h2>8. Your Choices and Controls</h2>
       <p>
         You have meaningful control over the advertising data associated with your device. The exact
         menu names vary slightly between Android versions and manufacturers.
@@ -629,7 +664,7 @@
         Where a consent message was shown to you in the App, you can change or withdraw your choice
         through the privacy or consent option available in the App&rsquo;s settings, where provided.
         You may also withdraw consent by using the Android controls described above, which apply
-        across all apps on your device, or by contacting us at the address in Section&nbsp;15. If you
+        across all apps on your device, or by contacting us at the address in Section&nbsp;16. If you
         would prefer that no advertising data be collected from your device at all, the most complete
         option is to uninstall the App.
       </p>
@@ -639,10 +674,10 @@
     <hr class="divider">
 
     <section id="childrens-privacy">
-      <h2>8. Children&rsquo;s Privacy</h2>
+      <h2>9. Children&rsquo;s Privacy</h2>
       <p>
-        Picture Puzzle is a general-audience application. It is <b>not directed at children under
-        the age of 13</b>, it is not enrolled in the Google Play Families programme, and we do not
+        Our apps are general-audience applications. They are <b>not directed at children under the
+        age of 13</b>, they are not enrolled in the Google Play Families programme, and we do not
         knowingly collect personal information from children.
       </p>
       <p>
@@ -654,14 +689,14 @@
         knowingly serve personalized advertising to users we know to be below the applicable age.
       </p>
       <p>
-        If you are a parent or guardian and believe that a child in your care has used the App and
-        that data about them may have been collected, please contact us at the email address in
-        Section&nbsp;15. Because we hold no user data ourselves, we cannot delete records from our
-        own systems &mdash; there are none &mdash; but we will respond promptly, and we will help you
-        direct a deletion request to Google, which holds the advertising data in question. In the
-        meantime, the fastest and most effective step you can take is to delete or reset the
+        If you are a parent or guardian and believe that a child in your care has used one of our
+        apps and that data about them may have been collected, please contact us at the email
+        address in Section&nbsp;16. Because we hold no user data ourselves, we cannot delete records
+        from our own systems &mdash; there are none &mdash; but we will respond promptly, and we will
+        help you direct a deletion request to Google, which holds the advertising data in question.
+        In the meantime, the fastest and most effective step you can take is to delete or reset the
         device&rsquo;s Advertising ID and opt out of ad personalization as described in
-        Section&nbsp;7, and to uninstall the App.
+        Section&nbsp;8, and to uninstall the App.
       </p>
       <p><a class="to-top" href="#main">&uarr; Back to top</a></p>
     </section>
@@ -669,7 +704,7 @@
     <hr class="divider">
 
     <section id="gdpr-rights">
-      <h2>9. Your Rights Under GDPR</h2>
+      <h2>10. Your Rights Under GDPR</h2>
       <p>
         If you are in the European Economic Area, the United Kingdom, or Switzerland, you have the
         following rights in respect of your personal data:
@@ -685,7 +720,7 @@
         <li><b>Right to lodge a complaint</b> &mdash; to complain to the data protection supervisory authority in your country of residence, place of work, or the place where you believe an infringement occurred.</li>
       </ul>
       <p>
-        You may contact us at the address in Section&nbsp;15 to exercise these rights and we will
+        You may contact us at the address in Section&nbsp;16 to exercise these rights and we will
         respond within the period required by law, normally one month. Please note an important
         practical limitation: the advertising data described in this policy is held by Google, not by
         us, and we have no ability to look up, export, or delete the records of an individual user.
@@ -700,13 +735,13 @@
     <hr class="divider">
 
     <section id="ccpa-rights">
-      <h2>10. Your Rights Under CCPA/CPRA</h2>
+      <h2>11. Your Rights Under CCPA/CPRA</h2>
       <p>
         If you are a California resident, the California Consumer Privacy Act as amended by the
         California Privacy Rights Act gives you the following rights:
       </p>
       <ul>
-        <li><b>Right to know</b> &mdash; to request the categories and specific pieces of personal information collected about you, the sources, the business purpose, and the categories of third parties it is disclosed to. The categories relevant to this App are set out in Section&nbsp;3.</li>
+        <li><b>Right to know</b> &mdash; to request the categories and specific pieces of personal information collected about you, the sources, the business purpose, and the categories of third parties it is disclosed to. The categories relevant to our apps are set out in Section&nbsp;3.</li>
         <li><b>Right to delete</b> &mdash; to request deletion of personal information collected from you, subject to legal exceptions.</li>
         <li><b>Right to correct</b> &mdash; to request correction of inaccurate personal information.</li>
         <li><b>Right to opt out of the sale or sharing</b> &mdash; to direct that your personal information not be sold or shared for cross-context behavioral advertising.</li>
@@ -715,7 +750,7 @@
 
       <h3>Do Not Sell or Share My Personal Information</h3>
       <p>
-        <b>pocopie does not sell your personal information for money, and never has.</b> However,
+        <b>Pocopie does not sell your personal information for money, and never has.</b> However,
         the CPRA defines &ldquo;sharing&rdquo; broadly to include disclosing personal information to
         a third party for cross-context behavioral advertising. The use of personalized advertising
         through Google AdMob may fall within that definition of &ldquo;sharing&rdquo;.
@@ -725,9 +760,9 @@
         out of ad personalization in your Android <b>Settings &rarr; Google &rarr; Ads</b> screen, by
         deleting or resetting your Advertising ID, or through
         <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer">Google Ad
-        Settings</a>. Full instructions are in Section&nbsp;7. You may also email us at the address in
-        Section&nbsp;15 and we will confirm the steps and assist you. Opting out will not reduce the
-        functionality of the game in any way.
+        Settings</a>. Full instructions are in Section&nbsp;8. You may also email us at the address in
+        Section&nbsp;16 and we will confirm the steps and assist you. Opting out will not reduce the
+        functionality of the App in any way.
       </p>
       <p>
         We do not have a mechanism to identify you as an individual, so we may be unable to verify a
@@ -740,10 +775,10 @@
     <hr class="divider">
 
     <section id="data-retention">
-      <h2>11. Data Retention</h2>
+      <h2>12. Data Retention</h2>
       <p>
-        pocopie retains no personal data about players, so there is nothing on our side to retain or
-        delete. Game progress and settings remain on your device for as long as the App is installed
+        Pocopie retains no personal data about users, so there is nothing on our side to retain or
+        delete. Your progress and settings remain on your device for as long as the App is installed
         and are removed when you uninstall it.
       </p>
       <p>
@@ -765,12 +800,12 @@
     <hr class="divider">
 
     <section id="data-security">
-      <h2>12. Data Security</h2>
+      <h2>13. Data Security</h2>
       <p>
-        We take reasonable and appropriate measures to keep the App safe: we publish it only through
-        the official Google Play Store, we keep the Google Mobile Ads SDK and the Unity engine
-        updated to supported versions, we request no Android permissions beyond those needed to
-        display ads, and we store no player data on any server we operate &mdash; which removes an
+        We take reasonable and appropriate measures to keep our apps safe: we publish them only
+        through the official Google Play Store, we keep the Google Mobile Ads SDK and the Unity
+        engine updated to supported versions, we request no Android permissions beyond those needed
+        to display ads, and we store no user data on any server we operate &mdash; which removes an
         entire category of risk.
       </p>
       <p>
@@ -790,9 +825,9 @@
     <hr class="divider">
 
     <section id="international-transfers">
-      <h2>13. International Data Transfers</h2>
+      <h2>14. International Data Transfers</h2>
       <p>
-        Google operates a global infrastructure. The advertising data collected through the App may
+        Google operates a global infrastructure. The advertising data collected through our apps may
         therefore be transferred to, stored in, and processed on servers located outside your country
         or region of residence &mdash; including in the United States &mdash; where data protection
         laws may differ from those where you live.
@@ -803,7 +838,7 @@
         Commission&rsquo;s Standard Contractual Clauses and applicable adequacy decisions. Details of
         these transfer mechanisms are described in the
         <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google
-        Privacy Policy</a>. As pocopie holds no user data, we carry out no international transfers of
+        Privacy Policy</a>. As Pocopie holds no user data, we carry out no international transfers of
         our own.
       </p>
       <p><a class="to-top" href="#main">&uarr; Back to top</a></p>
@@ -812,20 +847,21 @@
     <hr class="divider">
 
     <section id="changes">
-      <h2>14. Changes to This Privacy Policy</h2>
+      <h2>15. Changes to This Privacy Policy</h2>
       <p>
         We may update this Privacy Policy from time to time &mdash; for example if we add or change a
-        third-party service, if the App&rsquo;s functionality changes, or if the law or Google Play
-        policy requires it.
+        third-party service, if an App&rsquo;s functionality changes, or if the law or Google Play
+        policy requires it. Because this single policy covers all of our apps, a change made in
+        respect of one App applies to all of them.
       </p>
       <p>
         When we do, we will post the revised policy at this address and update the <b>Last
         Updated</b> and <b>Effective</b> dates shown at the top of the page. The current effective
-        date is <b>15 September 2026</b>. Changes take effect as soon as the revised policy is
+        date is <b>16 September 2026</b>. Changes take effect as soon as the revised policy is
         posted, and we encourage you to review this page periodically. If a change is significant
         &mdash; for instance, if a new category of data begins to be collected &mdash; we will make a
         reasonable effort to draw attention to it, such as through a notice in the App or in the
-        Google Play store listing. Continuing to use Picture Puzzle after a revision means you
+        Google Play store listing. Continuing to use any of our apps after a revision means you
         acknowledge the updated policy.
       </p>
       <p><a class="to-top" href="#main">&uarr; Back to top</a></p>
@@ -834,21 +870,21 @@
     <hr class="divider">
 
     <section id="contact">
-      <h2>15. Contact Us</h2>
+      <h2>16. Contact Us</h2>
       <p>
         If you have questions about this Privacy Policy, want to exercise any of the rights described
         above, or need help with an advertising-related request, please get in touch:
       </p>
       <ul>
-        <li><b>Developer:</b> pocopie</li>
-        <li><b>App:</b> Picture Puzzle (Android)</li>
-        <li><b>Email:</b> <a href="mailto:abc@abc.com">abc@abc.com</a></li>
+        <li><b>Developer:</b> Pocopie</li>
+        <li><b>Email:</b> <a href="mailto:epallab.biswas@gmail.com">epallab.biswas@gmail.com</a></li>
         <li><b>Policy address:</b> <a href="https://pocopie.github.io/">https://pocopie.github.io/</a></li>
       </ul>
       <p>
         We aim to reply to every genuine enquiry, and to respond to privacy rights requests within
-        the timeframe required by applicable law. Please include the name of the App in your message
-        so we can identify what your request relates to.
+        the timeframe required by applicable law. Because this policy covers several apps, please
+        include the name of the App your message relates to so we can identify what your request
+        concerns.
       </p>
       <p><a class="to-top" href="#main">&uarr; Back to top</a></p>
     </section>
@@ -856,13 +892,13 @@
   </main>
 
   <footer class="page-foot">
-    <p>&copy; 2026 pocopie. All rights reserved.</p>
+    <p>&copy; 2026 Pocopie. All rights reserved.</p>
     <p>
-      Picture Puzzle for Android &middot; Contact:
-      <a href="mailto:abc@abc.com">abc@abc.com</a>
+      Pocopie apps for Android &middot; Contact:
+      <a href="mailto:epallab.biswas@gmail.com">epallab.biswas@gmail.com</a>
     </p>
     <p>
-      Google, Google Play, and AdMob are trademarks of Google LLC. pocopie is not affiliated with or
+      Google, Google Play, and AdMob are trademarks of Google LLC. Pocopie is not affiliated with or
       endorsed by Google LLC.
     </p>
   </footer>
@@ -870,4 +906,3 @@
 </div>
 </body>
 </html>
-Update the privacy policy for my app Chenge the mail to - epallab.biswas@gmail.com, Developer: pocopie, make the privacy policy generic so that i can use it on other apps alos,  My all aps are offline, login free, collects no data, only usses admod ads, and build on unity and uses assets that some of them were made using Generative AI [/grill-me](slashCommand;grill-me) 
